@@ -28,11 +28,11 @@ public:
 
 void testOne()
 {
-	FirstClass fc1;
-	FirstClass fc2;
-	FirstClass fc3;
-	FirstClass fc4;
-	FirstClass fc5;
+	FirstClass entityOne;
+	FirstClass entityTwo;
+	FirstClass entityThree;
+	FirstClass entityFour;
+	FirstClass entityFive;
 }
 
 
@@ -40,7 +40,7 @@ void testTwo()
 {
 	for (int i = 0; i < 5; i++)
 	{
-		FirstClass f6;
+		FirstClass entitySix;
 	}
 }
 

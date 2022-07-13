@@ -50,12 +50,12 @@ public:
 
 	float getArea() const
 	{
-		return 3.14159265f * std::pow(radius, 2);
+		return 3.14159265f * std::pow(radius, 2.0f);
 	}
 
 	float getPerimeter() const
 	{
-		return 2 * 3.14159265f * radius;
+		return 2.0f * 3.14159265f * radius;
 	}
 
 };
@@ -81,12 +81,12 @@ public:
 
 	float getArea() const
 	{
-		return std::pow(sideLength, 2);
+		return std::pow(sideLength, 2.0f);
 	}
 
 	float getPerimeter() const
 	{
-		return 4 * sideLength;
+		return 4.0f * sideLength;
 	}
 };
 
