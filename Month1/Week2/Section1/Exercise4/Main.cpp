@@ -1,3 +1,32 @@
+/*
+Exercise 4 - Printer!
+
+Create a printer class. This class should allow you to store a string and then output it in different formats. Ask the user to input a string and then show what your printer can do! Remember to use char arrays instead of strings and avoid the std namespace.
+
+You class should have the following methods:
+Printer();
+Printer(std::string outputString);
+void Print();
+void PrintReversed();
+void PrintSpaced(int spaces);
+void PrintVertically();
+
+Example output
+Welcome! Please enter a string: Hello!
+Hello!
+!olleH
+H   e   l   l   o   !
+H
+e
+l
+l
+o
+!
+
+
+*/
+
+
 #include <iostream>
 
 
