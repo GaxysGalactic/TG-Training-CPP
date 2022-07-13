@@ -40,7 +40,7 @@ void testTwo()
 {
 	for (int i = 0; i < 5; i++)
 	{
-		FirstClass entitySix;
+		FirstClass entity;
 	}
 }
 
