@@ -15,12 +15,12 @@ void PlaylistContainer::addPlaylist(Playlist pPlaylist)
 	playlistCount++;
 }
 
-Playlist PlaylistContainer::getPlaylist(int index)
+const Playlist PlaylistContainer::getPlaylist(int index)
 {
 	return playlists[index];
 }
 
-int PlaylistContainer::getPlaylistCount()
+const int PlaylistContainer::getPlaylistCount()
 {
 	return playlistCount;
 }

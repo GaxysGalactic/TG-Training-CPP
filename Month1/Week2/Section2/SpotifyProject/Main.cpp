@@ -11,11 +11,11 @@
 */
 void debugApp()
 {
-	//First Playlist. Bohemian Rhapsody should not be able to be added due to song length.
+	//First Playlist. Negative Central should not be able to be added due to song length.
 	Song songOne("All Star", "Smash Mouth", 175);
 	Song songTwo("Never Gonna Give You Up", "Rick Astley", 135);
 	Song songThree("Country Roads", "John Denver", 192);
-	Song songFour("Bohemian Rhapsody", "Queen", 361);
+	Song songFour("Negative Central", "Negativity", -1);
 
 	Playlist playlistOne("Greatest Hits 2022");
 	playlistOne.addSong(songOne);

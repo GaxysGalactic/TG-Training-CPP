@@ -21,7 +21,7 @@ void Playlist::setPlaylistTitle(std::string pPlaylistTitle)
 	playlistTitle = pPlaylistTitle;
 }
 
-std::string Playlist::getPlaylistTitle()
+const std::string Playlist::getPlaylistTitle()
 {
 	return playlistTitle;
 }
@@ -34,20 +34,17 @@ bool Playlist::addSong(Song song)
 		songCount++;
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 //Precondition: songIndex is within range (checked by main)
-Song Playlist::getSong(int songIndex)
+const Song Playlist::getSong(int songIndex)
 {
 	return songs[songIndex];
 }
 
 //Ask if possible to print to console, since Playlist != interface
-void Playlist::displayPlaylist()
+const void Playlist::displayPlaylist()
 {
 	std::cout << "Song Title\t\tArtist Name\t\tDuration" << std::endl;
 	std::cout << "-----------------------------------------------------------------------" << std::endl;

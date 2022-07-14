@@ -41,14 +41,14 @@ public:
 
 	void setDuration(int pDuration);
 
-	std::string getSongTitle();
+	const std::string getSongTitle();
 
-	std::string getArtistName();
+	const std::string getArtistName();
 
-	int getDuration();
+	const int getDuration();
 
-	std::string getFormattedDuration();
+	const std::string getFormattedDuration();
 
-	bool isValid();
+	const bool isValid();
 
 };

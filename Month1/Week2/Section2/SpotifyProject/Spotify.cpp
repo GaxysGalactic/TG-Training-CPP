@@ -80,6 +80,15 @@ void Spotify::openMainMenu()
 
 		int choice;
 		std::cin >> choice;
+
+		while (!std::cin.good() || choice < 1 || choice > 3)
+		{
+			std::cin.clear();
+			std::cin.ignore(INT_MAX, '\n');
+			std::cout << "INVALID INPUT. Please try again." << std::endl;
+			std::cin >> choice;
+		}
+
 		activeCommand = (MenuCommand) choice;
 
 		std::cin.clear();
@@ -136,6 +145,15 @@ void Spotify::openCreatePlaylistMenu()
 		int songDuration;
 		std::cin >> songDuration;
 
+		while (!std::cin.good())
+		{
+			std::cin.clear();
+			std::cin.ignore(INT_MAX, '\n');
+			std::cout << "The duration of the song has to be an integer. Please try again." << std::endl;
+			std::cout << "Please enter the duration of the song (in seconds): ";
+			std::cin >> songDuration;
+		}
+
 		Song newSong(songName, songArtist, songDuration);
 		newPlaylist.addSong(newSong);
 
@@ -183,18 +201,19 @@ void Spotify::openCreatePlaylistMenu()
 
 void Spotify::openBrowsePlaylistMenu()
 {
-	std::cout << "Here are your playlists!" << std::endl;
-
-	for (int i = 0; i < playlists.getPlaylistCount(); i++)
-	{
-		std::cout << i << "- " << playlists.getPlaylist(i).getPlaylistTitle() << std::endl;
-	}
-
-	std::cin.clear();
-
 	int choice;
 	do
 	{
+		std::cout << "Here are your playlists!" << std::endl;
+
+		for (int i = 0; i < playlists.getPlaylistCount(); i++)
+		{
+			std::cout << i << "- " << playlists.getPlaylist(i).getPlaylistTitle() << std::endl;
+		}
+
+		std::cin.clear();
+
+
 		std::cout << "Which playlist do you want to see? ";
 		if (std::cin.peek() == '\n') break;
 		int index;

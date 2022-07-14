@@ -28,8 +28,8 @@ public:
 
 	void addPlaylist(Playlist pPlaylist);
 
-	Playlist getPlaylist(int index);
+	const Playlist getPlaylist(int index);
 
-	int getPlaylistCount();
+	const int getPlaylistCount();
 
 };
