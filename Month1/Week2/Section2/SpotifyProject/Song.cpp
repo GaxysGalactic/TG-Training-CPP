@@ -34,22 +34,22 @@ void Song::setDuration(int pDuration)
 	duration = pDuration;
 }
 
-const std::string Song::getSongTitle()
+std::string Song::getSongTitle() const
 {
 	return songTitle;
 }
 
-const std::string Song::getArtistName()
+std::string Song::getArtistName() const
 {
 	return artistName;
 }
 
-const int Song::getDuration()
+int Song::getDuration() const
 {
 	return duration;
 }
 
-const std::string Song::getFormattedDuration()
+std::string Song::getFormattedDuration() const
 {
 	int hours = duration / 60;
 	int seconds = duration % 60;
@@ -75,7 +75,7 @@ const std::string Song::getFormattedDuration()
 }
 
 
-const bool Song::isValid()
+bool Song::isValid() const
 {
 	return duration <= 0;
 }

@@ -48,11 +48,11 @@ public:
 
 	void setPlaylistTitle(std::string pPlaylistTitle);
 
-	const std::string getPlaylistTitle();
+	std::string getPlaylistTitle() const;
 
 	bool addSong(Song song);
 
-	const Song getSong(int songIndex);
+	Song getSong(int songIndex) const;
 
-	const void displayPlaylist();
+	void displayPlaylist() const;
 };
