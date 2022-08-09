@@ -1,5 +1,14 @@
 #include "Game.h"
 
+FGame::FGame()
+{
+	Name = "";
+	StudioName = "";
+	Year = 0;
+	Month = 0;
+	Day = 0;
+}
+
 FGame::FGame(std::string pName, std::string pStudioName, int pYear, int pMonth, int pDay)
 {
 	Name = pName;
@@ -21,7 +30,14 @@ std::string FGame::GetStudioName() const
 
 std::string FGame::GetReleaseDate() const
 {
-	return Year + "/" + Month + "/" + Day
+	std::string formattedDate = "";
+	formattedDate += Year;
+	formattedDate += "/";
+	formattedDate += Month;
+	formattedDate += "/";
+	formattedDate += Day;
+
+	return formattedDate;
 }
 
 bool FGame::IsValid() const

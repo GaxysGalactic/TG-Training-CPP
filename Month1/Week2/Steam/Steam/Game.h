@@ -13,6 +13,8 @@ private:
 
 public:
 
+	FGame();
+
 	FGame(std::string pName, std::string pStudioName, int pYear, int pMonth, int pDay);
 
 	std::string GetName() const;

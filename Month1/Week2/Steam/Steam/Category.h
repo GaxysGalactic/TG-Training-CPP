@@ -7,14 +7,13 @@ class FCategory
 private:
 
 	std::string Name;
-
 	const static int MaxGameCount = 10;
-
 	FGame Games[MaxGameCount];
-
 	int GameCount;
 
 public:
+
+	FCategory();
 
 	FCategory(std::string pName);
 

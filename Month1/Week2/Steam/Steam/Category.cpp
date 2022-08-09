@@ -1,5 +1,11 @@
 #include "Category.h"
 
+FCategory::FCategory()
+{
+    Name = "";
+    GameCount = 0;
+}
+
 FCategory::FCategory(std::string pName)
 {
     Name = pName;

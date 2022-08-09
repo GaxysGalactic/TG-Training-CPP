@@ -7,9 +7,7 @@ class FCategoryContainer
 private:
 
 	const static int MaxCategoryCount = 5;
-
 	FCategory Categories[MaxCategoryCount];
-
 	int CategoryCount;
 
 public:

@@ -5,9 +5,9 @@ FCategoryContainer::FCategoryContainer()
 	CategoryCount = 0;
 }
 
-void FCategoryContainer::AddCategory(FCategory pCategory)
+bool FCategoryContainer::AddCategory(FCategory pCategory)
 {
-	if (CategoryCount < MaxSongCount)
+	if (CategoryCount < MaxCategoryCount)
 	{
 		Categories[CategoryCount] = pCategory;
 		CategoryCount++;
@@ -16,7 +16,7 @@ void FCategoryContainer::AddCategory(FCategory pCategory)
 	return false;
 }
 
-void FCategoryContainer::DeleteCategory(int Index)
+bool FCategoryContainer::DeleteCategory(int Index)
 {
 	if (Index < CategoryCount)
 	{
@@ -24,6 +24,7 @@ void FCategoryContainer::DeleteCategory(int Index)
 		{
 			Categories[Index] = Categories[Index + 1];
 		}
+		CategoryCount--;
 		return true;
 	}
 	return false;
