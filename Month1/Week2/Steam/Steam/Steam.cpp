@@ -25,8 +25,8 @@ void Steam::RunApp()
 				AddGame();
 				break;
 
-			case MenuCommand::CreateCategory:
-				CreateCategory();
+			case MenuCommand::ManageCategories:
+				ManageCategories();
 				break;
 
 			case MenuCommand::BrowseGames:
@@ -46,7 +46,7 @@ void Steam::MainMenu()
 
 		std::cout << "Welcome to Steam! What would you like to do?" << std::endl;
 		std::cout << "1 - Add Game" << std::endl;
-		std::cout << "2 - Create Category" << std::endl;
+		std::cout << "2 - Manage Categories" << std::endl;
 		std::cout << "3 - Browse Games" << std::endl;
 		std::cout << "4 - Exit" << std::endl;
 
@@ -67,54 +67,17 @@ void Steam::MainMenu()
 		std::cin.ignore(INT_MAX, '\n');
 
 	} while (!std::cin.good());
+
+	system("CLS");
 }
 
 //-------------------------------------------------------------------------------------------
 void Steam::AddGame()
 {
 
-	//Choose a Category
+	int CategoryChosen = ChooseCategory();
 
-	int CategoryChosen = -1;
-	int CategoryCount = Categories.GetCategoryCount();
-	if (CategoryCount != 0)
-	{
-		std::cout << "There's categories available for you to add games to. Would you like to add it to a category?" << std::endl;
-		std::cout << "0 - No" << std::endl;
-		std::cout << "1 - Yes" << std::endl;
-		int AddToCategory;
-		std::cin >> AddToCategory;
-
-		//Input Validation
-		while (!std::cin.good() || AddToCategory < 0 || AddToCategory > 1)
-		{
-			std::cin.clear();
-			std::cin.ignore(INT_MAX, '\n');
-			std::cout << "That is not a valid option. Please try again." << std::endl;
-			std::cin >> AddToCategory;
-		}
-
-		if (AddToCategory == 1)
-		{
-			//Browse Categories available
-			std::cout << "Great! Here's a list of the available categories for you to choose from!" << std::endl;
-			for (int i = 0; i < CategoryCount; i++)
-			{
-				std::cout << i << Categories.GetCategory(i).GetName() << std::endl;
-			}
-			std::cout << "Please type the number of the category you would like to add to." << std::endl;
-			std::cin >> CategoryChosen;
-
-			//Input Validation
-			while (!std::cin.good() || CategoryChosen < 0 || CategoryChosen > CategoryCount)
-			{
-				std::cin.clear();
-				std::cin.ignore(INT_MAX, '\n');
-				std::cout << "That is not a valid option. Please try again." << std::endl;
-				std::cin >> CategoryChosen;
-			}
-		}
-	}
+	system("CLS");
 
 	//"Create" Game
 	std::cout << "Please provide the details about the game to the best of your ability." << std::endl;
@@ -132,40 +95,19 @@ void Steam::AddGame()
 	int GameYear;
 	std::cin >> GameYear;
 
-	//Input Validation
-	while (!std::cin.good())
-	{
-		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
-		std::cout << "That is not a valid integer. Please try again." << std::endl;
-		std::cin >> GameYear;
-	}
+	GameYear = ValidateInt(GameYear, 1900, 2022);
 
 	std::cout << "Release Date (Month): ";
 	int GameMonth;
 	std::cin >> GameMonth;
 
-	//Input Validation
-	while (!std::cin.good())
-	{
-		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
-		std::cout << "That is not a valid integer. Please try again." << std::endl;
-		std::cin >> GameMonth;
-	}
+	GameMonth = ValidateInt(GameMonth, 1, 12);
 
 	std::cout << "Release Date (Day): ";
 	int GameDay;
 	std::cin >> GameDay;
 
-	//Input Validation
-	while (!std::cin.good())
-	{
-		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
-		std::cout << "That is not a valid integer. Please try again." << std::endl;
-		std::cin >> GameDay;
-	}
+	GameDay = ValidateInt(GameDay, 1, 31);
 
 	FGame NewGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
 
@@ -182,6 +124,50 @@ void Steam::AddGame()
 }
 
 //-------------------------------------------------------------------------------------------
+int Steam::ChooseCategory()
+{
+	system("CLS");
+
+	//Choose a Category
+
+	int CategoryChosen = -1;
+	int CategoryCount = Categories.GetCategoryCount();
+	if (CategoryCount != 0)
+	{
+		std::cout << "There's categories available for you to add games to. Would you like to add it to a category?" << std::endl;
+		std::cout << "0 - No" << std::endl;
+		std::cout << "1 - Yes" << std::endl;
+		int AddToCategory;
+		std::cin >> AddToCategory;
+
+		AddToCategory = ValidateInt(AddToCategory, 0, 1);
+
+		if (AddToCategory == 1)
+		{
+			//Browse Categories available
+			std::cout << "Great! Here's a list of the available categories for you to choose from!" << std::endl;
+			for (int i = 0; i < CategoryCount; i++)
+			{
+				std::cout << i << Categories.GetCategory(i).GetName() << std::endl;
+			}
+			std::cout << "Please type the number of the category you would like to add to." << std::endl;
+			std::cin >> CategoryChosen;
+
+			CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
+		}
+	}
+
+	return CategoryChosen;
+}
+
+//-------------------------------------------------------------------------------------------
+void Steam::ManageCategories()
+{
+
+	ActiveCommand = MenuCommand::MainMenu;
+}
+
+//-------------------------------------------------------------------------------------------
 void Steam::CreateCategory()
 {
 	//TODO
@@ -190,9 +176,41 @@ void Steam::CreateCategory()
 }
 
 //-------------------------------------------------------------------------------------------
+void Steam::DeleteCategory()
+{
+
+}
+
+//-------------------------------------------------------------------------------------------
 void Steam::BrowseGames()
 {
 	//TODO
 	//ActiveCommand = MainMenu;
 	ActiveCommand = MenuCommand::Exit;
+}
+
+//-------------------------------------------------------------------------------------------
+int Steam::ValidateInt(int Input)
+{
+	while (!std::cin.good())
+	{
+		std::cin.clear();
+		std::cin.ignore(INT_MAX, '\n');
+		std::cout << "That is not a valid integer. Please try again." << std::endl;
+		std::cin >> Input;
+	}
+	return Input;
+}
+
+//-------------------------------------------------------------------------------------------
+int Steam::ValidateInt(int Input, int LowerBound, int UpperBound)
+{
+	while (!std::cin.good() || Input < LowerBound || Input > UpperBound)
+	{
+		std::cin.clear();
+		std::cin.ignore(INT_MAX, '\n');
+		std::cout << "That is not a valid integer or within the intended range. Please try again." << std::endl;
+		std::cin >> Input;
+	}
+	return Input;
 }

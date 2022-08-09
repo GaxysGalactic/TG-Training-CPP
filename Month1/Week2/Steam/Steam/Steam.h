@@ -13,7 +13,7 @@ private:
 	{
 		MainMenu,
 		AddGame,
-		CreateCategory,
+		ManageCategories,
 		BrowseGames,
 		Exit
 	};
@@ -26,12 +26,24 @@ public:
 
 	void RunApp();
 
+private:
+
 	void MainMenu();
 
 	void AddGame();
 
+	int ChooseCategory();
+
+	void ManageCategories();
+
 	void CreateCategory();
 
+	void DeleteCategory();
+
 	void BrowseGames();
+
+	int ValidateInt(int Input);
+
+	int ValidateInt(int Input, int LowerBound, int UpperBound);
 
 };
