@@ -7,6 +7,18 @@ FCategoryContainer::FCategoryContainer()
 }
 
 //-------------------------------------------------------------------------------------------
+int FCategoryContainer::GetCategoryCount()
+{
+	return CategoryCount;
+}
+
+//-------------------------------------------------------------------------------------------
+FCategory FCategoryContainer::GetCategory(int index)
+{
+	return Categories[index];
+}
+
+//-------------------------------------------------------------------------------------------
 bool FCategoryContainer::AddCategory(FCategory pCategory)
 {
 	if (CategoryCount < MaxCategoryCount)

@@ -14,6 +14,10 @@ public:
 
 	FCategoryContainer();
 
+	int GetCategoryCount();
+
+	FCategory GetCategory(int index);
+
 	bool AddCategory(FCategory pCategory);
 
 	bool DeleteCategory(int Index);
