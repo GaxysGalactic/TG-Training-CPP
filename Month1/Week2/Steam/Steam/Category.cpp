@@ -11,13 +11,15 @@ std::string FCategory::GetName() const
     return Name;
 }
 
-void FCategory::AddGame(FGame Game)
+bool FCategory::AddGame(FGame Game)
 {
     if (!IsFull())
     {
         Games[GameCount] = Game;
         GameCount++;
+        return true;
     }
+    return false;
 }
 
 bool FCategory::IsFull() const

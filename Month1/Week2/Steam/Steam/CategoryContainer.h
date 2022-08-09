@@ -16,7 +16,7 @@ public:
 
 	FCategoryContainer();
 
-	void AddCategory(FCategory pCategory);
+	bool AddCategory(FCategory pCategory);
 
-	void DeleteCategory(int Index);
+	bool DeleteCategory(int Index);
 };

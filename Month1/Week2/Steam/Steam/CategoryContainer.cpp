@@ -11,13 +11,20 @@ void FCategoryContainer::AddCategory(FCategory pCategory)
 	{
 		Categories[CategoryCount] = pCategory;
 		CategoryCount++;
+		return true;
 	}
+	return false;
 }
 
 void FCategoryContainer::DeleteCategory(int Index)
 {
-	for (; Index < CategoryCount; Index++)
+	if (Index < CategoryCount)
 	{
-		Categories[Index] = Categories[Index + 1];
+		for (; Index < CategoryCount; Index++)
+		{
+			Categories[Index] = Categories[Index + 1];
+		}
+		return true;
 	}
+	return false;
 }

@@ -20,7 +20,7 @@ public:
 
 	std::string GetName() const;
 
-	void AddGame(FGame Game);
+	bool AddGame(FGame Game);
 
 	bool IsFull() const;
 };
