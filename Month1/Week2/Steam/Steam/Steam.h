@@ -26,6 +26,8 @@ public:
 
 	void RunApp();
 
+	void MainMenu();
+
 	void AddGame();
 
 	void CreateCategory();

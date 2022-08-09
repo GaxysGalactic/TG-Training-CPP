@@ -7,6 +7,7 @@ Steam::Steam()
 	ActiveCommand = MenuCommand::MainMenu;
 }
 
+
 //-------------------------------------------------------------------------------------------
 void Steam::RunApp()
 {
@@ -15,6 +16,10 @@ void Steam::RunApp()
 	{
 		switch (ActiveCommand)
 		{
+			case MenuCommand::MainMenu:
+				MainMenu();
+				break;
+
 			case MenuCommand::AddGame:
 				AddGame();
 				break;
@@ -28,6 +33,39 @@ void Steam::RunApp()
 				break;
 		}
 	}
+}
+
+
+//-------------------------------------------------------------------------------------------
+void Steam::MainMenu()
+{
+	do
+	{
+		system("CLS");
+
+		std::cout << "Welcome to Steam! What would you like to do?" << std::endl;
+		std::cout << "1 - Add Game" << std::endl;
+		std::cout << "2 - Create Category" << std::endl;
+		std::cout << "3 - Browse Games" << std::endl;
+		std::cout << "4 - Exit" << std::endl;
+
+		int Option;
+		std::cin >> Option;
+
+		while (!std::cin.good() || Option < 1 || Option > 4)
+		{
+			std::cin.clear();
+			std::cin.ignore(INT_MAX, '\n');
+			std::cout << "INVALID INPUT. Please try again." << std::endl;
+			std::cin >> Option;
+		}
+
+		activeCommand = (MenuCommand)Option;
+
+		std::cin.clear();
+		std::cin.ignore(INT_MAX, '\n');
+
+	} while (!std::cin.good());
 }
 
 //-------------------------------------------------------------------------------------------
