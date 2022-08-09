@@ -48,4 +48,6 @@ private:
 
 	int ValidateInt(int Input, int LowerBound, int UpperBound);
 
+	void ListCategories();
+
 };

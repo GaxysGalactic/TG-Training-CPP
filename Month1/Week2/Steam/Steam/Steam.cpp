@@ -2,13 +2,16 @@
 #include <string>
 
 //-------------------------------------------------------------------------------------------
+//										CONSTRUCTOR
+//-------------------------------------------------------------------------------------------
 Steam::Steam()
 {
 	Uncategorized = FCategory("Uncategorized");
 	ActiveCommand = MenuCommand::MainMenu;
 }
 
-
+//-------------------------------------------------------------------------------------------
+//										RUNNING APP
 //-------------------------------------------------------------------------------------------
 void Steam::RunApp()
 {
@@ -39,7 +42,8 @@ void Steam::RunApp()
 	std::cout << "Thanks for using Steam! Please come back soon!" << std::endl;
 }
 
-
+//-------------------------------------------------------------------------------------------
+//										MAIN MENU
 //-------------------------------------------------------------------------------------------
 void Steam::MainMenu()
 {
@@ -72,6 +76,8 @@ void Steam::MainMenu()
 	} while (!std::cin.good());
 }
 
+//-------------------------------------------------------------------------------------------
+//										ADDING A GAME
 //-------------------------------------------------------------------------------------------
 void Steam::AddGame()
 {
@@ -111,19 +117,17 @@ int Steam::ChooseCategory()
 
 		if (AddToCategory == 1)
 		{
-			//Browse Categories available
-			std::cout << "Great! Here's a list of the available categories for you to choose from!" << std::endl;
-			for (int i = 0; i < CategoryCount; i++)
-			{
-				std::cout << i << Categories.GetCategory(i).GetName() << std::endl;
-			}
+			
+			ListCategories();
+
 			std::cout << "Please type the number of the category you would like to add to." << std::endl;
 			std::cin >> CategoryChosen;
 
 			CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
 		}
 	}
-
+	std::cin.clear();
+	std::cin.ignore(INT_MAX, '\n');
 	return CategoryChosen;
 }
 
@@ -166,8 +170,28 @@ FGame Steam::CreateGame()
 }
 
 //-------------------------------------------------------------------------------------------
+//									MANAGING CATEGORIES
+//-------------------------------------------------------------------------------------------
 void Steam::ManageCategories()
 {
+	system("CLS");
+
+	std::cout << "Welcome to Category Management! What would you like to do?" << std::endl;
+	std::cout << "1 - Create a Category" << std::endl;
+	std::cout << "2 - Delete a Category" << std::endl;
+	int Option;
+	std::cin >> Option;
+
+	Option = ValidateInt(Option, 1, 2);
+
+	if (Option == 1)
+	{
+		CreateCategory();
+	}
+	else
+	{
+		DeleteCategory();
+	}
 
 	ActiveCommand = MenuCommand::MainMenu;
 }
@@ -175,25 +199,81 @@ void Steam::ManageCategories()
 //-------------------------------------------------------------------------------------------
 void Steam::CreateCategory()
 {
-	//TODO
-	//ActiveCommand = MainMenu;
-	ActiveCommand = MenuCommand::Exit;
+	system("CLS");
+	std::cin.clear();
+	std::cin.ignore(INT_MAX, '\n');
+
+	std::cout << "Please write the name of the category you would like to create: ";
+	std::string CategoryName;
+	if (std::cin.peek() == '\n') return;
+	std::cin >> CategoryName;
+
+	FCategory NewCategory(CategoryName);
+
+	std::cin.clear();
+	std::cin.ignore(INT_MAX, '\n');
+
+	if (Categories.AddCategory(NewCategory))
+	{
+		std::cout << "Success! You have created the category " << CategoryName << "!" << std::endl;
+		std::cin.ignore();
+	}
+	else
+	{
+		std::cout << "Unfortunately, there was an error creating your category. The category list is full." << std::endl;
+		std::cin.ignore();
+	}
+
 }
 
 //-------------------------------------------------------------------------------------------
 void Steam::DeleteCategory()
 {
+	system("CLS");
 
+	int CategoryCount = Categories.GetCategoryCount();
+	if (CategoryCount != 0)
+	{
+		ListCategories();
+		std::cout << "Which category would you like to delete?" << std::endl;
+		int CategoryChosen;
+		std::cin >> CategoryChosen;
+
+		CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
+
+		if (Categories.DeleteCategory(CategoryChosen))
+		{
+			std::cout << "Success! That category has been deleted." << std::endl;
+			std::cin.ignore();
+			std::cin.ignore();
+		}
+		else
+		{
+			std::cout << "There was an error deleting your category." << std::endl;
+			std::cin.ignore();
+			std::cin.ignore();
+		}
+	}
+	else
+	{
+		std::cout << "Unfortunately, there are no categories available for you to delete." << std::endl;
+		std::cin.ignore();
+		std::cin.ignore();
+	}
 }
 
+//-------------------------------------------------------------------------------------------
+//									BROWSING GAMES
 //-------------------------------------------------------------------------------------------
 void Steam::BrowseGames()
 {
 	//TODO
-	//ActiveCommand = MainMenu;
+	//ActiveCommand = MenuCommand::MainMenu;
 	ActiveCommand = MenuCommand::Exit;
 }
 
+//-------------------------------------------------------------------------------------------
+//									UTILITY FUNCTIONS
 //-------------------------------------------------------------------------------------------
 int Steam::ValidateInt(int Input)
 {
@@ -218,4 +298,14 @@ int Steam::ValidateInt(int Input, int LowerBound, int UpperBound)
 		std::cin >> Input;
 	}
 	return Input;
+}
+
+//-------------------------------------------------------------------------------------------
+void Steam::ListCategories()
+{
+	std::cout << "Here's a list of the available categories:" << std::endl;
+	for (int i = 0; i < Categories.GetCategoryCount(); i++)
+	{
+		std::cout << i << " - " << Categories.GetCategory(i).GetName() << std::endl;
+	}
 }

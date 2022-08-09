@@ -36,7 +36,7 @@ bool FCategoryContainer::DeleteCategory(int Index)
 	if (Index < CategoryCount)
 	{
 		//Cascade the categories into their new positions. This should end up deleting the indexed one as well.
-		for (; Index < CategoryCount; Index++)
+		for (; Index < CategoryCount && Index < MaxCategoryCount - 1; Index++)
 		{
 			Categories[Index] = Categories[Index + 1];
 		}
