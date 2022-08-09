@@ -1,22 +1,26 @@
 #include "Category.h"
 
+//-------------------------------------------------------------------------------------------
 FCategory::FCategory()
 {
     Name = "";
     GameCount = 0;
 }
 
+//-------------------------------------------------------------------------------------------
 FCategory::FCategory(std::string pName)
 {
     Name = pName;
     GameCount = 0;
 }
 
+//-------------------------------------------------------------------------------------------
 std::string FCategory::GetName() const
 {
     return Name;
 }
 
+//-------------------------------------------------------------------------------------------
 bool FCategory::AddGame(FGame Game)
 {
     if (!IsFull())
@@ -28,6 +32,7 @@ bool FCategory::AddGame(FGame Game)
     return false;
 }
 
+//-------------------------------------------------------------------------------------------
 bool FCategory::IsFull() const
 {
     return GameCount >= MaxGameCount;

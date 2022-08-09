@@ -3,10 +3,12 @@
 
 class FGame
 {
+
 private:
 
 	std::string Name;
 	std::string StudioName;
+
 	int Year;
 	int Month;
 	int Day;

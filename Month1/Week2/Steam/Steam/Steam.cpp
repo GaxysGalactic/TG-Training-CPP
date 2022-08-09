@@ -1,11 +1,13 @@
 #include "Steam.h"
 
+//-------------------------------------------------------------------------------------------
 Steam::Steam()
 {
 	Uncategorized = FCategory("Uncategorized");
 	ActiveCommand = MenuCommand::MainMenu;
 }
 
+//-------------------------------------------------------------------------------------------
 void Steam::RunApp()
 {
 	std::cout << "Welcome to Steam!" << std::endl;
@@ -28,6 +30,7 @@ void Steam::RunApp()
 	}
 }
 
+//-------------------------------------------------------------------------------------------
 void Steam::AddGame()
 {
 	//TODO
@@ -35,6 +38,7 @@ void Steam::AddGame()
 	ActiveCommand = MenuCommand::Exit;
 }
 
+//-------------------------------------------------------------------------------------------
 void Steam::CreateCategory()
 {
 	//TODO
@@ -42,6 +46,7 @@ void Steam::CreateCategory()
 	ActiveCommand = MenuCommand::Exit;
 }
 
+//-------------------------------------------------------------------------------------------
 void Steam::BrowseGames()
 {
 	//TODO
