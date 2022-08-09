@@ -34,6 +34,8 @@ private:
 
 	int ChooseCategory();
 
+	FGame CreateGame();
+
 	void ManageCategories();
 
 	void CreateCategory();

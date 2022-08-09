@@ -34,6 +34,9 @@ void Steam::RunApp()
 				break;
 		}
 	}
+	system("CLS");
+
+	std::cout << "Thanks for using Steam! Please come back soon!" << std::endl;
 }
 
 
@@ -67,8 +70,6 @@ void Steam::MainMenu()
 		std::cin.ignore(INT_MAX, '\n');
 
 	} while (!std::cin.good());
-
-	system("CLS");
 }
 
 //-------------------------------------------------------------------------------------------
@@ -77,39 +78,7 @@ void Steam::AddGame()
 
 	int CategoryChosen = ChooseCategory();
 
-	system("CLS");
-
-	//"Create" Game
-	std::cout << "Please provide the details about the game to the best of your ability." << std::endl;
-	
-
-	std::cout << "Game: ";
-	std::string GameName;
-	std::getline(std::cin, GameName);
-
-	std::cout << "Developer: ";
-	std::string GameStudioName;
-	std::getline(std::cin, GameStudioName);
-
-	std::cout << "Release Date (Year): ";
-	int GameYear;
-	std::cin >> GameYear;
-
-	GameYear = ValidateInt(GameYear, 1900, 2022);
-
-	std::cout << "Release Date (Month): ";
-	int GameMonth;
-	std::cin >> GameMonth;
-
-	GameMonth = ValidateInt(GameMonth, 1, 12);
-
-	std::cout << "Release Date (Day): ";
-	int GameDay;
-	std::cin >> GameDay;
-
-	GameDay = ValidateInt(GameDay, 1, 31);
-
-	FGame NewGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
+	FGame NewGame = CreateGame();
 
 	if (CategoryChosen == -1)
 	{
@@ -127,8 +96,6 @@ void Steam::AddGame()
 int Steam::ChooseCategory()
 {
 	system("CLS");
-
-	//Choose a Category
 
 	int CategoryChosen = -1;
 	int CategoryCount = Categories.GetCategoryCount();
@@ -158,6 +125,44 @@ int Steam::ChooseCategory()
 	}
 
 	return CategoryChosen;
+}
+
+//-------------------------------------------------------------------------------------------
+FGame Steam::CreateGame()
+{
+	system("CLS");
+
+	std::cout << "Please provide the details about the game to the best of your ability." << std::endl;
+
+	std::cout << "Game: ";
+	std::string GameName;
+	std::getline(std::cin, GameName);
+
+	std::cout << "Developer: ";
+	std::string GameStudioName;
+	std::getline(std::cin, GameStudioName);
+
+	std::cout << "Release Date (Year): ";
+	int GameYear;
+	std::cin >> GameYear;
+
+	GameYear = ValidateInt(GameYear, 1900, 2022);
+
+	std::cout << "Release Date (Month): ";
+	int GameMonth;
+	std::cin >> GameMonth;
+
+	GameMonth = ValidateInt(GameMonth, 1, 12);
+
+	std::cout << "Release Date (Day): ";
+	int GameDay;
+	std::cin >> GameDay;
+
+	GameDay = ValidateInt(GameDay, 1, 31);
+
+	FGame NewGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
+
+	return NewGame;
 }
 
 //-------------------------------------------------------------------------------------------
