@@ -16,9 +16,11 @@ public:
 
 	int GetCategoryCount();
 
-	FCategory GetCategory(int index);
+	FCategory GetCategory(int index) const;
 
 	bool AddCategory(FCategory pCategory);
 
 	bool DeleteCategory(int Index);
+
+	bool AddGameToCategory(int Index, FGame Game);
 };

@@ -20,6 +20,16 @@ std::string FCategory::GetName() const
     return Name;
 }
 
+FGame FCategory::GetGame(int Index) const
+{
+    return Games[Index];
+}
+
+int FCategory::GetGameCount() const
+{
+    return GameCount;
+}
+
 //-------------------------------------------------------------------------------------------
 bool FCategory::AddGame(FGame Game)
 {

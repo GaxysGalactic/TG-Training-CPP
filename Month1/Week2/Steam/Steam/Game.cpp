@@ -36,11 +36,11 @@ std::string FGame::GetStudioName() const
 std::string FGame::GetReleaseDate() const
 {
 	std::string formattedDate = "";
-	formattedDate += Year;
+	formattedDate += std::to_string(Year);
 	formattedDate += "/";
-	formattedDate += Month;
+	formattedDate += std::to_string(Month);
 	formattedDate += "/";
-	formattedDate += Day;
+	formattedDate += std::to_string(Day);
 
 	return formattedDate;
 }

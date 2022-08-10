@@ -13,7 +13,7 @@ int FCategoryContainer::GetCategoryCount()
 }
 
 //-------------------------------------------------------------------------------------------
-FCategory FCategoryContainer::GetCategory(int index)
+FCategory FCategoryContainer::GetCategory(int index) const
 {
 	return Categories[index];
 }
@@ -44,4 +44,9 @@ bool FCategoryContainer::DeleteCategory(int Index)
 		return true;
 	}
 	return false;
+}
+
+bool FCategoryContainer::AddGameToCategory(int Index, FGame Game)
+{
+	return Categories[Index].AddGame(Game);
 }

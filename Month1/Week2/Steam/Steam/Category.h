@@ -19,6 +19,10 @@ public:
 
 	std::string GetName() const;
 
+	FGame GetGame(int Index) const;
+
+	int GetGameCount() const;
+
 	bool AddGame(FGame Game);
 
 	bool IsFull() const;

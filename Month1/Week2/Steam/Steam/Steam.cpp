@@ -81,7 +81,6 @@ void Steam::MainMenu()
 //-------------------------------------------------------------------------------------------
 void Steam::AddGame()
 {
-
 	int CategoryChosen = ChooseCategory();
 
 	FGame NewGame = CreateGame();
@@ -92,7 +91,7 @@ void Steam::AddGame()
 	}
 	else
 	{
-		Categories.GetCategory(CategoryChosen).AddGame(NewGame);
+		Categories.AddGameToCategory(CategoryChosen, NewGame);
 	}
 
 	ActiveCommand = MenuCommand::MainMenu;
@@ -125,9 +124,9 @@ int Steam::ChooseCategory()
 
 			CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
 		}
+		std::cin.clear();
+		std::cin.ignore(INT_MAX, '\n');
 	}
-	std::cin.clear();
-	std::cin.ignore(INT_MAX, '\n');
 	return CategoryChosen;
 }
 
@@ -267,9 +266,42 @@ void Steam::DeleteCategory()
 //-------------------------------------------------------------------------------------------
 void Steam::BrowseGames()
 {
-	//TODO
-	//ActiveCommand = MenuCommand::MainMenu;
-	ActiveCommand = MenuCommand::Exit;
+	system("CLS");
+	for (int i = 0; i < Categories.GetCategoryCount() + 1; i++)
+	{
+		FCategory CurrentCategory;
+		if (i < Categories.GetCategoryCount())
+		{
+			CurrentCategory = Categories.GetCategory(i);
+		}
+		else
+		{
+			CurrentCategory = Uncategorized;
+		}
+
+		std::cout << "---------------------------------------------------------" << std::endl;
+		std::cout << "                      " << CurrentCategory.GetName() << std::endl;
+		std::cout << "---------------------------------------------------------" << std::endl;
+
+
+		std::cout << "NAME\t\tSTUDIO\t\tRELEASE DATE" << std::endl;
+
+		if (CurrentCategory.GetGameCount() == 0)
+		{
+			std::cout << "There are no games for this category.. :c" << std::endl;
+		}
+		else
+		{
+			for (int j = 0; j < CurrentCategory.GetGameCount(); j++)
+			{
+				FGame CurrentGame = CurrentCategory.GetGame(j);
+				std::cout << CurrentGame.GetName() << "\t" << CurrentGame.GetStudioName() << "\t" << CurrentGame.GetReleaseDate() << std::endl;
+			}
+		}
+
+	}
+	std::cin.ignore();
+	ActiveCommand = MenuCommand::MainMenu;
 }
 
 //-------------------------------------------------------------------------------------------
