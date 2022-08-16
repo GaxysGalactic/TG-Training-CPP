@@ -7,7 +7,7 @@ FCategory::FCategory()
 }
 
 //-------------------------------------------------------------------------------------------
-FCategory::FCategory(const std::string InName)
+FCategory::FCategory(const std::string& InName)
 {
     Name = InName;
     GameCount = 0;
@@ -37,7 +37,7 @@ int FCategory::GetGameCount() const
 }
 
 //-------------------------------------------------------------------------------------------
-bool FCategory::AddGame(const FGame Game)
+bool FCategory::AddGame(const FGame& Game)
 {
     if (!IsFull())
     {

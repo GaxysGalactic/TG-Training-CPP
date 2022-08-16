@@ -34,7 +34,7 @@ private:
 
 	int ChooseCategory() const;
 
-	FGame CreateGame();
+	void CreateGame(FGame& OutGame);
 
 	void ManageCategories();
 
@@ -44,12 +44,14 @@ private:
 
 	void BrowseGames();
 
-	int ValidateInt(int Input) const;
+	void RequestEnter() const;
 
-	int ValidateInt(int Input, const int LowerBound, const int UpperBound) const;
+	void ValidateInt(int& OutInteger) const;
+
+	void ValidateInt(int& OutInteger, const int LowerBound, const int UpperBound) const;
 
 	void ListCategories() const;
 
-	void DisplayCategory(const FCategory Category) const;
+	void DisplayCategory(const FCategory& Category) const;
 
 };

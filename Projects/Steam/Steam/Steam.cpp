@@ -58,7 +58,7 @@ void FSteam::MainMenu()
 	int Option;
 	std::cin >> Option;
 
-	Option = ValidateInt(Option, 1, 4);
+	ValidateInt(Option, 1, 4);
 
 	ActiveCommand = (EMenuCommand)Option;
 
@@ -73,7 +73,8 @@ void FSteam::AddGame()
 {
 	const int CategoryChosen = ChooseCategory();
 
-	const FGame NewGame = CreateGame();
+	FGame NewGame;
+	CreateGame(NewGame);
 
 	if (CategoryChosen == -1)
 	{
@@ -105,7 +106,7 @@ int FSteam::ChooseCategory() const
 	int AddToCategory;
 	std::cin >> AddToCategory;
 
-	AddToCategory = ValidateInt(AddToCategory, 0, 1);
+	ValidateInt(AddToCategory, 0, 1);
 
 	int CategoryChosen = -1;
 	if (AddToCategory == 1)
@@ -116,15 +117,15 @@ int FSteam::ChooseCategory() const
 		std::cout << "Please type the number of the category you would like to add to." << std::endl;
 		std::cin >> CategoryChosen;
 
-		CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
+		ValidateInt(CategoryChosen, 0, CategoryCount);
 	}
 	std::cin.clear();
-	std::cin.ignore(INT_MAX, '\n');
+	RequestEnter();
 	return CategoryChosen;
 }
 
 //-------------------------------------------------------------------------------------------
-FGame FSteam::CreateGame()
+void FSteam::CreateGame(FGame& OutGame)
 {
 	system("CLS");
 
@@ -142,23 +143,21 @@ FGame FSteam::CreateGame()
 	int GameYear;
 	std::cin >> GameYear;
 
-	GameYear = ValidateInt(GameYear, 1900, 2022);
+	ValidateInt(GameYear, 1900, 2022);
 
 	std::cout << "Release Date (Month): ";
 	int GameMonth;
 	std::cin >> GameMonth;
 
-	GameMonth = ValidateInt(GameMonth, 1, 12);
+	ValidateInt(GameMonth, 1, 12);
 
 	std::cout << "Release Date (Day): ";
 	int GameDay;
 	std::cin >> GameDay;
 
-	GameDay = ValidateInt(GameDay, 1, 31);
+	ValidateInt(GameDay, 1, 31);
 
-	FGame NewGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
-
-	return NewGame;
+	OutGame = FGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
 }
 
 //-------------------------------------------------------------------------------------------
@@ -174,7 +173,7 @@ void FSteam::ManageCategories()
 	int Option;
 	std::cin >> Option;
 
-	Option = ValidateInt(Option, 1, 2);
+	ValidateInt(Option, 1, 2);
 
 	if (Option == 1)
 	{
@@ -211,14 +210,12 @@ void FSteam::CreateCategory()
 	if (Categories.AddCategory(NewCategory))
 	{
 		std::cout << "Success! You have created the category " << CategoryName << "!" << std::endl;
-		std::cin.ignore();
 	}
 	else
 	{
 		std::cout << "Unfortunately, there was an error creating your category. The category list is full." << std::endl;
-		std::cin.ignore();
 	}
-
+	RequestEnter();
 }
 
 //-------------------------------------------------------------------------------------------
@@ -234,7 +231,7 @@ void FSteam::DeleteCategory()
 		int CategoryChosen;
 		std::cin >> CategoryChosen;
 
-		CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
+		ValidateInt(CategoryChosen, 0, CategoryCount);
 
 		if (Categories.DeleteCategory(CategoryChosen))
 		{
@@ -261,40 +258,45 @@ void FSteam::BrowseGames()
 	system("CLS");
 	for (int i = 0; i < Categories.GetCategoryCount(); i++)
 	{
-		DisplayCategory(Categories.GetCategory(i));
-
+		FCategory CurrentCategory;
+		Categories.GetCategory(i, CurrentCategory);
+		DisplayCategory(CurrentCategory);
 	}
 	DisplayCategory(Uncategorized);
-	std::cin.ignore();
+	RequestEnter();
 	ActiveCommand = EMenuCommand::MainMenu;
 }
 
 //-------------------------------------------------------------------------------------------
 //									UTILITY FUNCTIONS
 //-------------------------------------------------------------------------------------------
-int FSteam::ValidateInt(int Input) const
+void FSteam::RequestEnter() const
+{
+	std::cin.ignore(INT_MAX, '\n');
+}
+
+//-------------------------------------------------------------------------------------------
+void FSteam::ValidateInt(int& OutInteger) const
 {
 	while (std::cin.fail())
 	{
 		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
+		RequestEnter();
 		std::cout << "That is not a valid integer. Please try again." << std::endl;
-		std::cin >> Input;
+		std::cin >> OutInteger;
 	}
-	return Input;
 }
 
 //-------------------------------------------------------------------------------------------
-int FSteam::ValidateInt(int Input, const int LowerBound, const int UpperBound) const
+void FSteam::ValidateInt(int& OutInteger, const int LowerBound, const int UpperBound) const
 {
-	while (std::cin.fail() || Input < LowerBound || Input > UpperBound)
+	while (std::cin.fail() || OutInteger < LowerBound || OutInteger > UpperBound)
 	{
 		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
+		RequestEnter();
 		std::cout << "That is not a valid integer or within the intended range. Please try again." << std::endl;
-		std::cin >> Input;
+		std::cin >> OutInteger;
 	}
-	return Input;
 }
 
 //-------------------------------------------------------------------------------------------
@@ -303,12 +305,14 @@ void FSteam::ListCategories() const
 	std::cout << "Here's a list of the available categories:" << std::endl;
 	for (int i = 0; i < Categories.GetCategoryCount(); i++)
 	{
-		std::cout << i << " - " << Categories.GetCategory(i).GetName() << std::endl;
+		FCategory CurrentCategory;
+		Categories.GetCategory(i, CurrentCategory);
+		std::cout << i << " - " << CurrentCategory.GetName() << std::endl;
 	}
 }
 
 //-------------------------------------------------------------------------------------------
-void FSteam::DisplayCategory(const FCategory Category) const
+void FSteam::DisplayCategory(const FCategory& Category) const
 {
 	std::cout << "---------------------------------------------------------" << std::endl;
 	std::cout << "                      " << Category.GetName() << std::endl;
@@ -325,7 +329,8 @@ void FSteam::DisplayCategory(const FCategory Category) const
 	{
 		for (int i = 0; i < Category.GetGameCount(); i++)
 		{
-			FGame CurrentGame = Category.GetGame(i);
+			FGame CurrentGame;
+			Category.GetGame(i, CurrentGame);
 			std::cout << CurrentGame.GetName() << "\t" << CurrentGame.GetStudioName() << "\t" << CurrentGame.GetReleaseDate() << std::endl;
 		}
 	}

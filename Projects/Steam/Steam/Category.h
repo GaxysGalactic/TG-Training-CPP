@@ -23,7 +23,7 @@ public:
 
 	int GetGameCount() const;
 
-	bool AddGame(const FGame Game);
+	bool AddGame(const FGame& Game);
 
 	bool IsFull() const;
 };
