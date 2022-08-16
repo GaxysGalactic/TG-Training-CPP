@@ -4,35 +4,35 @@
 //-------------------------------------------------------------------------------------------
 //										CONSTRUCTOR
 //-------------------------------------------------------------------------------------------
-Steam::Steam()
+FSteam::FSteam()
 {
 	Uncategorized = FCategory("Uncategorized");
-	ActiveCommand = MenuCommand::MainMenu;
+	ActiveCommand = EMenuCommand::MainMenu;
 }
 
 //-------------------------------------------------------------------------------------------
 //										RUNNING APP
 //-------------------------------------------------------------------------------------------
-void Steam::RunApp()
+void FSteam::RunApp()
 {
 	std::cout << "Welcome to Steam!" << std::endl;
-	while (ActiveCommand != MenuCommand::Exit)
+	while (ActiveCommand != EMenuCommand::Exit)
 	{
 		switch (ActiveCommand)
 		{
-			case MenuCommand::MainMenu:
+			case EMenuCommand::MainMenu:
 				MainMenu();
 				break;
 
-			case MenuCommand::AddGame:
+			case EMenuCommand::AddGame:
 				AddGame();
 				break;
 
-			case MenuCommand::ManageCategories:
+			case EMenuCommand::ManageCategories:
 				ManageCategories();
 				break;
 
-			case MenuCommand::BrowseGames:
+			case EMenuCommand::BrowseGames:
 				BrowseGames();
 				break;
 		}
@@ -45,45 +45,35 @@ void Steam::RunApp()
 //-------------------------------------------------------------------------------------------
 //										MAIN MENU
 //-------------------------------------------------------------------------------------------
-void Steam::MainMenu()
+void FSteam::MainMenu()
 {
-	do
-	{
-		system("CLS");
+	system("CLS");
 
-		std::cout << "Welcome to Steam! What would you like to do?" << std::endl;
-		std::cout << "1 - Add Game" << std::endl;
-		std::cout << "2 - Manage Categories" << std::endl;
-		std::cout << "3 - Browse Games" << std::endl;
-		std::cout << "4 - Exit" << std::endl;
+	std::cout << "Welcome to Steam! What would you like to do?" << std::endl;
+	std::cout << "1 - Add Game" << std::endl;
+	std::cout << "2 - Manage Categories" << std::endl;
+	std::cout << "3 - Browse Games" << std::endl;
+	std::cout << "4 - Exit" << std::endl;
 
-		int Option;
-		std::cin >> Option;
+	int Option;
+	std::cin >> Option;
 
-		while (!std::cin.good() || Option < 1 || Option > 4)
-		{
-			std::cin.clear();
-			std::cin.ignore(INT_MAX, '\n');
-			std::cout << "INVALID INPUT. Please try again." << std::endl;
-			std::cin >> Option;
-		}
+	Option = ValidateInt(Option, 1, 4);
 
-		ActiveCommand = (MenuCommand)Option;
+	ActiveCommand = (EMenuCommand)Option;
 
-		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
-
-	} while (!std::cin.good());
+	std::cin.clear();
+	std::cin.ignore(INT_MAX, '\n');
 }
 
 //-------------------------------------------------------------------------------------------
 //										ADDING A GAME
 //-------------------------------------------------------------------------------------------
-void Steam::AddGame()
+void FSteam::AddGame()
 {
-	int CategoryChosen = ChooseCategory();
+	const int CategoryChosen = ChooseCategory();
 
-	FGame NewGame = CreateGame();
+	const FGame NewGame = CreateGame();
 
 	if (CategoryChosen == -1)
 	{
@@ -94,44 +84,47 @@ void Steam::AddGame()
 		Categories.AddGameToCategory(CategoryChosen, NewGame);
 	}
 
-	ActiveCommand = MenuCommand::MainMenu;
+	ActiveCommand = EMenuCommand::MainMenu;
 }
 
 //-------------------------------------------------------------------------------------------
-int Steam::ChooseCategory()
+int FSteam::ChooseCategory() const
 {
 	system("CLS");
 
-	int CategoryChosen = -1;
-	int CategoryCount = Categories.GetCategoryCount();
-	if (CategoryCount != 0)
+	
+	const int CategoryCount = Categories.GetCategoryCount();
+	if (CategoryCount == 0)
 	{
-		std::cout << "There's categories available for you to add games to. Would you like to add it to a category?" << std::endl;
-		std::cout << "0 - No" << std::endl;
-		std::cout << "1 - Yes" << std::endl;
-		int AddToCategory;
-		std::cin >> AddToCategory;
-
-		AddToCategory = ValidateInt(AddToCategory, 0, 1);
-
-		if (AddToCategory == 1)
-		{
-			
-			ListCategories();
-
-			std::cout << "Please type the number of the category you would like to add to." << std::endl;
-			std::cin >> CategoryChosen;
-
-			CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
-		}
-		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
+		return -1;
 	}
+
+	std::cout << "There's categories available for you to add games to. Would you like to add it to a category?" << std::endl;
+	std::cout << "0 - No" << std::endl;
+	std::cout << "1 - Yes" << std::endl;
+	int AddToCategory;
+	std::cin >> AddToCategory;
+
+	AddToCategory = ValidateInt(AddToCategory, 0, 1);
+
+	int CategoryChosen = -1;
+	if (AddToCategory == 1)
+	{
+			
+		ListCategories();
+
+		std::cout << "Please type the number of the category you would like to add to." << std::endl;
+		std::cin >> CategoryChosen;
+
+		CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
+	}
+	std::cin.clear();
+	std::cin.ignore(INT_MAX, '\n');
 	return CategoryChosen;
 }
 
 //-------------------------------------------------------------------------------------------
-FGame Steam::CreateGame()
+FGame FSteam::CreateGame()
 {
 	system("CLS");
 
@@ -171,7 +164,7 @@ FGame Steam::CreateGame()
 //-------------------------------------------------------------------------------------------
 //									MANAGING CATEGORIES
 //-------------------------------------------------------------------------------------------
-void Steam::ManageCategories()
+void FSteam::ManageCategories()
 {
 	system("CLS");
 
@@ -192,11 +185,11 @@ void Steam::ManageCategories()
 		DeleteCategory();
 	}
 
-	ActiveCommand = MenuCommand::MainMenu;
+	ActiveCommand = EMenuCommand::MainMenu;
 }
 
 //-------------------------------------------------------------------------------------------
-void Steam::CreateCategory()
+void FSteam::CreateCategory()
 {
 	system("CLS");
 	std::cin.clear();
@@ -204,7 +197,10 @@ void Steam::CreateCategory()
 
 	std::cout << "Please write the name of the category you would like to create: ";
 	std::string CategoryName;
-	if (std::cin.peek() == '\n') return;
+	if (std::cin.peek() == '\n')
+	{
+		return;
+	}
 	std::cin >> CategoryName;
 
 	FCategory NewCategory(CategoryName);
@@ -226,11 +222,11 @@ void Steam::CreateCategory()
 }
 
 //-------------------------------------------------------------------------------------------
-void Steam::DeleteCategory()
+void FSteam::DeleteCategory()
 {
 	system("CLS");
 
-	int CategoryCount = Categories.GetCategoryCount();
+	const int CategoryCount = Categories.GetCategoryCount();
 	if (CategoryCount != 0)
 	{
 		ListCategories();
@@ -243,73 +239,42 @@ void Steam::DeleteCategory()
 		if (Categories.DeleteCategory(CategoryChosen))
 		{
 			std::cout << "Success! That category has been deleted." << std::endl;
-			std::cin.ignore();
-			std::cin.ignore();
 		}
 		else
 		{
 			std::cout << "There was an error deleting your category." << std::endl;
-			std::cin.ignore();
-			std::cin.ignore();
 		}
 	}
 	else
 	{
 		std::cout << "Unfortunately, there are no categories available for you to delete." << std::endl;
-		std::cin.ignore();
-		std::cin.ignore();
 	}
+	std::cin.ignore();
+	std::cin.ignore();
 }
 
 //-------------------------------------------------------------------------------------------
 //									BROWSING GAMES
 //-------------------------------------------------------------------------------------------
-void Steam::BrowseGames()
+void FSteam::BrowseGames()
 {
 	system("CLS");
-	for (int i = 0; i < Categories.GetCategoryCount() + 1; i++)
+	for (int i = 0; i < Categories.GetCategoryCount(); i++)
 	{
-		FCategory CurrentCategory;
-		if (i < Categories.GetCategoryCount())
-		{
-			CurrentCategory = Categories.GetCategory(i);
-		}
-		else
-		{
-			CurrentCategory = Uncategorized;
-		}
-
-		std::cout << "---------------------------------------------------------" << std::endl;
-		std::cout << "                      " << CurrentCategory.GetName() << std::endl;
-		std::cout << "---------------------------------------------------------" << std::endl;
-
-
-		std::cout << "NAME\t\tSTUDIO\t\tRELEASE DATE" << std::endl;
-
-		if (CurrentCategory.GetGameCount() == 0)
-		{
-			std::cout << "There are no games for this category.. :c" << std::endl;
-		}
-		else
-		{
-			for (int j = 0; j < CurrentCategory.GetGameCount(); j++)
-			{
-				FGame CurrentGame = CurrentCategory.GetGame(j);
-				std::cout << CurrentGame.GetName() << "\t" << CurrentGame.GetStudioName() << "\t" << CurrentGame.GetReleaseDate() << std::endl;
-			}
-		}
+		DisplayCategory(Categories.GetCategory(i));
 
 	}
+	DisplayCategory(Uncategorized);
 	std::cin.ignore();
-	ActiveCommand = MenuCommand::MainMenu;
+	ActiveCommand = EMenuCommand::MainMenu;
 }
 
 //-------------------------------------------------------------------------------------------
 //									UTILITY FUNCTIONS
 //-------------------------------------------------------------------------------------------
-int Steam::ValidateInt(int Input)
+int FSteam::ValidateInt(int Input) const
 {
-	while (!std::cin.good())
+	while (std::cin.fail())
 	{
 		std::cin.clear();
 		std::cin.ignore(INT_MAX, '\n');
@@ -320,9 +285,9 @@ int Steam::ValidateInt(int Input)
 }
 
 //-------------------------------------------------------------------------------------------
-int Steam::ValidateInt(int Input, int LowerBound, int UpperBound)
+int FSteam::ValidateInt(int Input, const int LowerBound, const int UpperBound) const
 {
-	while (!std::cin.good() || Input < LowerBound || Input > UpperBound)
+	while (std::cin.fail() || Input < LowerBound || Input > UpperBound)
 	{
 		std::cin.clear();
 		std::cin.ignore(INT_MAX, '\n');
@@ -333,11 +298,35 @@ int Steam::ValidateInt(int Input, int LowerBound, int UpperBound)
 }
 
 //-------------------------------------------------------------------------------------------
-void Steam::ListCategories()
+void FSteam::ListCategories() const
 {
 	std::cout << "Here's a list of the available categories:" << std::endl;
 	for (int i = 0; i < Categories.GetCategoryCount(); i++)
 	{
 		std::cout << i << " - " << Categories.GetCategory(i).GetName() << std::endl;
+	}
+}
+
+//-------------------------------------------------------------------------------------------
+void FSteam::DisplayCategory(const FCategory Category) const
+{
+	std::cout << "---------------------------------------------------------" << std::endl;
+	std::cout << "                      " << Category.GetName() << std::endl;
+	std::cout << "---------------------------------------------------------" << std::endl;
+
+
+	std::cout << "NAME\t\tSTUDIO\t\tRELEASE DATE" << std::endl;
+
+	if (Category.GetGameCount() == 0)
+	{
+		std::cout << "There are no games for this category.. :c" << std::endl;
+	}
+	else
+	{
+		for (int i = 0; i < Category.GetGameCount(); i++)
+		{
+			FGame CurrentGame = Category.GetGame(i);
+			std::cout << CurrentGame.GetName() << "\t" << CurrentGame.GetStudioName() << "\t" << CurrentGame.GetReleaseDate() << std::endl;
+		}
 	}
 }

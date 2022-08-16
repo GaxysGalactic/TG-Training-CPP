@@ -3,14 +3,13 @@
 //-------------------------------------------------------------------------------------------
 FCategory::FCategory()
 {
-    Name = "";
     GameCount = 0;
 }
 
 //-------------------------------------------------------------------------------------------
-FCategory::FCategory(std::string pName)
+FCategory::FCategory(const std::string InName)
 {
-    Name = pName;
+    Name = InName;
     GameCount = 0;
 }
 
@@ -20,18 +19,20 @@ std::string FCategory::GetName() const
     return Name;
 }
 
-FGame FCategory::GetGame(int Index) const
+//-------------------------------------------------------------------------------------------
+FGame FCategory::GetGame(const int Index) const
 {
     return Games[Index];
 }
 
+//-------------------------------------------------------------------------------------------
 int FCategory::GetGameCount() const
 {
     return GameCount;
 }
 
 //-------------------------------------------------------------------------------------------
-bool FCategory::AddGame(FGame Game)
+bool FCategory::AddGame(const FGame Game)
 {
     if (!IsFull())
     {

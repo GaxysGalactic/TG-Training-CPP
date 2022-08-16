@@ -2,14 +2,14 @@
 
 #include "CategoryContainer.h"
 
-class Steam
+class FSteam
 {
 private:
 	
 	FCategoryContainer Categories;
 	FCategory Uncategorized;
 
-	enum class MenuCommand
+	enum class EMenuCommand
 	{
 		MainMenu,
 		AddGame,
@@ -18,11 +18,11 @@ private:
 		Exit
 	};
 
-	MenuCommand ActiveCommand;
+	EMenuCommand ActiveCommand;
 
 public:
 
-	Steam();
+	FSteam();
 
 	void RunApp();
 
@@ -32,7 +32,7 @@ private:
 
 	void AddGame();
 
-	int ChooseCategory();
+	int ChooseCategory() const;
 
 	FGame CreateGame();
 
@@ -44,10 +44,12 @@ private:
 
 	void BrowseGames();
 
-	int ValidateInt(int Input);
+	int ValidateInt(int Input) const;
 
-	int ValidateInt(int Input, int LowerBound, int UpperBound);
+	int ValidateInt(int Input, const int LowerBound, const int UpperBound) const;
 
-	void ListCategories();
+	void ListCategories() const;
+
+	void DisplayCategory(const FCategory Category) const;
 
 };

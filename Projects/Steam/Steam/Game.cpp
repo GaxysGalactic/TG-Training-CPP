@@ -3,21 +3,19 @@
 //-------------------------------------------------------------------------------------------
 FGame::FGame()
 {
-	Name = "";
-	StudioName = "";
 	Year = 0;
 	Month = 0;
 	Day = 0;
 }
 
 //-------------------------------------------------------------------------------------------
-FGame::FGame(std::string pName, std::string pStudioName, int pYear, int pMonth, int pDay)
+FGame::FGame(const std::string InName, const std::string InStudioName, const int InYear, const int InMonth, const int InDay)
 {
-	Name = pName;
-	StudioName = pStudioName;
-	Year = pYear;
-	Month = pMonth;
-	Day = pDay;
+	Name = InName;
+	StudioName = InStudioName;
+	Year = InYear;
+	Month = InMonth;
+	Day = InDay;
 }
 
 //-------------------------------------------------------------------------------------------
@@ -35,7 +33,7 @@ std::string FGame::GetStudioName() const
 //-------------------------------------------------------------------------------------------
 std::string FGame::GetReleaseDate() const
 {
-	std::string formattedDate = "";
+	std::string formattedDate;
 	formattedDate += std::to_string(Year);
 	formattedDate += "/";
 	formattedDate += std::to_string(Month);
@@ -48,13 +46,5 @@ std::string FGame::GetReleaseDate() const
 //-------------------------------------------------------------------------------------------
 bool FGame::IsValid() const
 {
-	if (Year < 1972 || Month <= 0 || Month > 12 || Day <= 0 || Day > 31)
-	{
-		return false;
-	}
-
-	else
-	{
-		return true;
-	}
+	return Year >= 1972 && Month > 0 && Month <= 12 && Day > 0 && Day <= 31;
 }

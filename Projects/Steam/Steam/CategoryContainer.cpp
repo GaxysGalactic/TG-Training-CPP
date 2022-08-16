@@ -7,23 +7,23 @@ FCategoryContainer::FCategoryContainer()
 }
 
 //-------------------------------------------------------------------------------------------
-int FCategoryContainer::GetCategoryCount()
+int FCategoryContainer::GetCategoryCount() const
 {
 	return CategoryCount;
 }
 
 //-------------------------------------------------------------------------------------------
-FCategory FCategoryContainer::GetCategory(int index) const
+FCategory FCategoryContainer::GetCategory(const int Index) const
 {
-	return Categories[index];
+	return Categories[Index];
 }
 
 //-------------------------------------------------------------------------------------------
-bool FCategoryContainer::AddCategory(FCategory pCategory)
+bool FCategoryContainer::AddCategory(const FCategory InCategory)
 {
 	if (CategoryCount < MaxCategoryCount)
 	{
-		Categories[CategoryCount] = pCategory;
+		Categories[CategoryCount] = InCategory;
 		CategoryCount++;
 		return true;
 	}
@@ -31,14 +31,15 @@ bool FCategoryContainer::AddCategory(FCategory pCategory)
 }
 
 //-------------------------------------------------------------------------------------------
-bool FCategoryContainer::DeleteCategory(int Index)
+bool FCategoryContainer::DeleteCategory(const int Index)
 {
 	if (Index < CategoryCount)
 	{
 		//Cascade the categories into their new positions. This should end up deleting the indexed one as well.
-		for (; Index < CategoryCount && Index < MaxCategoryCount - 1; Index++)
+		int i;
+		for (i = 0; i < CategoryCount - 1; i++)
 		{
-			Categories[Index] = Categories[Index + 1];
+			Categories[i] = Categories[i + 1];
 		}
 		CategoryCount--;
 		return true;
@@ -46,7 +47,7 @@ bool FCategoryContainer::DeleteCategory(int Index)
 	return false;
 }
 
-bool FCategoryContainer::AddGameToCategory(int Index, FGame Game)
+bool FCategoryContainer::AddGameToCategory(const int Index, const FGame Game)
 {
 	return Categories[Index].AddGame(Game);
 }

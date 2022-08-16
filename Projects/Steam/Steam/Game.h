@@ -18,7 +18,7 @@ public:
 
 	FGame();
 
-	FGame(std::string pName, std::string pStudioName, int pYear, int pMonth, int pDay);
+	FGame(const std::string InName, const std::string InStudioName, const int InYear, const int InMonth, const int InDay);
 
 	std::string GetName() const;
 
