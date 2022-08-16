@@ -20,9 +20,14 @@ std::string FCategory::GetName() const
 }
 
 //-------------------------------------------------------------------------------------------
-FGame FCategory::GetGame(const int Index) const
+bool FCategory::GetGame(const int Index, FGame& OutGame) const
 {
-    return Games[Index];
+    if (Index < 0 || Index > GameCount)
+    {
+        return false;
+    }
+    OutGame = Games[Index];
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------
