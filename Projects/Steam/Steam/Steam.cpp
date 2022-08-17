@@ -73,8 +73,7 @@ void FSteam::AddGame()
 {
 	const int CategoryChosen = ChooseCategory();
 
-	FGame NewGame;
-	CreateGame(NewGame);
+	FGame NewGame = CreateGame();
 
 	if (CategoryChosen == -1)
 	{
@@ -125,7 +124,7 @@ int FSteam::ChooseCategory() const
 }
 
 //-------------------------------------------------------------------------------------------
-void FSteam::CreateGame(FGame& OutGame)
+FGame FSteam::CreateGame()
 {
 	system("CLS");
 
@@ -157,7 +156,7 @@ void FSteam::CreateGame(FGame& OutGame)
 
 	ValidateInt(GameDay, 1, 31);
 
-	OutGame = FGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
+	return FGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
 }
 
 //-------------------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ private:
 
 	int ChooseCategory() const;
 
-	void CreateGame(FGame& OutGame);
+	FGame CreateGame();
 
 	void ManageCategories();
 
