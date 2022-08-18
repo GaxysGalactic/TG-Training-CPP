@@ -28,7 +28,7 @@ FCategory::~FCategory()
 }
 
 //-------------------------------------------------------------------------------------------
-std::string FCategory::GetName() const
+const std::string& FCategory::GetName() const
 {
     return Name;
 }

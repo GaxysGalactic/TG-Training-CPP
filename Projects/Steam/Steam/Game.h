@@ -24,9 +24,9 @@ public:
 
 	~FGame();
 
-	std::string GetName() const;
+	const std::string& GetName() const;
 
-	std::string GetStudioName() const;
+	const std::string& GetStudioName() const;
 
 	std::string GetReleaseDate() const;
 

@@ -34,13 +34,13 @@ FGame::~FGame()
 }
 
 //-------------------------------------------------------------------------------------------
-std::string FGame::GetName() const
+const std::string& FGame::GetName() const
 {
 	return Name;
 }
 
 //-------------------------------------------------------------------------------------------
-std::string FGame::GetStudioName() const
+const std::string& FGame::GetStudioName() const
 {
 	return StudioName;
 }

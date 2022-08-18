@@ -21,7 +21,7 @@ public:
 
 	~FCategory();
 
-	std::string GetName() const;
+	const std::string& GetName() const;
 
 	bool GetGame(const int Index, FGame& OutGame) const;
 
