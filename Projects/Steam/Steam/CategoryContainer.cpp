@@ -10,7 +10,7 @@ FCategoryContainer::FCategoryContainer()
 FCategoryContainer::FCategoryContainer(const FCategoryContainer& OldCategoryContainer)
 {
 	CategoryCount = 0;
-	Categories = OldCategoryContainer.Categories;
+	memcpy_s(Categories, sizeof(Categories), OldCategoryContainer.Categories, sizeof(OldCategoryContainer.Categories));
 	CategoryCount = OldCategoryContainer.CategoryCount;
 }
 

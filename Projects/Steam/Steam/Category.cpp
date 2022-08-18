@@ -11,7 +11,7 @@ FCategory::FCategory(const FCategory& OldCategory)
 {
     GameCount = 0;
     Name = OldCategory.Name;
-    Games = OldCategory.Games;
+    memcpy_s(Games, sizeof(Games), OldCategory.Games, sizeof(OldCategory.Games));
     GameCount = OldCategory.GameCount;
 }
 

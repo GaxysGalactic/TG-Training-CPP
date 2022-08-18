@@ -13,7 +13,7 @@ FSteam::FSteam()
 //-------------------------------------------------------------------------------------------
 FSteam::FSteam(const FSteam& OldSteam)
 {
-	ActiveCommand = MainMenu;
+	ActiveCommand = EMenuCommand::MainMenu;
 	Categories = OldSteam.Categories;
 	Uncategorized = OldSteam.Uncategorized;
 	ActiveCommand = OldSteam.ActiveCommand;
