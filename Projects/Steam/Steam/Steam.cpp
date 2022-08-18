@@ -2,12 +2,27 @@
 #include <string>
 
 //-------------------------------------------------------------------------------------------
-//										CONSTRUCTOR
+//								CONSTRUCTORS & DESTRUCTORS
 //-------------------------------------------------------------------------------------------
 FSteam::FSteam()
 {
 	Uncategorized = FCategory("Uncategorized");
 	ActiveCommand = EMenuCommand::MainMenu;
+}
+
+//-------------------------------------------------------------------------------------------
+FSteam::FSteam(const FSteam& OldSteam)
+{
+	ActiveCommand = MainMenu;
+	Categories = OldSteam.Categories;
+	Uncategorized = OldSteam.Uncategorized;
+	ActiveCommand = OldSteam.ActiveCommand;
+}
+
+//-------------------------------------------------------------------------------------------
+FSteam::~FSteam()
+{
+
 }
 
 //-------------------------------------------------------------------------------------------

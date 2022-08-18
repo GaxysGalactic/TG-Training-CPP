@@ -15,7 +15,11 @@ public:
 
 	FCategory();
 
+	FCategory(const FCategory& OldCategory);
+
 	FCategory(const std::string& InName);
+
+	~FCategory();
 
 	std::string GetName() const;
 

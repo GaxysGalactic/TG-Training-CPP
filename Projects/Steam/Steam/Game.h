@@ -17,8 +17,12 @@ private:
 public:
 
 	FGame();
+	
+	FGame(const FGame& oldGame);
 
 	FGame(const std::string& InName, const std::string& InStudioName, const int InYear, const int InMonth, const int InDay);
+
+	~FGame();
 
 	std::string GetName() const;
 

@@ -7,6 +7,19 @@ FCategoryContainer::FCategoryContainer()
 }
 
 //-------------------------------------------------------------------------------------------
+FCategoryContainer::FCategoryContainer(const FCategoryContainer& OldCategoryContainer)
+{
+	CategoryCount = 0;
+	Categories = OldCategoryContainer.Categories;
+	CategoryCount = OldCategoryContainer.CategoryCount;
+}
+
+//-------------------------------------------------------------------------------------------
+FCategoryContainer::~FCategoryContainer()
+{
+}
+
+//-------------------------------------------------------------------------------------------
 int FCategoryContainer::GetCategoryCount() const
 {
 	return CategoryCount;

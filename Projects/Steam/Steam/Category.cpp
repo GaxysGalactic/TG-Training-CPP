@@ -7,10 +7,24 @@ FCategory::FCategory()
 }
 
 //-------------------------------------------------------------------------------------------
+FCategory::FCategory(const FCategory& OldCategory)
+{
+    GameCount = 0;
+    Name = OldCategory.Name;
+    Games = OldCategory.Games;
+    GameCount = OldCategory.GameCount;
+}
+
+//-------------------------------------------------------------------------------------------
 FCategory::FCategory(const std::string& InName)
 {
     Name = InName;
     GameCount = 0;
+}
+
+FCategory::~FCategory()
+{
+
 }
 
 //-------------------------------------------------------------------------------------------

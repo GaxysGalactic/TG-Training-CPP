@@ -14,6 +14,10 @@ public:
 
 	FCategoryContainer();
 
+	FCategoryContainer(const FCategoryContainer& OldCategoryContainer);
+
+	~FCategoryContainer();
+
 	int GetCategoryCount() const;
 
 	bool GetCategory(const int Index, FCategory& OutCategory) const;

@@ -24,6 +24,10 @@ public:
 
 	FSteam();
 
+	FSteam(const FSteam& OldSteam);
+
+	~FSteam();
+
 	void RunApp();
 
 private:
