@@ -15,7 +15,7 @@ public:
 
 	FCategory();
 
-	FCategory(const FCategory& OldCategory);
+	FCategory(const FCategory& OtherCategory);
 
 	FCategory(const std::string& InName);
 

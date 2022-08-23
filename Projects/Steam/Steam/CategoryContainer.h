@@ -14,7 +14,7 @@ public:
 
 	FCategoryContainer();
 
-	FCategoryContainer(const FCategoryContainer& OldCategoryContainer);
+	FCategoryContainer(const FCategoryContainer& OtherCategoryContainer);
 
 	~FCategoryContainer();
 

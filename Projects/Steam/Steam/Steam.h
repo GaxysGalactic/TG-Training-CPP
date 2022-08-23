@@ -24,7 +24,7 @@ public:
 
 	FSteam();
 
-	FSteam(const FSteam& OldSteam);
+	FSteam(const FSteam& OtherSteam);
 
 	~FSteam();
 
@@ -50,9 +50,11 @@ private:
 
 	void RequestEnter() const;
 
-	void ValidateInt(int& OutInteger) const;
+	int GetValidIntInput() const;
 
-	void ValidateInt(int& OutInteger, const int LowerBound, const int UpperBound) const;
+	int GetValidIntInput(const int LowerBound, const int UpperBound) const;
+
+	int GetValidDayInput(const int Month);
 
 	void ListCategories() const;
 

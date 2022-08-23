@@ -9,13 +9,13 @@ FGame::FGame()
 }
 
 //-------------------------------------------------------------------------------------------
-FGame::FGame(const FGame& oldGame)
+FGame::FGame(const FGame& OtherGame)
 {
-	Name = oldGame.Name;
-	StudioName = oldGame.StudioName;
-	Year = oldGame.Year;
-	Month = oldGame.Month;
-	Day = oldGame.Day;
+	Name = OtherGame.Name;
+	StudioName = OtherGame.StudioName;
+	Year = OtherGame.Year;
+	Month = OtherGame.Month;
+	Day = OtherGame.Day;
 }
 
 //-------------------------------------------------------------------------------------------

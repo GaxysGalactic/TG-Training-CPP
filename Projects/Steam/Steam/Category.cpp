@@ -7,12 +7,12 @@ FCategory::FCategory()
 }
 
 //-------------------------------------------------------------------------------------------
-FCategory::FCategory(const FCategory& OldCategory)
+FCategory::FCategory(const FCategory& OtherCategory)
 {
     GameCount = 0;
-    Name = OldCategory.Name;
-    memcpy_s(Games, sizeof(Games), OldCategory.Games, sizeof(OldCategory.Games));
-    GameCount = OldCategory.GameCount;
+    Name = OtherCategory.Name;
+    memcpy_s(Games, sizeof(Games), OtherCategory.Games, sizeof(OtherCategory.Games));
+    GameCount = OtherCategory.GameCount;
 }
 
 //-------------------------------------------------------------------------------------------

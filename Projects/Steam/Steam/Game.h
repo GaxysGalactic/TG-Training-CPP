@@ -18,7 +18,7 @@ public:
 
 	FGame();
 	
-	FGame(const FGame& oldGame);
+	FGame(const FGame& OtherGame);
 
 	FGame(const std::string& InName, const std::string& InStudioName, const int InYear, const int InMonth, const int InDay);
 

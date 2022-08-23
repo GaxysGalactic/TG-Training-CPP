@@ -7,11 +7,11 @@ FCategoryContainer::FCategoryContainer()
 }
 
 //-------------------------------------------------------------------------------------------
-FCategoryContainer::FCategoryContainer(const FCategoryContainer& OldCategoryContainer)
+FCategoryContainer::FCategoryContainer(const FCategoryContainer& OtherCategoryContainer)
 {
 	CategoryCount = 0;
-	memcpy_s(Categories, sizeof(Categories), OldCategoryContainer.Categories, sizeof(OldCategoryContainer.Categories));
-	CategoryCount = OldCategoryContainer.CategoryCount;
+	memcpy_s(Categories, sizeof(Categories), OtherCategoryContainer.Categories, sizeof(OtherCategoryContainer.Categories));
+	CategoryCount = OtherCategoryContainer.CategoryCount;
 }
 
 //-------------------------------------------------------------------------------------------
