@@ -7,22 +7,41 @@ FCategory::FCategory()
 }
 
 //-------------------------------------------------------------------------------------------
-FCategory::FCategory(const std::string InName)
+FCategory::FCategory(const FCategory& OtherCategory)
+{
+    GameCount = 0;
+    Name = OtherCategory.Name;
+    memcpy_s(Games, sizeof(Games), OtherCategory.Games, sizeof(OtherCategory.Games));
+    GameCount = OtherCategory.GameCount;
+}
+
+//-------------------------------------------------------------------------------------------
+FCategory::FCategory(const std::string& InName)
 {
     Name = InName;
     GameCount = 0;
 }
 
+FCategory::~FCategory()
+{
+
+}
+
 //-------------------------------------------------------------------------------------------
-std::string FCategory::GetName() const
+const std::string& FCategory::GetName() const
 {
     return Name;
 }
 
 //-------------------------------------------------------------------------------------------
-FGame FCategory::GetGame(const int Index) const
+bool FCategory::GetGame(const int Index, FGame& OutGame) const
 {
-    return Games[Index];
+    if (Index < 0 || Index > GameCount)
+    {
+        return false;
+    }
+    OutGame = Games[Index];
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------
@@ -32,7 +51,7 @@ int FCategory::GetGameCount() const
 }
 
 //-------------------------------------------------------------------------------------------
-bool FCategory::AddGame(const FGame Game)
+bool FCategory::AddGame(const FGame& Game)
 {
     if (!IsFull())
     {

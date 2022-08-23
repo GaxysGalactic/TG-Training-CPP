@@ -24,6 +24,10 @@ public:
 
 	FSteam();
 
+	FSteam(const FSteam& OtherSteam);
+
+	~FSteam();
+
 	void RunApp();
 
 private:
@@ -44,12 +48,16 @@ private:
 
 	void BrowseGames();
 
-	int ValidateInt(int Input) const;
+	void RequestEnter() const;
 
-	int ValidateInt(int Input, const int LowerBound, const int UpperBound) const;
+	int GetValidIntInput() const;
+
+	int GetValidIntInput(const int LowerBound, const int UpperBound) const;
+
+	int GetValidDayInput(const int Month);
 
 	void ListCategories() const;
 
-	void DisplayCategory(const FCategory Category) const;
+	void DisplayCategory(const FCategory& Category) const;
 
 };

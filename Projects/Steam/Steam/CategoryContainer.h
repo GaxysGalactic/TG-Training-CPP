@@ -14,13 +14,17 @@ public:
 
 	FCategoryContainer();
 
+	FCategoryContainer(const FCategoryContainer& OtherCategoryContainer);
+
+	~FCategoryContainer();
+
 	int GetCategoryCount() const;
 
-	FCategory GetCategory(const int Index) const;
+	bool GetCategory(const int Index, FCategory& OutCategory) const;
 
-	bool AddCategory(const FCategory InCategory);
+	bool AddCategory(const FCategory& InCategory);
 
 	bool DeleteCategory(const int Index);
 
-	bool AddGameToCategory(const int Index, const FGame Game);
+	bool AddGameToCategory(const int Index, const FGame& Game);
 };

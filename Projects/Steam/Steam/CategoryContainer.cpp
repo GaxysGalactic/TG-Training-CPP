@@ -7,19 +7,37 @@ FCategoryContainer::FCategoryContainer()
 }
 
 //-------------------------------------------------------------------------------------------
+FCategoryContainer::FCategoryContainer(const FCategoryContainer& OtherCategoryContainer)
+{
+	CategoryCount = 0;
+	memcpy_s(Categories, sizeof(Categories), OtherCategoryContainer.Categories, sizeof(OtherCategoryContainer.Categories));
+	CategoryCount = OtherCategoryContainer.CategoryCount;
+}
+
+//-------------------------------------------------------------------------------------------
+FCategoryContainer::~FCategoryContainer()
+{
+}
+
+//-------------------------------------------------------------------------------------------
 int FCategoryContainer::GetCategoryCount() const
 {
 	return CategoryCount;
 }
 
 //-------------------------------------------------------------------------------------------
-FCategory FCategoryContainer::GetCategory(const int Index) const
+bool FCategoryContainer::GetCategory(const int Index, FCategory& OutCategory) const
 {
-	return Categories[Index];
+	if (Index < 0 || Index > CategoryCount)
+	{
+		return false;
+	}
+	OutCategory = Categories[Index];
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------
-bool FCategoryContainer::AddCategory(const FCategory InCategory)
+bool FCategoryContainer::AddCategory(const FCategory& InCategory)
 {
 	if (CategoryCount < MaxCategoryCount)
 	{
@@ -47,7 +65,7 @@ bool FCategoryContainer::DeleteCategory(const int Index)
 	return false;
 }
 
-bool FCategoryContainer::AddGameToCategory(const int Index, const FGame Game)
+bool FCategoryContainer::AddGameToCategory(const int Index, const FGame& Game)
 {
 	return Categories[Index].AddGame(Game);
 }

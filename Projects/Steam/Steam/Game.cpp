@@ -9,7 +9,17 @@ FGame::FGame()
 }
 
 //-------------------------------------------------------------------------------------------
-FGame::FGame(const std::string InName, const std::string InStudioName, const int InYear, const int InMonth, const int InDay)
+FGame::FGame(const FGame& OtherGame)
+{
+	Name = OtherGame.Name;
+	StudioName = OtherGame.StudioName;
+	Year = OtherGame.Year;
+	Month = OtherGame.Month;
+	Day = OtherGame.Day;
+}
+
+//-------------------------------------------------------------------------------------------
+FGame::FGame(const std::string& InName, const std::string& InStudioName, const int InYear, const int InMonth, const int InDay)
 {
 	Name = InName;
 	StudioName = InStudioName;
@@ -19,13 +29,18 @@ FGame::FGame(const std::string InName, const std::string InStudioName, const int
 }
 
 //-------------------------------------------------------------------------------------------
-std::string FGame::GetName() const
+FGame::~FGame()
+{
+}
+
+//-------------------------------------------------------------------------------------------
+const std::string& FGame::GetName() const
 {
 	return Name;
 }
 
 //-------------------------------------------------------------------------------------------
-std::string FGame::GetStudioName() const
+const std::string& FGame::GetStudioName() const
 {
 	return StudioName;
 }

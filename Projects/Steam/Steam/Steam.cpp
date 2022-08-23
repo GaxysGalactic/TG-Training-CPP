@@ -2,12 +2,27 @@
 #include <string>
 
 //-------------------------------------------------------------------------------------------
-//										CONSTRUCTOR
+//								CONSTRUCTORS & DESTRUCTORS
 //-------------------------------------------------------------------------------------------
 FSteam::FSteam()
 {
 	Uncategorized = FCategory("Uncategorized");
 	ActiveCommand = EMenuCommand::MainMenu;
+}
+
+//-------------------------------------------------------------------------------------------
+FSteam::FSteam(const FSteam& OtherSteam)
+{
+	ActiveCommand = EMenuCommand::MainMenu;
+	Categories = OtherSteam.Categories;
+	Uncategorized = OtherSteam.Uncategorized;
+	ActiveCommand = OtherSteam.ActiveCommand;
+}
+
+//-------------------------------------------------------------------------------------------
+FSteam::~FSteam()
+{
+
 }
 
 //-------------------------------------------------------------------------------------------
@@ -35,6 +50,10 @@ void FSteam::RunApp()
 			case EMenuCommand::BrowseGames:
 				BrowseGames();
 				break;
+
+			default:
+				ActiveCommand = EMenuCommand::Exit;
+				break;
 		}
 	}
 	system("CLS");
@@ -55,10 +74,7 @@ void FSteam::MainMenu()
 	std::cout << "3 - Browse Games" << std::endl;
 	std::cout << "4 - Exit" << std::endl;
 
-	int Option;
-	std::cin >> Option;
-
-	Option = ValidateInt(Option, 1, 4);
+	int Option = GetValidIntInput(1, 4);
 
 	ActiveCommand = (EMenuCommand)Option;
 
@@ -102,10 +118,8 @@ int FSteam::ChooseCategory() const
 	std::cout << "There's categories available for you to add games to. Would you like to add it to a category?" << std::endl;
 	std::cout << "0 - No" << std::endl;
 	std::cout << "1 - Yes" << std::endl;
-	int AddToCategory;
-	std::cin >> AddToCategory;
 
-	AddToCategory = ValidateInt(AddToCategory, 0, 1);
+	int AddToCategory = GetValidIntInput(0, 1);
 
 	int CategoryChosen = -1;
 	if (AddToCategory == 1)
@@ -114,12 +128,11 @@ int FSteam::ChooseCategory() const
 		ListCategories();
 
 		std::cout << "Please type the number of the category you would like to add to." << std::endl;
-		std::cin >> CategoryChosen;
-
-		CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
+		
+		CategoryChosen = GetValidIntInput(0, CategoryCount);
 	}
 	std::cin.clear();
-	std::cin.ignore(INT_MAX, '\n');
+	RequestEnter();
 	return CategoryChosen;
 }
 
@@ -139,26 +152,15 @@ FGame FSteam::CreateGame()
 	std::getline(std::cin, GameStudioName);
 
 	std::cout << "Release Date (Year): ";
-	int GameYear;
-	std::cin >> GameYear;
-
-	GameYear = ValidateInt(GameYear, 1900, 2022);
+	int GameYear = GetValidIntInput(1900, 2022);
 
 	std::cout << "Release Date (Month): ";
-	int GameMonth;
-	std::cin >> GameMonth;
-
-	GameMonth = ValidateInt(GameMonth, 1, 12);
+	int GameMonth = GetValidIntInput(1, 12);
 
 	std::cout << "Release Date (Day): ";
-	int GameDay;
-	std::cin >> GameDay;
+	int GameDay = GetValidDayInput(GameMonth);
 
-	GameDay = ValidateInt(GameDay, 1, 31);
-
-	FGame NewGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
-
-	return NewGame;
+	return FGame(GameName, GameStudioName, GameYear, GameMonth, GameDay);
 }
 
 //-------------------------------------------------------------------------------------------
@@ -171,10 +173,7 @@ void FSteam::ManageCategories()
 	std::cout << "Welcome to Category Management! What would you like to do?" << std::endl;
 	std::cout << "1 - Create a Category" << std::endl;
 	std::cout << "2 - Delete a Category" << std::endl;
-	int Option;
-	std::cin >> Option;
-
-	Option = ValidateInt(Option, 1, 2);
+	int Option = GetValidIntInput(1, 2);
 
 	if (Option == 1)
 	{
@@ -211,14 +210,12 @@ void FSteam::CreateCategory()
 	if (Categories.AddCategory(NewCategory))
 	{
 		std::cout << "Success! You have created the category " << CategoryName << "!" << std::endl;
-		std::cin.ignore();
 	}
 	else
 	{
 		std::cout << "Unfortunately, there was an error creating your category. The category list is full." << std::endl;
-		std::cin.ignore();
 	}
-
+	RequestEnter();
 }
 
 //-------------------------------------------------------------------------------------------
@@ -231,10 +228,7 @@ void FSteam::DeleteCategory()
 	{
 		ListCategories();
 		std::cout << "Which category would you like to delete?" << std::endl;
-		int CategoryChosen;
-		std::cin >> CategoryChosen;
-
-		CategoryChosen = ValidateInt(CategoryChosen, 0, CategoryCount);
+		int CategoryChosen = GetValidIntInput(0, CategoryCount);
 
 		if (Categories.DeleteCategory(CategoryChosen))
 		{
@@ -261,40 +255,85 @@ void FSteam::BrowseGames()
 	system("CLS");
 	for (int i = 0; i < Categories.GetCategoryCount(); i++)
 	{
-		DisplayCategory(Categories.GetCategory(i));
-
+		FCategory CurrentCategory;
+		Categories.GetCategory(i, CurrentCategory);
+		DisplayCategory(CurrentCategory);
 	}
 	DisplayCategory(Uncategorized);
-	std::cin.ignore();
+	RequestEnter();
 	ActiveCommand = EMenuCommand::MainMenu;
 }
 
 //-------------------------------------------------------------------------------------------
 //									UTILITY FUNCTIONS
 //-------------------------------------------------------------------------------------------
-int FSteam::ValidateInt(int Input) const
+void FSteam::RequestEnter() const
 {
-	while (std::cin.fail())
-	{
-		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
-		std::cout << "That is not a valid integer. Please try again." << std::endl;
-		std::cin >> Input;
-	}
-	return Input;
+	std::cin.ignore(INT_MAX, '\n');
 }
 
 //-------------------------------------------------------------------------------------------
-int FSteam::ValidateInt(int Input, const int LowerBound, const int UpperBound) const
+int FSteam::GetValidIntInput() const
 {
-	while (std::cin.fail() || Input < LowerBound || Input > UpperBound)
+	int Option;
+	std::cin >> Option;
+	while (std::cin.fail())
 	{
 		std::cin.clear();
-		std::cin.ignore(INT_MAX, '\n');
-		std::cout << "That is not a valid integer or within the intended range. Please try again." << std::endl;
-		std::cin >> Input;
+		RequestEnter();
+		std::cout << "That is not a valid integer. Please try again." << std::endl;
+		std::cin >> Option;
 	}
-	return Input;
+	return Option;
+}
+
+//-------------------------------------------------------------------------------------------
+int FSteam::GetValidIntInput(const int LowerBound, const int UpperBound) const
+{
+	int Option;
+	std::cin >> Option;
+	while (std::cin.fail() || Option < LowerBound || Option > UpperBound)
+	{
+		std::cin.clear();
+		RequestEnter();
+		std::cout << "That is not a valid integer or within the intended range. Please try again." << std::endl;
+		std::cin >> Option;
+	}
+	return Option;
+}
+
+//-------------------------------------------------------------------------------------------
+int FSteam::GetValidDayInput(const int Month)
+{
+	int Day;
+	switch (Month) 
+	{
+		case 2:
+			Day = GetValidIntInput(1, 28);
+			break;
+
+		case 1:
+		case 3: 
+		case 5:
+		case 7: 
+		case 8:
+		case 10:
+		case 12:
+			Day = GetValidIntInput(1, 31);
+			break;
+
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			Day = GetValidIntInput(1, 30);
+			break;
+
+		default:
+			Day = GetValidIntInput(1, 31);
+			break;
+	}
+	return Day;
 }
 
 //-------------------------------------------------------------------------------------------
@@ -303,12 +342,14 @@ void FSteam::ListCategories() const
 	std::cout << "Here's a list of the available categories:" << std::endl;
 	for (int i = 0; i < Categories.GetCategoryCount(); i++)
 	{
-		std::cout << i << " - " << Categories.GetCategory(i).GetName() << std::endl;
+		FCategory CurrentCategory;
+		Categories.GetCategory(i, CurrentCategory);
+		std::cout << i << " - " << CurrentCategory.GetName() << std::endl;
 	}
 }
 
 //-------------------------------------------------------------------------------------------
-void FSteam::DisplayCategory(const FCategory Category) const
+void FSteam::DisplayCategory(const FCategory& Category) const
 {
 	std::cout << "---------------------------------------------------------" << std::endl;
 	std::cout << "                      " << Category.GetName() << std::endl;
@@ -325,7 +366,8 @@ void FSteam::DisplayCategory(const FCategory Category) const
 	{
 		for (int i = 0; i < Category.GetGameCount(); i++)
 		{
-			FGame CurrentGame = Category.GetGame(i);
+			FGame CurrentGame;
+			Category.GetGame(i, CurrentGame);
 			std::cout << CurrentGame.GetName() << "\t" << CurrentGame.GetStudioName() << "\t" << CurrentGame.GetReleaseDate() << std::endl;
 		}
 	}

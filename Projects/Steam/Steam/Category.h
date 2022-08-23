@@ -15,15 +15,19 @@ public:
 
 	FCategory();
 
-	FCategory(const std::string InName);
+	FCategory(const FCategory& OtherCategory);
 
-	std::string GetName() const;
+	FCategory(const std::string& InName);
 
-	FGame GetGame(const int Index) const;
+	~FCategory();
+
+	const std::string& GetName() const;
+
+	bool GetGame(const int Index, FGame& OutGame) const;
 
 	int GetGameCount() const;
 
-	bool AddGame(const FGame Game);
+	bool AddGame(const FGame& Game);
 
 	bool IsFull() const;
 };
