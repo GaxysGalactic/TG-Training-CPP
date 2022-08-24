@@ -1,7 +1,7 @@
 #include <iostream>
 
 
-void IncrementNumber(int* NumberPtr)
+void IncrementNumber(int* NumberPtr) const
 {
 	if (NumberPtr)
 	{

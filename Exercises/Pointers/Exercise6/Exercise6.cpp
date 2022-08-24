@@ -17,7 +17,9 @@ int main()
 		std::cout << *ArrayPtr << " ";
 	}
 
+
 	std::cout << std::endl;
+
 
 	std::cout << "The sum of all those numbers is:";
 

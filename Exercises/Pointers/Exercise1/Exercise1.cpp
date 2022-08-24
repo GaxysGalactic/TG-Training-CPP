@@ -11,7 +11,9 @@ int main()
 
 	std::cout << "The memory address where your variable is stored is " << &Number << std::endl;
 
+
 	std::cout << std::endl;
+
 
 	std::cout << "Please enter another number: ";
 	std::cin >> Number;
@@ -20,7 +22,9 @@ int main()
 
 	std::cout << "The memory address where your variable is stored is " << &Number << std::endl;
 
+
 	std::cout << std::endl;
+
 
 	std::cout << "Please enter one more number: ";
 	int AnotherNumber;

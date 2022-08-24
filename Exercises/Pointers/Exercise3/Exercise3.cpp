@@ -10,7 +10,9 @@ int main()
 	int SecondNumber;
 	std::cin >> SecondNumber;
 
+
 	std::cout << std::endl;
+
 
 	int* NumberPtr = &FirstNumber;
 
@@ -24,7 +26,9 @@ int main()
 
 	std::cout << "The memory address of variable NumberPtr is " << &NumberPtr << std::endl;
 
+
 	std::cout << std::endl;
+
 
 	NumberPtr = &SecondNumber;
 

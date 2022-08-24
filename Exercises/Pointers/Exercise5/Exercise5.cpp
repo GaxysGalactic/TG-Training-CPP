@@ -13,10 +13,13 @@ int main()
 		Sum += Array[i];
 	}
 
+
 	std::cout << std::endl;
+
 
 	std::cout << "This is the sum when I loop through the array:" << std::endl;
 	std::cout << Sum << std::endl;
+
 
 	std::cout << std::endl;
 
@@ -31,7 +34,9 @@ int main()
 	std::cout << "This is the sum when I loop through the array using a pointer:" << std::endl;
 	std::cout << Sum << std::endl;
 
+
 	std::cout << std::endl;
+
 
 	Sum = 0;
 	for (int i = 0; i < 35; i++)
