@@ -1,3 +1,37 @@
+/*
+* Exercise 10 - Pointers and Forward Declarations
+* Create a new project in your solution for this exercise, we’re no longer using the Student
+* Project. Create a header file for a class called ClassA and another header file for a class called
+* ClassB.
+* Inside ClassA, have a pointer variable of ClassB. Inside ClassB, have a pointer variable of
+* ClassA. You’ll need to #include each other’s header files.
+* Inside your main function, create an instance of ClassA and an instance of ClassB. The
+* main.cpp file should look like this:
+* You’ll see that the program can’t compile. The error message will probably not be too helpful,
+* but try to think about why this is happening. Remember how #include works to try and figure this
+* one out. Print to the console why this error is happening.
+* 
+* 
+* 
+* Exercise 11 - Pointers and Forward Declarations 2
+* Take a look at this additional resource to understand what forward declarations are and why
+* they are important: Link
+* Now, use forward declarations to fix the problem you had in the previous exercise. Then, print a
+* couple of reasons why forward declarations are useful in c++
+* 
+* 
+* 
+* Exercise 12 - Pointers and Forward Declarations 3
+* Let’s try one more thing. Now, instead of having a pointer variable of type ClassA in ClassB and
+* a pointer variable of ClassB in ClassA, let’s have them be instances instead of pointers. So, if
+* ClassA previously looked like this:
+* Try compiling the program again and you’ll see that it won’t compile with your forward
+* declaration. Print to the console why you think forward declarations don’t work for types that are
+* not referenced with pointers.
+* Remember from now on that it’s good practice to always use forward declarations wherever
+* you can.
+*/
+
 #include "ClassA.h"
 #include "ClassB.h"
 #include <iostream>

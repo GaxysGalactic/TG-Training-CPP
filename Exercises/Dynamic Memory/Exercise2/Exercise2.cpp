@@ -1,3 +1,17 @@
+/*
+* Exercise 2 - Understanding Stack vs Heap
+* Let’s compare the memory addresses of the stack and the heap.
+* First, create three int variables called stackInt1, stackInt2, and stackInt3. These variables should
+* be allocated in the stack. Initialize them to whatever value you want and then print their value
+* and memory addresses.
+* Then, create three more int variables and call them healpInt1, heapInt2, and heapInt3. These
+* variables should be allocated in the heap. Initialize them to whatever value you want and print
+* their value and memory addresses.
+* What can you notice from the memory addresses in the stack vs the memory addresses in the
+* heap? Print the answer to that question to the console (Yep, we’re doing quizzes in exercises
+* now).
+*/
+
 #include <iostream>
 
 int main()
@@ -49,6 +63,11 @@ int main()
 
 	std::cout << std::endl;
 
+	/*
+	* Q1
+	* What can you notice from the memory addresses in the stack vs the memory addresses in the
+	* heap?
+	*/
 
 	std::cout << "The difference between these memory adresses is that" << std::endl <<  "the stack variables are closer together to each other, while the heap ones are not as close." << std::endl << "Furthermore, the heap and stack addresses are far away from each other.";
 
