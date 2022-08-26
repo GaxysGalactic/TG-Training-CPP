@@ -1,9 +1,3 @@
-/*
-* We’ve created an important problem in the previous exercise. We managed to save memory by
-* a
-*/
-
-
 #include <iostream>
 #include <string>
 

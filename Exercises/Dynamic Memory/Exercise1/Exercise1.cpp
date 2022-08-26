@@ -9,4 +9,5 @@ int main()
 	std::cout << "I've dynamically allocated an integer. Its value is " << *Integer << " and its memory address is " << Integer;
 
 	delete Integer;
+	Integer = nullptr;
 }

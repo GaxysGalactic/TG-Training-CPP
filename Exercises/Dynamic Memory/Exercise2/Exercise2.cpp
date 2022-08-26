@@ -44,8 +44,7 @@ int main()
 
 	std::cout << HeapInt1 << std::endl;
 	std::cout << HeapInt2 << std::endl;
-	std::cout << 
-		HeapInt3 << std::endl;
+	std::cout << HeapInt3 << std::endl;
 
 
 	std::cout << std::endl;
@@ -57,4 +56,8 @@ int main()
 	delete HeapInt1;
 	delete HeapInt2;
 	delete HeapInt3;
+
+	HeapInt1 = nullptr;
+	HeapInt2 = nullptr;
+	HeapInt3 = nullptr;
 }

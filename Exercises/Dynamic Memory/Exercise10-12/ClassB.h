@@ -1,10 +1,10 @@
 #pragma once
 
-class ClassA;
+class FClassA;
 
-class ClassB
+class FClassB
 {
 public:
 
-	ClassA* Test;
+	FClassA* OtherClass;
 };
