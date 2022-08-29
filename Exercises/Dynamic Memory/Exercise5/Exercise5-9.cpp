@@ -130,6 +130,12 @@ public:
 	}
 
 	//--------------------------------------------------------------
+	void SetAge(const int NewAge)
+	{
+		Age = NewAge;
+	}
+
+	//--------------------------------------------------------------
 	void Print()
 	{
 		std::cout << "Name: " << Name << std::endl;
@@ -173,9 +179,8 @@ int main()
 		int Age;
 		std::cin >> Age;
 
-		FStudent Student = FStudent(Age);
-		Student.SetName(Name);
-		Students[i] = Student;
+		Students[i].SetAge(Age);
+		Students[i].SetName(Name);
 	}
 
 
