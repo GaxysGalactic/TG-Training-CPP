@@ -1,5 +1,4 @@
 #include "Circle.h"
-#include <numbers>
 
 FCircle::FCircle()
 {
@@ -11,14 +10,14 @@ FCircle::FCircle(int InRadius)
     Radius = InRadius;
 }
 
-int FCircle::GetArea()
+double FCircle::GetArea()
 {
-    return std::numbers::pi * Radius * Radius;
+    return 3.14159265 * Radius * Radius;
 }
 
-int FCircle::GetPerimeter()
+double FCircle::GetPerimeter()
 {
-    return 2 * std::numbers::pi * Radius;
+    return 2 * 3.14159265 * Radius;
 }
 
 

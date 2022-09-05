@@ -11,12 +11,12 @@ FSquare::FSquare(int InSide)
 }
 
 
-int FSquare::GetArea()
+double FSquare::GetArea()
 {
     return Side * Side;
 }
 
-int FSquare::GetPerimeter()
+double FSquare::GetPerimeter()
 {
     return 4 * Side;
 }

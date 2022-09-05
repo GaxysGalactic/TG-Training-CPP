@@ -1,7 +1,7 @@
 #pragma once
+#include "Shape.h"
 
-
-class FSquare
+class FSquare: public FShape
 {
 private:
 
@@ -13,7 +13,7 @@ public:
 
 	FSquare(int InSide);
 
-	int GetArea() override const;
+	double GetArea();
 
-	int GetPerimeter() override const;
+	double GetPerimeter();
 };

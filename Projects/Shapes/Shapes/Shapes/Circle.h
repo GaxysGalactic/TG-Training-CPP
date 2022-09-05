@@ -1,6 +1,7 @@
 #pragma once
+#include "Shape.h"
 
-class FCircle
+class FCircle : public FShape
 {
 private:
 
@@ -12,7 +13,7 @@ public:
 
 	FCircle(int InRadius);
 
-	int GetArea() override const;
+	double GetArea();
 
-	int GetPerimeter() override const;
+	double GetPerimeter();
 };

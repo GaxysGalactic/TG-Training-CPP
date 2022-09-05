@@ -7,7 +7,7 @@ class FShape
 
 public:
 
-	virtual int GetArea();
+	virtual double GetArea() const;
 
-	virtual int GetPerimeter();
+	virtual double GetPerimeter() const;
 };
