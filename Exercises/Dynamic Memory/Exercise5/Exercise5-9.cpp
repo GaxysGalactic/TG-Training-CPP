@@ -75,88 +75,42 @@
 * At this point, it’s obvious that keeping track of all memory allocations in a program can be a
 * hassle. In the future, we’ll discuss techniques that will make life a lot easier for us.
 */
+#include "Student.h"
 
 
-
-#include <iostream>
-#include <string>
-
-class FStudent
+//-------------------------------------------------------------------------------------------
+int GetValidIntInput(const int LowerBound, const int UpperBound) const
 {
-
-private:
-	char* Name;
-	int Age;
-
-public:
-	
-	//--------------------------------------------------------------
-	FStudent()
+	int Option;
+	std::cin >> Option;
+	while (std::cin.fail() || Option < LowerBound || Option > UpperBound)
 	{
-		Name = nullptr;
-		Age = 0;
+		std::cin.clear();
+		RequestEnter();
+		std::cout << "That is not a valid integer or within the intended range. Please try again." << std::endl;
+		std::cin >> Option;
 	}
-
-	//--------------------------------------------------------------
-	FStudent(int InAge)
-	{
-		Name = nullptr;
-		Age = InAge;
-	}
-
-	//--------------------------------------------------------------
-	~FStudent()
-	{
-		delete Name;
-	}
-
-	//--------------------------------------------------------------
-	void SetName(const char* NewName)
-	{
-		if (Name)
-		{
-			delete Name;
-			Name = nullptr;
-		}
-
-		int NameLength = 0;
-		for (int i = 0; NewName[i] != '\0'; i++)
-		{
-			NameLength++;
-		}
-
-		Name = new char[NameLength+1];
-		memcpy_s(Name, sizeof(char) * (NameLength+1), NewName, sizeof(char) * (NameLength+1));
-	}
-
-	//--------------------------------------------------------------
-	void SetAge(const int NewAge)
-	{
-		Age = NewAge;
-	}
-
-	//--------------------------------------------------------------
-	void Print()
-	{
-		std::cout << "Name: " << Name << std::endl;
-		std::cout << "Age: " << Age << std::endl;
-	}
-};
+	return Option;
+}
 
 
-
-int main()
+//-------------------------------------------------------------------------------------------
+void RunTest()
 {
-	//-------- Test ----
-
 	FStudent* StudentTest = new FStudent(8);
-	StudentTest -> SetName("Chavito"); 
+	StudentTest->SetName("Chavito");
 
 	delete StudentTest;
 
 	std::cout << "On this first test, the Student gets deleted from memory, but the name remains." << std::endl;
 	std::cout << "This is because the class Student tries to call the destructor for all its members to free the memory, but Name is a primitive type." << std::endl;
 	std::cout << "Therefore, it does not get deleted automatically." << std::endl;
+}
+
+
+int main()
+{
+	RunTest();
 
 	//------------------
 
@@ -176,8 +130,7 @@ int main()
 		std::cin >> Name;
 
 		std::cout << "Enter the age for student #" << i+1 << ": ";
-		int Age;
-		std::cin >> Age;
+		int Age = GetValidIntInput(0, 120);
 
 		Students[i].SetAge(Age);
 		Students[i].SetName(Name);
