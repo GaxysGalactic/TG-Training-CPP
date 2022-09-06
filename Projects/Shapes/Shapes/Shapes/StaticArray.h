@@ -9,19 +9,43 @@ private:
 
 public:
 
-	T operator[](const int Index);
+	T& operator[](const int Index)
+	{
+		return Array[Index];
+	};
 
-	T operator[](const int Index) const;
+	const T& operator[](const int Index) const 
+	{
+		return Array[Index];
+	};
 
-	T front();
+	T& front()
+	{
+		return Array[0];
+	};
 
-	T front() const;
+	const T& front() const
+	{
+		return Array[0];
+	}
 
-	T back();
+	T& back()
+	{
+		return Array[Size - 1];
+	};
 
-	T back() const;
+	const T& back() const
+	{
+		return Array[Size - 1];
+	};
 
-	T* GetData();
+	T* GetData()
+	{
+		return Array;
+	};
 
-	T* GetData() const;
+	const T* GetData() const
+	{
+		return Array;
+	};
 };

@@ -45,4 +45,6 @@ private:
 	int GetValidIntInput() const;
 
 	int GetValidIntInput(const int LowerBound, const int UpperBound) const;
+
+	void DeleteHeapArray(FShape** Array, const int NumberOfShapes) const;
 };

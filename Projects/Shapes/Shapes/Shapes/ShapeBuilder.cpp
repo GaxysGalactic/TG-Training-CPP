@@ -98,7 +98,10 @@ void FShapeBuilder::AskForShapesBuiltIn()
 
 	RequestEnterFromInput();
 
-	delete[] Shapes;
+
+	//Delete
+	DeleteHeapArray(Shapes, NumberOfShapes);
+	
 	ActiveCommand = EMenuCommand::MainMenu;
 	
 }
@@ -230,4 +233,16 @@ int FShapeBuilder::GetValidIntInput(const int LowerBound, const int UpperBound) 
 		std::cin >> Option;
 	}
 	return Option;
+}
+
+//-------------------------------------------------------------------------------------------
+void FShapeBuilder::DeleteHeapArray(FShape** Array, const int NumberOfShapes) const
+{
+	for (int i = 0; i < NumberOfShapes; i++)
+	{
+		delete Array[i];
+		Array[i] = nullptr;
+	}
+	delete Array;
+	Array = nullptr;
 }
