@@ -1,6 +1,7 @@
 #include "ShapeBuilder.h"
 #include "Square.h"
 #include "Circle.h"
+#include "StaticArray.h"
 #include <iostream>
 
 
@@ -90,60 +91,28 @@ void FShapeBuilder::AskForShapesBuiltIn()
 
 	//Fill Array
 	int NumberOfShapes = GetValidIntInput(0, INT_MAX);
-
-	FShape** Shapes = GetBuiltInArray(NumberOfShapes);
+	FShape** Shapes = FillBuiltInArray(NumberOfShapes);
 
 	//Print Array
 	PrintBuiltInArray(Shapes, NumberOfShapes);
-
 	RequestEnterFromInput();
 
-
 	//Delete
-	DeleteHeapArray(Shapes, NumberOfShapes);
+	DeleteBuiltInArray(Shapes, NumberOfShapes);
 	
 	ActiveCommand = EMenuCommand::MainMenu;
 	
 }
 
 //-------------------------------------------------------------------------------------------
-FShape** FShapeBuilder::GetBuiltInArray(const int NumberOfShapes) const
+FShape** FShapeBuilder::FillBuiltInArray(const int NumberOfShapes) const
 {
 	FShape** Shapes = new FShape * [NumberOfShapes];
 
 	for (int i = 0; i < NumberOfShapes; i++)
 	{
 		system("CLS");
-
-		std::cout << "Shape " << i + 1 << std::endl;
-		std::cout << "Choose your Shape!" << std::endl;
-		std::cout << "1 - Circle" << std::endl;
-		std::cout << "2 - Square" << std::endl;
-
-		int ShapeChosen = GetValidIntInput(1, 2);
-
-		if (ShapeChosen == 1)
-		{
-			system("CLS");
-			std::cout << "You chose a circle!" << std::endl;
-			std::cout << "Type in its radius." << std::endl;
-			float Radius = GetValidFloatInput();
-
-			FCircle* Circle = new FCircle(Radius);
-
-			Shapes[i] = Circle;
-		}
-		else
-		{
-			system("CLS");
-			std::cout << "You chose a square!" << std::endl;
-			std::cout << "Type in its side length." << std::endl;
-			float Side = GetValidFloatInput();
-
-			FSquare* Square = new FSquare(Side);
-
-			Shapes[i] = Square;
-		}
+		Shapes[i] = CreateShape();
 	}
 
 	return Shapes;
@@ -152,13 +121,27 @@ FShape** FShapeBuilder::GetBuiltInArray(const int NumberOfShapes) const
 //-------------------------------------------------------------------------------------------
 void FShapeBuilder::PrintBuiltInArray(FShape** Array, const int NumberOfShapes) const
 {
+	system("CLS");
+
 	for (int i = 0; i < NumberOfShapes; i++)
 	{
-		std::cout << "Shape " << i << std::endl;
+		std::cout << "Shape " << i + 1 << std::endl;
 		std::cout << "Area: " << Array[i]->GetArea() << std::endl;
 		std::cout << "Perimeter: " << Array[i]->GetPerimeter() << std::endl;
 	}
 	RequestEnterFromInput();
+}
+
+//-------------------------------------------------------------------------------------------
+void FShapeBuilder::DeleteBuiltInArray(FShape** Array, const int NumberOfShapes) const
+{
+	for (int i = 0; i < NumberOfShapes; i++)
+	{
+		delete Array[i];
+		Array[i] = nullptr;
+	}
+	delete Array;
+	Array = nullptr;
 }
 
 
@@ -167,9 +150,63 @@ void FShapeBuilder::PrintBuiltInArray(FShape** Array, const int NumberOfShapes) 
 //-------------------------------------------------------------------------------------------
 void FShapeBuilder::AskForShapesStatic()
 {
-	std::cout << "STATIC" << std::endl;
-	std::cin.get();
+	system("CLS");
+
+	//Fill Array
+	TStaticArray<FShape*, 5> Shapes = FillStaticArray();
+
+	//Print Array
+	PrintStaticArray(Shapes);
+	RequestEnterFromInput();
+
+	//Delete Array
+	DeleteStaticArray();
+
+	ActiveCommand = EMenuCommand::MainMenu;
 }
+
+//-------------------------------------------------------------------------------------------
+TStaticArray<FShape*, 5> FShapeBuilder::FillStaticArray() const
+{
+	TStaticArray<FShape*, 5> Shapes;
+
+	std::cout << "You will now be asked to provide information for 5 Shapes." << std::endl;
+
+	RequestEnterFromInput();
+
+	for (int i = 0; i < 5; i++)
+	{
+		system("CLS");
+		Shapes[i] = CreateShape();
+	}
+
+	return Shapes;
+}
+
+//-------------------------------------------------------------------------------------------
+void FShapeBuilder::PrintStaticArray(TStaticArray<FShape*, 5>& Array) const
+{
+	system("CLS");
+
+	for (int i = 0; i < Array.GetSize(); i++)
+	{
+		std::cout << "Shape " << i+1 << std::endl;
+		std::cout << "Area: " << Array[i]->GetArea() << std::endl;
+		std::cout << "Perimeter: " << Array[i]->GetPerimeter() << std::endl;
+	}
+	RequestEnterFromInput();
+}
+
+//-------------------------------------------------------------------------------------------
+void FShapeBuilder::DeleteStaticArray(TStaticArray<FShape*, 5>& Array) const
+{
+	for (int i = 0; i < Array.GetSize(); i++)
+	{
+		delete Array[i];
+		Array[i] = nullptr;
+	}
+}
+
 
 
 //-------------------------------------------------------------------------------------------
@@ -181,9 +218,41 @@ void FShapeBuilder::AskForShapesDynamic()
 	std::cin.get();
 }
 
-
 //-------------------------------------------------------------------------------------------
 //									UTILITY FUNCTIONS
+//-------------------------------------------------------------------------------------------
+FShape* FShapeBuilder::CreateShape() const
+{
+	std::cout << "Choose your Shape!" << std::endl;
+	std::cout << "1 - Circle" << std::endl;
+	std::cout << "2 - Square" << std::endl;
+
+	int ShapeChosen = GetValidIntInput(1, 2);
+
+	if (ShapeChosen == 1)
+	{
+		system("CLS");
+		std::cout << "You chose a circle!" << std::endl;
+		std::cout << "Type in its radius." << std::endl;
+		float Radius = GetValidFloatInput();
+
+		FCircle* Circle = new FCircle(Radius);
+
+		return Circle;
+	}
+	else
+	{
+		system("CLS");
+		std::cout << "You chose a square!" << std::endl;
+		std::cout << "Type in its side length." << std::endl;
+		float Side = GetValidFloatInput();
+
+		FSquare* Square = new FSquare(Side);
+
+		return Square;
+	}
+}
+
 //-------------------------------------------------------------------------------------------
 void FShapeBuilder::RequestEnterFromInput() const
 {
@@ -235,14 +304,4 @@ int FShapeBuilder::GetValidIntInput(const int LowerBound, const int UpperBound) 
 	return Option;
 }
 
-//-------------------------------------------------------------------------------------------
-void FShapeBuilder::DeleteHeapArray(FShape** Array, const int NumberOfShapes) const
-{
-	for (int i = 0; i < NumberOfShapes; i++)
-	{
-		delete Array[i];
-		Array[i] = nullptr;
-	}
-	delete Array;
-	Array = nullptr;
-}
+

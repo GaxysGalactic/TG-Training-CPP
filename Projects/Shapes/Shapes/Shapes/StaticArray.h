@@ -19,22 +19,22 @@ public:
 		return Array[Index];
 	};
 
-	T& front()
+	T& Front()
 	{
 		return Array[0];
 	};
 
-	const T& front() const
+	const T& Front() const
 	{
 		return Array[0];
 	}
 
-	T& back()
+	T& Back()
 	{
 		return Array[Size - 1];
 	};
 
-	const T& back() const
+	const T& Back() const
 	{
 		return Array[Size - 1];
 	};
@@ -69,9 +69,12 @@ public:
 
 	void Swap(TStaticArray OtherArray)
 	{
+		TStaticArray<T, Size> TemporaryArray;
 		for (int i = 0; i < Size; i++)
 		{
-			Array[i] = OtherArray[i];
+			TemporaryArray[i] = OtherArray[i];
+			OtherArray[i] = Array[i];
+			Array[i] = TemporaryArray[i];
 		}
 	};
 };

@@ -1,4 +1,5 @@
 #pragma once
+#include "StaticArray.h"
 
 class FShapeBuilder
 {
@@ -28,15 +29,33 @@ private:
 
 	void MainMenu();
 
+	//----------------Built In-------------------------------------------
+
 	void AskForShapesBuiltIn();
 
-	class FShape** GetBuiltInArray(const int NumberOfShapes) const;
+	class FShape** FillBuiltInArray(const int NumberOfShapes) const;
 
 	void PrintBuiltInArray(FShape** Array, const int NumberOfShapes) const;
 
+	void DeleteBuiltInArray(FShape** Array, const int NumberOfShapes) const;
+
+	//----------------Static---------------------------------------------
+
 	void AskForShapesStatic();
 
+	TStaticArray<FShape*, 5> FillStaticArray() const;
+
+	void PrintStaticArray(TStaticArray<FShape*, 5>& Array) const;
+
+	void DeleteStaticArray(TStaticArray<FShape*, 5>& Array) const;
+
+	//----------------Dynamic-------------------------------------------
+
 	void AskForShapesDynamic();
+
+	//----------------Utilities-------------------------------------------
+
+	FShape* CreateShape() const;
 
 	void RequestEnterFromInput() const;
 
@@ -46,5 +65,4 @@ private:
 
 	int GetValidIntInput(const int LowerBound, const int UpperBound) const;
 
-	void DeleteHeapArray(FShape** Array, const int NumberOfShapes) const;
 };
