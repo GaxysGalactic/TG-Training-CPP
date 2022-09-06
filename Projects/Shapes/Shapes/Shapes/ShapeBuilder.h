@@ -30,11 +30,17 @@ private:
 
 	void AskForShapesBuiltIn();
 
+	class FShape** GetBuiltInArray(const int NumberOfShapes) const;
+
+	void PrintBuiltInArray(FShape** Array, const int NumberOfShapes) const;
+
 	void AskForShapesStatic();
 
 	void AskForShapesDynamic();
 
-	void RequestEnter() const;
+	void RequestEnterFromInput() const;
+
+	float GetValidFloatInput() const;
 
 	int GetValidIntInput() const;
 

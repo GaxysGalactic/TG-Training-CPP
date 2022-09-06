@@ -5,15 +5,15 @@ class FCircle : public FShape
 {
 private:
 
-	int Radius;
+	float Radius;
 
 public:
 
 	FCircle();
 
-	FCircle(int InRadius);
+	FCircle(const float InRadius);
 
-	double GetArea();
+	virtual float GetArea() const override;
 
-	double GetPerimeter();
+	virtual float GetPerimeter() const override;
 };

@@ -7,21 +7,21 @@ FCircle::FCircle()
 }
 
 //-------------------------------------------------------------------------------------------
-FCircle::FCircle(int InRadius)
+FCircle::FCircle(const float InRadius)
 {
     Radius = InRadius;
 }
 
 //-------------------------------------------------------------------------------------------
-double FCircle::GetArea()
+float FCircle::GetArea() const
 {
-    return 3.14159265 * Radius * Radius;
+    return 3.14159265f * Radius * Radius;
 }
 
 //-------------------------------------------------------------------------------------------
-double FCircle::GetPerimeter()
+float FCircle::GetPerimeter() const
 {
-    return 2 * 3.14159265 * Radius;
+    return 2 * 3.14159265f * Radius;
 }
 
 

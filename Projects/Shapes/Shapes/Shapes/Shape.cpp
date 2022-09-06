@@ -1,13 +1,18 @@
 #include "Shape.h"
 
 //-------------------------------------------------------------------------------------------
-double FShape::GetArea() const
+FShape::FShape()
 {
-    return 0.0;
 }
 
 //-------------------------------------------------------------------------------------------
-double FShape::GetPerimeter() const
+float FShape::GetArea() const
 {
-    return 0.0;
+    return 0.f;
+}
+
+//-------------------------------------------------------------------------------------------
+float FShape::GetPerimeter() const
+{
+    return 0.f;
 }

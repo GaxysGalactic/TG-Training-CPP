@@ -3,11 +3,11 @@
 
 class FShape
 {
-
-
 public:
 
-	virtual double GetArea() const;
+	FShape();
 
-	virtual double GetPerimeter() const;
+	virtual float GetArea() const;
+
+	virtual float GetPerimeter() const;
 };

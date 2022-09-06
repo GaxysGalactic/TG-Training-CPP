@@ -7,19 +7,19 @@ FSquare::FSquare()
 }
 
 //-------------------------------------------------------------------------------------------
-FSquare::FSquare(int InSide)
+FSquare::FSquare(const float InSide)
 {
     Side = InSide;
 }
 
 //-------------------------------------------------------------------------------------------
-double FSquare::GetArea()
+float FSquare::GetArea() const
 {
     return Side * Side;
 }
 
 //-------------------------------------------------------------------------------------------
-double FSquare::GetPerimeter()
+float FSquare::GetPerimeter() const
 {
     return 4 * Side;
 }

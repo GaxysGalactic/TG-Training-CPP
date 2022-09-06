@@ -5,15 +5,15 @@ class FSquare: public FShape
 {
 private:
 
-	int Side;
+	float Side;
 
 public:
 
 	FSquare();
 
-	FSquare(int InSide);
+	FSquare(const float InSide);
 
-	double GetArea();
+	virtual float GetArea() const override;
 
-	double GetPerimeter();
+	virtual float GetPerimeter() const override;
 };
