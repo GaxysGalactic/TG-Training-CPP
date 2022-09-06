@@ -48,4 +48,30 @@ public:
 	{
 		return Array;
 	};
+
+	bool IsEmpty() const
+	{
+		return Size == 0;
+	};
+
+	int GetSize() const
+	{
+		return Size;
+	};
+
+	void Fill(T Filler)
+	{
+		for (int i = 0; i < Size; i++)
+		{
+			Array[i] = Filler;
+		}
+	};
+
+	void Swap(TStaticArray OtherArray)
+	{
+		for (int i = 0; i < Size; i++)
+		{
+			Array[i] = OtherArray[i];
+		}
+	};
 };
