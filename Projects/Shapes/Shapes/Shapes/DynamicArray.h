@@ -36,7 +36,7 @@ public:
 	T& Front()
 	{
 		return Array[0];
-	};
+	}
 
 	const T& Front() const
 	{
@@ -46,10 +46,59 @@ public:
 	T& Back()
 	{
 		return Array[Size - 1];
-	};
+	}
 
 	const T& Back() const
 	{
 		return Array[Size - 1];
-	};
+	}
+
+	bool IsEmpty()
+	{
+		return Size == 0;
+	}
+
+	int GetSize()
+	{
+		return Size;
+	}
+
+	int GetCapacity()
+	{
+		return Capacity;
+	}
+
+	void Reserve(int NewCapacity)
+	{
+		if (NewCapacity <= Capacity)
+		{
+			return;
+		}
+
+		T* NewArray = new T[NewCapacity];
+		for (int i = 0; i < Size; i++)
+		{
+			NewArray[i] = Array[i];
+		}
+
+		delete[] Array;
+		Array = NewArray;
+	}
+
+	void ShrinkToFit()
+	{
+		if (Capacity == Size)
+		{
+			return;
+		}
+
+		T* NewArray = new T[Size];
+		for (int i = 0; i < Size; i++)
+		{
+			NewArray[i] = Array[i];
+		}
+
+		delete[] Array;
+		Array = NewArray;
+	}
 };
