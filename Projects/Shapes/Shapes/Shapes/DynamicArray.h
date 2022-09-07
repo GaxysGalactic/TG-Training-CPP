@@ -102,19 +102,19 @@ public:
 	//											CAPACITY
 	//-------------------------------------------------------------------------------------------
 
-	bool IsEmpty()
+	bool IsEmpty() const
 	{
 		return Size == 0;
 	}
 
 	//-------------------------------------------------------------------------------------------
-	int GetSize()
+	int GetSize() const
 	{
 		return Size;
 	}
 
 	//-------------------------------------------------------------------------------------------
-	int GetCapacity()
+	int GetCapacity() const
 	{
 		return Capacity;
 	}
@@ -171,7 +171,7 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void PushBack(const T Item)
+	void PushBack(const T& Item)
 	{
 		if (Size == Capacity)
 		{
@@ -192,7 +192,7 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	bool Insert(const T Item, const int Index)
+	bool Insert(const T& Item, const int Index)
 	{
 		if (Index > Size)
 		{
@@ -255,7 +255,7 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void Resize(const int NewSize, const T Item)
+	void Resize(const int NewSize, const T& Item)
 	{
 		if (Size <= NewSize)
 		{
@@ -275,7 +275,7 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void Append(const TDynamicArray<T> OtherArray)
+	void Append(const TDynamicArray<T>& OtherArray)
 	{
 		int NewSize = Size + OtherArray.GetSize();
 		Reserve(NewSize);
@@ -317,7 +317,7 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void Fill(const T Item, const bool FillToCapacity)
+	void Fill(const T& Item, const bool FillToCapacity)
 	{
 		if (FillToCapacity)
 		{

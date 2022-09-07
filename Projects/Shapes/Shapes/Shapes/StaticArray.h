@@ -70,7 +70,7 @@ public:
 	};
 
 	//-------------------------------------------------------------------------------------------
-	void Fill(T Filler)
+	void Fill(T& Filler)
 	{
 		for (int i = 0; i < Size; i++)
 		{
@@ -79,7 +79,7 @@ public:
 	};
 
 	//-------------------------------------------------------------------------------------------
-	void Swap(TStaticArray OtherArray)
+	void Swap(TStaticArray& OtherArray)
 	{
 		TStaticArray<T, Size> TemporaryArray;
 		for (int i = 0; i < Size; i++)

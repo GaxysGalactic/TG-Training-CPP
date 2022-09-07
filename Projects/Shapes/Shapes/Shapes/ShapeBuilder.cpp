@@ -216,6 +216,7 @@ void FShapeBuilder::AskForShapesDynamic()
 {
 	system("CLS");
 	std::cout << "We're gonna add your shapes to a dynamic array!" << std::endl;
+	RequestEnterFromInput();
 
 	//Fill Array
 	TDynamicArray<FShape*> Shapes = FillDynamicArray();
@@ -233,7 +234,25 @@ void FShapeBuilder::AskForShapesDynamic()
 //-------------------------------------------------------------------------------------------
 TDynamicArray<FShape*> FShapeBuilder::FillDynamicArray() const
 {
-	return TDynamicArray<FShape*>();
+	TDynamicArray<FShape*> Shapes;
+
+
+	int Continue = 1;
+	do
+	{
+		system("CLS");
+
+		FShape* Shape = CreateShape();
+		Shapes.PushBack(Shape);
+
+		std::cout << "Would you like to continue adding more shapes?" << std::endl;
+		std::cout << "1 - Yes!!" << std::endl;
+		std::cout << "2 - No, please print them." << std::endl;
+		
+		Continue = GetValidIntInput();
+	} while (Continue == 1);
+
+	return Shapes;
 }
 
 //-------------------------------------------------------------------------------------------
