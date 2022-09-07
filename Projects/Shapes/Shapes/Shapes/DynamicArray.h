@@ -13,6 +13,11 @@ public:
 	//-------------------------------------------------------------------------------------------
 	//								CONSTRUCTORS & DESTRUCTORS
 	//-------------------------------------------------------------------------------------------
+	
+	TDynamicArray()
+	{
+		
+	}
 
 	TDynamicArray(const int InCapacity)
 	{
@@ -20,12 +25,14 @@ public:
 		Array = new T[Capacity];
 	}
 
+	//-------------------------------------------------------------------------------------------
 	~TDynamicArray()
 	{
 		delete[] Array;
 	}
 
-	TDyanamicArray(const TDynamicArray<T>& OtherArray)
+	//-------------------------------------------------------------------------------------------
+	TDynamicArray(const TDynamicArray& OtherArray)
 	{
 		Append(OtherArray);
 	}
@@ -39,11 +46,13 @@ public:
 		return Array[Index];
 	}
 
-	const T& operator[](const int Index)
+	//-------------------------------------------------------------------------------------------
+	const T& operator[](const int Index) const
 	{
 		return Array[Index];
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void operator=(const TDynamicArray<T>& OtherArray)
 	{
 		Clear();
@@ -59,26 +68,31 @@ public:
 		return Array[0];
 	}
 
+	//-------------------------------------------------------------------------------------------
 	const T& Front() const
 	{
 		return Array[0];
 	}
 
+	//-------------------------------------------------------------------------------------------
 	T& Back()
 	{
 		return Array[Size - 1];
 	}
 
+	//-------------------------------------------------------------------------------------------
 	const T& Back() const
 	{
 		return Array[Size - 1];
 	}
 
+	//-------------------------------------------------------------------------------------------
 	T* GetData()
 	{
 		return Array;
 	};
 
+	//-------------------------------------------------------------------------------------------
 	const T* GetData() const
 	{
 		return Array;
@@ -93,16 +107,19 @@ public:
 		return Size == 0;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	int GetSize()
 	{
 		return Size;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	int GetCapacity()
 	{
 		return Capacity;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	bool Reserve(const int NewCapacity)
 	{
 		if (NewCapacity <= Capacity)
@@ -123,6 +140,7 @@ public:
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	bool ShrinkToFit()
 	{
 		if (Capacity == Size)
@@ -147,12 +165,12 @@ public:
 	//											MODIFIERS
 	//-------------------------------------------------------------------------------------------
 
-
 	void Clear()
 	{
 		Size = 0;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void PushBack(const T Item)
 	{
 		if (Size == Capacity)
@@ -167,11 +185,13 @@ public:
 		Size++;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void PopBack()
 	{
 		Size--;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	bool Insert(const T Item, const int Index)
 	{
 		if (Index > Size)
@@ -191,7 +211,7 @@ public:
 			Reserve(Capacity * 2);
 		}
 		
-		for (i = Size; i > Index; i--)
+		for (int i = Size; i > Index; i--)
 		{
 			Array[i] = Array[i-1];
 		}
@@ -201,6 +221,7 @@ public:
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	bool Erase(const int Index)
 	{
 		if (Index > Size)
@@ -223,6 +244,7 @@ public:
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void Resize(const int NewSize)
 	{
 		if (Size > Capacity)
@@ -232,6 +254,7 @@ public:
 		Size = NewSize;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void Resize(const int NewSize, const T Item)
 	{
 		if (Size <= NewSize)
@@ -251,9 +274,10 @@ public:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void Append(const TDynamicArray<T> OtherArray)
 	{
-		NewSize = Size + OtherArray.GetSize();
+		int NewSize = Size + OtherArray.GetSize();
 		Reserve(NewSize);
 
 		for (int i = 0; i < OtherArray.GetSize(); i++)
@@ -292,11 +316,12 @@ public:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void Fill(const T Item, const bool FillToCapacity)
 	{
 		if (FillToCapacity)
 		{
-			for (int i = 0, i < Capacity; i++)
+			for (int i = 0; i < Capacity; i++)
 			{
 				Array[i] = Item;
 			}

@@ -1,5 +1,6 @@
 #pragma once
 #include "StaticArray.h"
+#include "DynamicArray.h"
 
 class FShapeBuilder
 {
@@ -52,6 +53,12 @@ private:
 	//----------------Dynamic-------------------------------------------
 
 	void AskForShapesDynamic();
+
+	TDynamicArray<FShape*> FillDynamicArray() const;
+
+	void PrintDynamicArray(TDynamicArray<FShape*>& Array) const;
+
+	void DeleteDynamicArray(TDynamicArray<FShape*>& Array) const;
 
 	//----------------Utilities-------------------------------------------
 

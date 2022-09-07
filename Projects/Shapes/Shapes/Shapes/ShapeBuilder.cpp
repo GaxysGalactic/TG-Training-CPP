@@ -2,6 +2,7 @@
 #include "Square.h"
 #include "Circle.h"
 #include "StaticArray.h"
+#include "DynamicArray.h"
 #include <iostream>
 
 
@@ -151,6 +152,7 @@ void FShapeBuilder::DeleteBuiltInArray(FShape** Array, const int NumberOfShapes)
 void FShapeBuilder::AskForShapesStatic()
 {
 	system("CLS");
+	std::cout << "You will now be asked to provide information for 5 Shapes." << std::endl;
 
 	//Fill Array
 	TStaticArray<FShape*, 5> Shapes = FillStaticArray();
@@ -169,8 +171,6 @@ void FShapeBuilder::AskForShapesStatic()
 TStaticArray<FShape*, 5> FShapeBuilder::FillStaticArray() const
 {
 	TStaticArray<FShape*, 5> Shapes;
-
-	std::cout << "You will now be asked to provide information for 5 Shapes." << std::endl;
 
 	RequestEnterFromInput();
 
@@ -214,8 +214,50 @@ void FShapeBuilder::DeleteStaticArray(TStaticArray<FShape*, 5>& Array) const
 //-------------------------------------------------------------------------------------------
 void FShapeBuilder::AskForShapesDynamic()
 {
-	std::cout << "DYNAMIC" << std::endl;
-	std::cin.get();
+	system("CLS");
+	std::cout << "We're gonna add your shapes to a dynamic array!" << std::endl;
+
+	//Fill Array
+	TDynamicArray<FShape*> Shapes = FillDynamicArray();
+
+	//Print Array
+	PrintDynamicArray(Shapes);
+	RequestEnterFromInput();
+
+	//Delete
+	DeleteDynamicArray(Shapes);
+
+	ActiveCommand = EMenuCommand::MainMenu;
+}
+
+//-------------------------------------------------------------------------------------------
+TDynamicArray<FShape*> FShapeBuilder::FillDynamicArray() const
+{
+	return TDynamicArray<FShape*>();
+}
+
+//-------------------------------------------------------------------------------------------
+void FShapeBuilder::PrintDynamicArray(TDynamicArray<FShape*>& Array) const
+{
+	system("CLS");
+
+	for (int i = 0; i < Array.GetSize(); i++)
+	{
+		std::cout << "Shape " << i + 1 << std::endl;
+		std::cout << "Area: " << Array[i]->GetArea() << std::endl;
+		std::cout << "Perimeter: " << Array[i]->GetPerimeter() << std::endl;
+	}
+	RequestEnterFromInput();
+}
+
+//-------------------------------------------------------------------------------------------
+void FShapeBuilder::DeleteDynamicArray(TDynamicArray<FShape*>& Array) const
+{
+	for (int i = 0; i < Array.GetSize(); i++)
+	{
+		delete Array[i];
+		Array[i] = nullptr;
+	}
 }
 
 //-------------------------------------------------------------------------------------------
