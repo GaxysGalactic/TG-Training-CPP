@@ -68,11 +68,11 @@ public:
 		return Capacity;
 	}
 
-	void Reserve(int NewCapacity)
+	bool Reserve(const int NewCapacity)
 	{
 		if (NewCapacity <= Capacity)
 		{
-			return;
+			return false;
 		}
 
 		T* NewArray = new T[NewCapacity];
@@ -83,13 +83,16 @@ public:
 
 		delete[] Array;
 		Array = NewArray;
+
+		Capacity = NewCapacity;
+		return true;
 	}
 
-	void ShrinkToFit()
+	bool ShrinkToFit()
 	{
 		if (Capacity == Size)
 		{
-			return;
+			return false;
 		}
 
 		T* NewArray = new T[Size];
@@ -100,5 +103,116 @@ public:
 
 		delete[] Array;
 		Array = NewArray;
+
+		Capacity = Size;
+		return true;
+	}
+
+	void Clear()
+	{
+		Size = 0;
+	}
+
+	void PushBack(const T Item)
+	{
+		if (Size == Capacity)
+		{
+			Reserve(Capacity * 2);
+		}
+		Array[Size] = Item;
+		Size++;
+	}
+
+	void PopBack()
+	{
+		Size--;
+	}
+
+	bool Insert(const T Item, const int Index)
+	{
+		if (Index > Size)
+		{
+			return false;
+		}
+
+		if (Index == Size)
+		{
+			PushBack(Item);
+			Size++;
+			return true;
+		}
+
+		if (Size == Capacity)
+		{
+			Reserve(Capacity * 2);
+		}
+		
+		for (i = Size; i > Index; i--)
+		{
+			Array[i] = Array[i-1];
+		}
+
+		Array[Index] = Item;
+		Size++;
+		return true;
+	}
+
+	bool Erase(const int Index)
+	{
+		if (Index > Size)
+		{
+			return false;
+		}
+
+		if (Index == Size)
+		{
+			PopBack();
+			Size--;
+			return true;
+		}
+
+		for (int i = 0; i < Size - 1; i++)
+		{
+			Array[i] = Array[i + 1];
+		}
+		Size--;
+		return true;
+	}
+
+	void Resize(const int NewCapacity)
+	{
+		if (!Reserve(NewCapacity))
+		{
+			if (NewCapacity == Size)
+			{
+				return;
+			}
+
+			T* NewArray = new T[NewCapacity];
+			if (Size > NewCapacity)
+			{
+				Size = NewCapacity;
+			}
+
+			for (int i = 0; i < Size; i++)
+			{
+				NewArray[i] = Array[i];
+			}
+
+			Capacity = NewCapacity;
+			delete[] Array;
+			Array = NewArray;
+		}
+	}
+
+	void Append(TDynamicArray<T> OtherArray)
+	{
+		NewSize = Size + OtherArray.GetSize();
+		Reserve(NewSize);
+
+		for (int i = 0; i < OtherArray.GetSize(); i++)
+		{
+			PushBack(OtherArray[i]);
+		}
 	}
 };

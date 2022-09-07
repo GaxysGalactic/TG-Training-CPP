@@ -160,7 +160,7 @@ void FShapeBuilder::AskForShapesStatic()
 	RequestEnterFromInput();
 
 	//Delete Array
-	DeleteStaticArray();
+	DeleteStaticArray(Shapes);
 
 	ActiveCommand = EMenuCommand::MainMenu;
 }
