@@ -4,24 +4,35 @@ template<typename T>
 class TDynamicArray
 {
 private:
-	int Capacity;
-	int Size;
+	int Capacity = 0;
+	int Size = 0;
 	T* Array;
 
 public:
 
+	//-------------------------------------------------------------------------------------------
+	//								CONSTRUCTORS & DESTRUCTORS
+	//-------------------------------------------------------------------------------------------
+
 	TDynamicArray(const int InCapacity)
 	{
 		Capacity = InCapacity;
-		Size = 0;
-
-		Array = new T[InCapacity];
+		Array = new T[Capacity];
 	}
 
 	~TDynamicArray()
 	{
 		delete[] Array;
 	}
+
+	TDyanamicArray(const TDynamicArray<T>& OtherArray)
+	{
+		Append(OtherArray);
+	}
+
+	//-------------------------------------------------------------------------------------------
+	//										OPERATORS
+	//-------------------------------------------------------------------------------------------
 
 	T& operator[](const int Index)
 	{
@@ -32,6 +43,16 @@ public:
 	{
 		return Array[Index];
 	}
+
+	void operator=(const TDynamicArray<T>& OtherArray)
+	{
+		Clear();
+		Append(OtherArray);
+	}
+
+	//-------------------------------------------------------------------------------------------
+	//											ACCESSING
+	//-------------------------------------------------------------------------------------------
 
 	T& Front()
 	{
@@ -52,6 +73,20 @@ public:
 	{
 		return Array[Size - 1];
 	}
+
+	T* GetData()
+	{
+		return Array;
+	};
+
+	const T* GetData() const
+	{
+		return Array;
+	};
+
+	//-------------------------------------------------------------------------------------------
+	//											CAPACITY
+	//-------------------------------------------------------------------------------------------
 
 	bool IsEmpty()
 	{
@@ -108,6 +143,11 @@ public:
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------------------
+	//											MODIFIERS
+	//-------------------------------------------------------------------------------------------
+
+
 	void Clear()
 	{
 		Size = 0;
@@ -117,6 +157,10 @@ public:
 	{
 		if (Size == Capacity)
 		{
+			if (Capacity == 0)
+			{
+				Reserve(1);
+			}
 			Reserve(Capacity * 2);
 		}
 		Array[Size] = Item;
@@ -179,7 +223,50 @@ public:
 		return true;
 	}
 
-	void Resize(const int NewCapacity)
+	void Resize(const int NewSize)
+	{
+		if (Size > Capacity)
+		{
+			Reserve(NewSize);
+		}
+		Size = NewSize;
+	}
+
+	void Resize(const int NewSize, const T Item)
+	{
+		if (Size <= NewSize)
+		{
+			Size = NewSize;
+		}
+		else
+		{
+			if (NewSize > Capacity)
+			{
+				Reserve(NewSize);
+			}
+			for (int i = Size; i < NewSize; i++)
+			{
+				Array[i] = Item;
+			}
+		}
+	}
+
+	void Append(const TDynamicArray<T> OtherArray)
+	{
+		NewSize = Size + OtherArray.GetSize();
+		Reserve(NewSize);
+
+		for (int i = 0; i < OtherArray.GetSize(); i++)
+		{
+			PushBack(OtherArray[i]);
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------
+	//											CUSTOM METHODS
+	//-------------------------------------------------------------------------------------------
+
+	void RefactorCapacityTo(const int NewCapacity)
 	{
 		if (!Reserve(NewCapacity))
 		{
@@ -205,14 +292,21 @@ public:
 		}
 	}
 
-	void Append(TDynamicArray<T> OtherArray)
+	void Fill(const T Item, const bool FillToCapacity)
 	{
-		NewSize = Size + OtherArray.GetSize();
-		Reserve(NewSize);
-
-		for (int i = 0; i < OtherArray.GetSize(); i++)
+		if (FillToCapacity)
 		{
-			PushBack(OtherArray[i]);
+			for (int i = 0, i < Capacity; i++)
+			{
+				Array[i] = Item;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < Size; i++)
+			{
+				Array[i] = Item;
+			}
 		}
 	}
 };
