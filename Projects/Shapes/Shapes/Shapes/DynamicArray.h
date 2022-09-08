@@ -53,10 +53,12 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void operator=(const TDynamicArray<T>& OtherArray)
+	TDynamicArray& operator=(const TDynamicArray<T>& OtherArray)
 	{
 		Clear();
 		Append(OtherArray);
+
+		return *this;
 	}
 
 	//-------------------------------------------------------------------------------------------

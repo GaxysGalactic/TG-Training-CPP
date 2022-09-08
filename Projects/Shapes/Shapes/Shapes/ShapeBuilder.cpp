@@ -95,11 +95,11 @@ void FShapeBuilder::AskForShapesBuiltIn()
 	FShape** Shapes = FillBuiltInArray(NumberOfShapes);
 
 	//Print Array
-	PrintBuiltInArray(Shapes, NumberOfShapes);
+	PrintArray(Shapes, NumberOfShapes);
 	RequestEnterFromInput();
 
 	//Delete
-	DeleteBuiltInArray(Shapes, NumberOfShapes);
+	DeleteArray(Shapes, NumberOfShapes);
 	
 	ActiveCommand = EMenuCommand::MainMenu;
 	
@@ -120,7 +120,7 @@ FShape** FShapeBuilder::FillBuiltInArray(const int NumberOfShapes) const
 }
 
 //-------------------------------------------------------------------------------------------
-void FShapeBuilder::PrintBuiltInArray(FShape** Array, const int NumberOfShapes) const
+void FShapeBuilder::PrintArray(FShape** Array, const int NumberOfShapes) const
 {
 	system("CLS");
 
@@ -134,7 +134,7 @@ void FShapeBuilder::PrintBuiltInArray(FShape** Array, const int NumberOfShapes) 
 }
 
 //-------------------------------------------------------------------------------------------
-void FShapeBuilder::DeleteBuiltInArray(FShape** Array, const int NumberOfShapes) const
+void FShapeBuilder::DeleteArray(FShape** Array, const int NumberOfShapes) const
 {
 	for (int i = 0; i < NumberOfShapes; i++)
 	{
@@ -158,11 +158,11 @@ void FShapeBuilder::AskForShapesStatic()
 	TStaticArray<FShape*, 5> Shapes = FillStaticArray();
 
 	//Print Array
-	PrintStaticArray(Shapes);
+	PrintArray(Shapes);
 	RequestEnterFromInput();
 
 	//Delete Array
-	DeleteStaticArray(Shapes);
+	DeleteArray(Shapes);
 
 	ActiveCommand = EMenuCommand::MainMenu;
 }
@@ -184,7 +184,7 @@ TStaticArray<FShape*, 5> FShapeBuilder::FillStaticArray() const
 }
 
 //-------------------------------------------------------------------------------------------
-void FShapeBuilder::PrintStaticArray(TStaticArray<FShape*, 5>& Array) const
+void FShapeBuilder::PrintArray(TStaticArray<FShape*, 5>& Array) const
 {
 	system("CLS");
 
@@ -198,7 +198,7 @@ void FShapeBuilder::PrintStaticArray(TStaticArray<FShape*, 5>& Array) const
 }
 
 //-------------------------------------------------------------------------------------------
-void FShapeBuilder::DeleteStaticArray(TStaticArray<FShape*, 5>& Array) const
+void FShapeBuilder::DeleteArray(TStaticArray<FShape*, 5>& Array) const
 {
 	for (int i = 0; i < Array.GetSize(); i++)
 	{
@@ -222,11 +222,11 @@ void FShapeBuilder::AskForShapesDynamic()
 	TDynamicArray<FShape*> Shapes = FillDynamicArray();
 
 	//Print Array
-	PrintDynamicArray(Shapes);
+	PrintArray(Shapes);
 	RequestEnterFromInput();
 
 	//Delete
-	DeleteDynamicArray(Shapes);
+	DeleteArray(Shapes);
 
 	ActiveCommand = EMenuCommand::MainMenu;
 }
@@ -256,7 +256,7 @@ TDynamicArray<FShape*> FShapeBuilder::FillDynamicArray() const
 }
 
 //-------------------------------------------------------------------------------------------
-void FShapeBuilder::PrintDynamicArray(TDynamicArray<FShape*>& Array) const
+void FShapeBuilder::PrintArray(TDynamicArray<FShape*>& Array) const
 {
 	system("CLS");
 
@@ -270,7 +270,7 @@ void FShapeBuilder::PrintDynamicArray(TDynamicArray<FShape*>& Array) const
 }
 
 //-------------------------------------------------------------------------------------------
-void FShapeBuilder::DeleteDynamicArray(TDynamicArray<FShape*>& Array) const
+void FShapeBuilder::DeleteArray(TDynamicArray<FShape*>& Array) const
 {
 	for (int i = 0; i < Array.GetSize(); i++)
 	{
@@ -278,6 +278,7 @@ void FShapeBuilder::DeleteDynamicArray(TDynamicArray<FShape*>& Array) const
 		Array[i] = nullptr;
 	}
 }
+
 
 //-------------------------------------------------------------------------------------------
 //									UTILITY FUNCTIONS

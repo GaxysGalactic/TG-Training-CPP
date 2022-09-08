@@ -36,9 +36,9 @@ private:
 
 	class FShape** FillBuiltInArray(const int NumberOfShapes) const;
 
-	void PrintBuiltInArray(FShape** Array, const int NumberOfShapes) const;
+	void PrintArray(FShape** Array, const int NumberOfShapes) const;
 
-	void DeleteBuiltInArray(FShape** Array, const int NumberOfShapes) const;
+	void DeleteArray(FShape** Array, const int NumberOfShapes) const;
 
 	//----------------Static---------------------------------------------
 
@@ -46,9 +46,9 @@ private:
 
 	TStaticArray<FShape*, 5> FillStaticArray() const;
 
-	void PrintStaticArray(TStaticArray<FShape*, 5>& Array) const;
+	void PrintArray(TStaticArray<FShape*, 5>& Array) const;
 
-	void DeleteStaticArray(TStaticArray<FShape*, 5>& Array) const;
+	void DeleteArray(TStaticArray<FShape*, 5>& Array) const;
 
 	//----------------Dynamic-------------------------------------------
 
@@ -56,9 +56,9 @@ private:
 
 	TDynamicArray<FShape*> FillDynamicArray() const;
 
-	void PrintDynamicArray(TDynamicArray<FShape*>& Array) const;
+	void PrintArray(TDynamicArray<FShape*>& Array) const;
 
-	void DeleteDynamicArray(TDynamicArray<FShape*>& Array) const;
+	void DeleteArray(TDynamicArray<FShape*>& Array) const;
 
 	//----------------Utilities-------------------------------------------
 
