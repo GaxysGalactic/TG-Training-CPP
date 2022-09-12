@@ -74,4 +74,13 @@ public:
 		return Tail->Element;
 	}
 
+	bool IsEmpty() const
+	{
+		return Size == 0;
+	}
+
+	int GetSize() const
+	{
+		return Size;
+	}
 };
