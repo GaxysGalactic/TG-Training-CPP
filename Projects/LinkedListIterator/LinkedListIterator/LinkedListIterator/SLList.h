@@ -12,18 +12,16 @@ private:
 		FNode* Next;
 	};
 
-	FNode* Head;
-	FNode* Tail;
+	FNode* Head = nullptr;
+	FNode* Tail = nullptr;
 
-	int Size;
+	int Size = 0;
 
 public:
 
 	FSLList()
 	{
-		Head = nullptr;
-		Tail = nullptr;
-		Size = 0;
+
 	}
 
 	FSLList(const T& FirstElement)
@@ -36,9 +34,11 @@ public:
 
 	FSLList(const FSLList<T>& OtherList)
 	{
+		FNode* Current = OtherList.Head;
 		for (int i = 0; i < OtherList.Size; i++)
 		{
-			AddTail(OtherList[i]);
+			AddTail(Current->Element);
+			Current = Current->Next;
 		}
 	}
 
