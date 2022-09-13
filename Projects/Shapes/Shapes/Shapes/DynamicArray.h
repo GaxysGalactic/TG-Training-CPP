@@ -19,6 +19,7 @@ public:
 		
 	}
 
+	//-------------------------------------------------------------------------------------------
 	TDynamicArray(const int InCapacity)
 	{
 		Capacity = InCapacity;
@@ -190,7 +191,10 @@ public:
 	//-------------------------------------------------------------------------------------------
 	void PopBack()
 	{
-		Size--;
+		if (Size > 0)
+		{
+			Size--;
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -234,7 +238,6 @@ public:
 		if (Index == Size)
 		{
 			PopBack();
-			Size--;
 			return true;
 		}
 
@@ -279,8 +282,7 @@ public:
 	//-------------------------------------------------------------------------------------------
 	void Append(const TDynamicArray<T>& OtherArray)
 	{
-		int NewSize = Size + OtherArray.GetSize();
-		Reserve(NewSize);
+		Reserve(Size + OtherArray.GetSize());
 
 		for (int i = 0; i < OtherArray.GetSize(); i++)
 		{
