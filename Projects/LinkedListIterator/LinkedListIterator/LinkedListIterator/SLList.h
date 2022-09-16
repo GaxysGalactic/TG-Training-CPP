@@ -49,6 +49,18 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
+	TSLList& operator=(const TSLList<T>& OtherList)
+	{
+		Clear();
+		FNode* Current = OtherList.Head;
+		for (int i = 0; i < OtherList.Size; i++)
+		{
+			AddTail(Current->Element);
+			Current = Current->Next;
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------
 	~TSLList()
 	{
 		Clear();
@@ -254,7 +266,7 @@ public:
 		FNode* Current = Head;
 		for (int i = 0; i < Size; i++)
 		{
-			if (Current->Element == SomeFunction())
+			if (SomeFunction(Current->Element))
 			{
 				FilteredList.AddTail(Current->Element);
 			}
@@ -272,7 +284,7 @@ public:
 			T Element = Current->Element;
 			Current = Current->Next;
 
-			if (Element == SomeFunction())
+			if (SomeFunction(Current->Element))
 			{
 				Remove(i);
 				i--;

@@ -27,4 +27,8 @@ int main()
 	{
 		std::cout << SomeInt << std::endl;
 	}
+
+	//auto a = List2.FindByPredicate([](const int SomeInt) { return SomeInt > 1; });
+	//TSLList<int> List3 = List2.FilterByPredicate([](const int SomeInt) { return SomeInt > 1; });
+	//TSLList<int> List4 = List2.DeleteAllByPredicate([](const int SomeInt) { return SomeInt > 1; });
 }
