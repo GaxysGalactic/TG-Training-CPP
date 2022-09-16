@@ -10,7 +10,7 @@ private:
 	struct FNode
 	{
 		T Element;
-		FNode* Next;
+		FNode* Next = nullptr;
 	};
 
 	FNode* Head = nullptr;
@@ -58,6 +58,7 @@ public:
 			AddTail(Current->Element);
 			Current = Current->Next;
 		}
+		return *this;
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -161,13 +162,17 @@ public:
 	//-------------------------------------------------------------------------------------------
 	void Insert(const T& NewElement, const int Index)
 	{
-		if (Index < 0 || Index >= Size) //Bounds Checking
+		if (Index < 0 || Index > Size) //Bounds Checking
 		{
 			return;
 		}
 		else if (Index == 0) //Head
 		{
 			AddHead(NewElement);
+		}
+		else if (Index == Size)
+		{
+			AddTail(NewElement);
 		}
 		else if(Index < Size)
 		{
