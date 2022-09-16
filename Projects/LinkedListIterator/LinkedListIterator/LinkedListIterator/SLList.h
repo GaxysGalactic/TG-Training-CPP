@@ -233,50 +233,52 @@ public:
 	//								TEMPLATES & PREDICATES
 	//-------------------------------------------------------------------------------------------
 	template<typename Pred>
-	void ForEach(const Pred& SomeFunction)
+	void ForEach(const Pred& Predicate)
 	{
 		FNode* Current = Head;
 		for (int i = 0; i < Size; i++)
 		{
-			SomeFunction(Current->Element);
+			Predicate(Current->Element);
 			Current = Current->Next;
 		}
 	}
 
 	//-------------------------------------------------------------------------------------------
 	template<typename Pred>
-	T& FindByPredicate(const Pred& SomeFunction)
+	T& FindByPredicate(const Pred& Predicate)
 	{
 		FNode* Current = Head;
 		for (int i = 0; i < Size; i++)
 		{
-			if (Current->Element == SomeFunction())
+			if (Predicate(Current->Element))
 			{
-				return Current->Element;
+				return &Current->Element;
 			}
 			Current = Current->Next;
 		}
+		return nullptr;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	template<typename Pred>
-	TSLList<T> FilterByPredicate(const Pred& SomeFunction)
+	TSLList<T> FilterByPredicate(const Pred& Predicate)
 	{
 		TSLList<T> FilteredList;
 		FNode* Current = Head;
 		for (int i = 0; i < Size; i++)
 		{
-			if (SomeFunction(Current->Element))
+			if (Predicate(Current->Element))
 			{
 				FilteredList.AddTail(Current->Element);
 			}
 			Current = Current->Next;
 		}
+		return FilteredList;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	template<typename Pred>
-	TSLList<T> RemoveAllByPredicate(const Pred& SomeFunction)
+	void RemoveAllByPredicate(const Pred& Predicate)
 	{
 		FNode* Current = Head;
 		for (int i = 0; i < Size; i++)
@@ -284,7 +286,7 @@ public:
 			T Element = Current->Element;
 			Current = Current->Next;
 
-			if (SomeFunction(Current->Element))
+			if (Predicate(Current->Element))
 			{
 				Remove(i);
 				i--;
@@ -295,7 +297,7 @@ public:
 	//-------------------------------------------------------------------------------------------
 	//										ITERATOR
 	//-------------------------------------------------------------------------------------------
-	class Iterator
+	class FIterator
 	{
 	private:
 
@@ -303,12 +305,12 @@ public:
 
 	public:
 
-		Iterator(FNode* InCurrent)
+		FIterator(FNode* InCurrent)
 		{
 			Current = InCurrent;
 		}
 
-		Iterator& operator++()
+		FIterator& operator++()
 		{
 			Current = Current->Next;
 			return *this;
@@ -324,12 +326,12 @@ public:
 			return Current->Element;
 		}
 
-		bool operator!=(Iterator Other)
+		bool operator!=(FIterator Other)
 		{
 			return Current != Other.Current;
 		}
 
-		const bool operator!=(Iterator Other) const
+		const bool operator!=(FIterator Other) const
 		{
 			return Current != Other.Current;
 		}
@@ -337,15 +339,15 @@ public:
 	};
 
 	//-------------------------------------------------------------------------------------------
-	Iterator begin()
+	FIterator begin()
 	{
-		return Iterator(Head);
+		return FIterator(Head);
 	}
 
 	//-------------------------------------------------------------------------------------------
-	Iterator end()
+	FIterator end()
 	{
-		return Iterator(nullptr);
+		return FIterator(nullptr);
 	}
 
 
