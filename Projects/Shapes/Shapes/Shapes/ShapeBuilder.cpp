@@ -141,7 +141,7 @@ void FShapeBuilder::DeleteArray(FShape** Array, const int NumberOfShapes) const
 		delete Array[i];
 		Array[i] = nullptr;
 	}
-	delete Array;
+	delete[] Array;
 	Array = nullptr;
 }
 
@@ -155,7 +155,8 @@ void FShapeBuilder::AskForShapesStatic()
 	std::cout << "You will now be asked to provide information for 5 Shapes." << std::endl;
 
 	//Fill Array
-	TStaticArray<FShape*, 5> Shapes = FillStaticArray();
+	TStaticArray<FShape*, 5> Shapes; 
+	FillStaticArray(Shapes);
 
 	//Print Array
 	PrintArray(Shapes);
@@ -168,23 +169,19 @@ void FShapeBuilder::AskForShapesStatic()
 }
 
 //-------------------------------------------------------------------------------------------
-TStaticArray<FShape*, 5> FShapeBuilder::FillStaticArray() const
+void FShapeBuilder::FillStaticArray(TStaticArray<FShape*, 5>& OutArray) const
 {
-	TStaticArray<FShape*, 5> Shapes;
-
 	RequestEnterFromInput();
 
 	for (int i = 0; i < 5; i++)
 	{
 		system("CLS");
-		Shapes[i] = CreateShape();
+		OutArray[i] = CreateShape();
 	}
-
-	return Shapes;
 }
 
 //-------------------------------------------------------------------------------------------
-void FShapeBuilder::PrintArray(TStaticArray<FShape*, 5>& Array) const
+void FShapeBuilder::PrintArray(const TStaticArray<FShape*, 5>& Array) const
 {
 	system("CLS");
 
@@ -219,7 +216,8 @@ void FShapeBuilder::AskForShapesDynamic()
 	RequestEnterFromInput();
 
 	//Fill Array
-	TDynamicArray<FShape*> Shapes = FillDynamicArray();
+	TDynamicArray<FShape*> Shapes;
+	FillDynamicArray(Shapes);
 
 	//Print Array
 	PrintArray(Shapes);
@@ -232,31 +230,26 @@ void FShapeBuilder::AskForShapesDynamic()
 }
 
 //-------------------------------------------------------------------------------------------
-TDynamicArray<FShape*> FShapeBuilder::FillDynamicArray() const
+void FShapeBuilder::FillDynamicArray(TDynamicArray<FShape*>& OutArray) const
 {
-	TDynamicArray<FShape*> Shapes;
-
-
-	int Continue = 1;
+	bool Continue;
 	do
 	{
 		system("CLS");
 
 		FShape* Shape = CreateShape();
-		Shapes.PushBack(Shape);
+		OutArray.PushBack(Shape);
 
 		std::cout << "Would you like to continue adding more shapes?" << std::endl;
 		std::cout << "1 - Yes!!" << std::endl;
 		std::cout << "2 - No, please print them." << std::endl;
 		
-		Continue = GetValidIntInput();
-	} while (Continue == 1);
-
-	return Shapes;
+		Continue = GetValidBoolInput(1, 2);
+	} while (Continue);
 }
 
 //-------------------------------------------------------------------------------------------
-void FShapeBuilder::PrintArray(TDynamicArray<FShape*>& Array) const
+void FShapeBuilder::PrintArray(const TDynamicArray<FShape*>& Array) const
 {
 	system("CLS");
 
@@ -366,4 +359,18 @@ int FShapeBuilder::GetValidIntInput(const int LowerBound, const int UpperBound) 
 	return Option;
 }
 
+//-------------------------------------------------------------------------------------------
+bool FShapeBuilder::GetValidBoolInput(const int ValueTrue, const int ValueFalse) const
+{
+	int Option;
+	std::cin >> Option;
+	while (std::cin.fail() || (Option != ValueTrue && Option != ValueFalse))
+	{
+		std::cin.clear();
+		RequestEnterFromInput();
+		std::cout << "That is not a valid integer or within the intended range. Please try again." << std::endl;
+		std::cin >> Option;
+	}
+	return Option == ValueTrue;
+}
 

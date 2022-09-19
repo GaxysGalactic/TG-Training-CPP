@@ -44,9 +44,9 @@ private:
 
 	void AskForShapesStatic();
 
-	TStaticArray<FShape*, 5> FillStaticArray() const;
+	void FillStaticArray(TStaticArray<FShape*, 5>& OutArray) const;
 
-	void PrintArray(TStaticArray<FShape*, 5>& Array) const;
+	void PrintArray(const TStaticArray<FShape*, 5>& Array) const;
 
 	void DeleteArray(TStaticArray<FShape*, 5>& Array) const;
 
@@ -54,9 +54,9 @@ private:
 
 	void AskForShapesDynamic();
 
-	TDynamicArray<FShape*> FillDynamicArray() const;
+	void FillDynamicArray(TDynamicArray<FShape*>& OutArray) const;
 
-	void PrintArray(TDynamicArray<FShape*>& Array) const;
+	void PrintArray(const TDynamicArray<FShape*>& Array) const;
 
 	void DeleteArray(TDynamicArray<FShape*>& Array) const;
 
@@ -71,5 +71,7 @@ private:
 	int GetValidIntInput() const;
 
 	int GetValidIntInput(const int LowerBound, const int UpperBound) const;
+
+	bool GetValidBoolInput(const int ValueTrue, const int ValueFalse) const;
 
 };
