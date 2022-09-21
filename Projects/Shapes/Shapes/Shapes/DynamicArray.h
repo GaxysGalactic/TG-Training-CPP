@@ -331,4 +331,24 @@ public:
 			}
 		}
 	}
+
+	//-------------------------------------------------------------------------------------------
+	void Resize(const int NewSize, const T& Item)
+	{
+		if (Size <= NewSize)
+		{
+			Size = NewSize;
+		}
+		else
+		{
+			if (NewSize > Capacity)
+			{
+				Reserve(NewSize);
+			}
+			for (int i = Size; i < NewSize; i++)
+			{
+				Array[i] = Item;
+			}
+		}
+	}
 };
