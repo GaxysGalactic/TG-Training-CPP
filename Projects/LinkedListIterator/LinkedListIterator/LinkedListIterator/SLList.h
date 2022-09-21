@@ -235,12 +235,12 @@ public:
 		FNode* NewHead = Head->Next;
 		delete Head;
 		Head = NewHead;
-		--Size;
 
 		if (Size == 1)
 		{
 			Tail = nullptr;
 		}
+		--Size;
 	}
 
 	//-------------------------------------------------------------------------------------------

@@ -87,9 +87,11 @@ public:
 	//-------------------------------------------------------------------------------------------
 	TDLList(const TDLList<T>& OtherList)
 	{
-		for (T& Current : OtherList)
+		FNode* Current = OtherList.Head;
+		for (int i = 0; i < OtherList.Size; i++)
 		{
-			AddTail(Current);
+			AddTail(Current->Data);
+			Current = Current->Next;
 		}
 	}
 
@@ -97,9 +99,11 @@ public:
 	TDLList& operator=(const TDLList<T>& OtherList)
 	{
 		Clear();
-		for (T& Current : OtherList)
+		FNode* Current = OtherList.Head;
+		for (int i = 0; i < OtherList.Size; i++)
 		{
-			AddTail(Current);
+			AddTail(Current->Data);
+			Current = Current->Next;
 		}
 		return *this;
 	}
@@ -172,13 +176,16 @@ public:
 		FNode* Node = new FNode;
 		Node->Data = NewData;
 		Node->Next = Head;
-		Head->Previous = Node;
-		Head = Node;
 
-		if (!Tail)
+		if (!Head)
 		{
-			Tail = Head;
+			Tail = Node;
 		}
+		else
+		{
+			Head->Previous = Node;
+		}
+		Head = Node;
 		++Size;
 	}
 
@@ -197,7 +204,7 @@ public:
 		}
 		else
 		{
-			AddHead(NewElement);
+			AddHead(NewData);
 		}
 	}
 
@@ -381,7 +388,7 @@ private:
 		else
 		{
 			Current = Tail;
-			for (int i = Size; i > Index, --i)
+			for (int i = Size-1; i > Index; --i)
 			{
 				Current = Current->Previous;
 			}
