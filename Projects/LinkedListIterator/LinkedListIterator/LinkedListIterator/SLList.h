@@ -230,6 +230,20 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
+	void RemoveHead()
+	{
+		FNode* NewHead = Head->Next;
+		delete Head;
+		Head = NewHead;
+		--Size;
+
+		if (Size == 1)
+		{
+			Tail = nullptr;
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------
 	void Remove(const int Index)
 	{
 		if (Index < 0 || Index >= Size) //Bounds Checking
