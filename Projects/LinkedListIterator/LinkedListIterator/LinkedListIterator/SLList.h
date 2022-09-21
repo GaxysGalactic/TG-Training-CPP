@@ -4,6 +4,48 @@
 template <typename T>
 class TSLList
 {
+public:
+
+	class FIterator
+	{
+	private:
+
+		FNode* Current = nullptr;
+
+	public:
+
+		FIterator(FNode* InCurrent)
+		{
+			Current = InCurrent;
+		}
+
+		FIterator& operator++()
+		{
+			Current = Current->Next;
+			return *this;
+		}
+
+		T& operator*()
+		{
+			return Current->Element;
+		}
+
+		const T& operator*() const
+		{
+			return Current->Element;
+		}
+
+		bool operator!=(FIterator Other)
+		{
+			return Current != Other.Current;
+		}
+
+		const bool operator!=(FIterator Other) const
+		{
+			return Current != Other.Current;
+		}
+
+	};
 
 private:
 
@@ -301,48 +343,6 @@ public:
 
 	//-------------------------------------------------------------------------------------------
 	//										ITERATOR
-	//-------------------------------------------------------------------------------------------
-	class FIterator
-	{
-	private:
-
-		FNode* Current = nullptr;
-
-	public:
-
-		FIterator(FNode* InCurrent)
-		{
-			Current = InCurrent;
-		}
-
-		FIterator& operator++()
-		{
-			Current = Current->Next;
-			return *this;
-		}
-
-		T& operator*()
-		{
-			return Current->Element;
-		}
-
-		const T& operator*() const
-		{
-			return Current->Element;
-		}
-
-		bool operator!=(FIterator Other)
-		{
-			return Current != Other.Current;
-		}
-
-		const bool operator!=(FIterator Other) const
-		{
-			return Current != Other.Current;
-		}
-
-	};
-
 	//-------------------------------------------------------------------------------------------
 	FIterator begin()
 	{

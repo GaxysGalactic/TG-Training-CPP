@@ -125,7 +125,7 @@ int main()
 	std::cout << "\nInserting Elements...!\n";
 	List.Insert("Is", 0);
 	List.Insert("?", 4);
-	List.Insert("Dumb", 2);
+	List.Insert("Dumb", 3);
 	PrintList(List);
 
 	std::cout << "\nInserting at invalid indices... shouldn't change anything!\n";

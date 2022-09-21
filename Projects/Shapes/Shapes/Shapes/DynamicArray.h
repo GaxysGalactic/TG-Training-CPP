@@ -257,26 +257,6 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void Resize(const int NewSize, const T& Item)
-	{
-		if (Size <= NewSize)
-		{
-			Size = NewSize;
-		}
-		else
-		{
-			if (NewSize > Capacity)
-			{
-				Reserve(NewSize);
-			}
-			for (int i = Size; i < NewSize; i++)
-			{
-				Array[i] = Item;
-			}
-		}
-	}
-
-	//-------------------------------------------------------------------------------------------
 	void Append(const TDynamicArray<T>& OtherArray)
 	{
 		int NewSize = Size + OtherArray.GetSize();
@@ -331,6 +311,26 @@ public:
 		else
 		{
 			for (int i = 0; i < Size; i++)
+			{
+				Array[i] = Item;
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------
+	void Resize(const int NewSize, const T& Item)
+	{
+		if (Size <= NewSize)
+		{
+			Size = NewSize;
+		}
+		else
+		{
+			if (NewSize > Capacity)
+			{
+				Reserve(NewSize);
+			}
+			for (int i = Size; i < NewSize; i++)
 			{
 				Array[i] = Item;
 			}
