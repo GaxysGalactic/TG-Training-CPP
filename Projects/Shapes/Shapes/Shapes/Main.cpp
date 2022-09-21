@@ -3,6 +3,6 @@
 
 int main()
 {
-	FShapeBuilder ShapeBuilderApp = FShapeBuilder();
+	FShapeBuilder ShapeBuilderApp;
 	ShapeBuilderApp.RunApp();
 }
