@@ -1,15 +1,18 @@
 #pragma once
-#include <functional>
 
 template <typename T>
-class TSLList
+class TDLList
 {
+//-------------------------------------------------------------------------------------------
+//											MEMBERS
+//-------------------------------------------------------------------------------------------
 private:
 
 	struct FNode
 	{
-		T Element;
+		T Data;
 		FNode* Next = nullptr;
+		FNode* Previous = nullptr;
 	};
 
 	FNode* Head = nullptr;
@@ -40,12 +43,12 @@ public:
 
 		T& operator*()
 		{
-			return Current->Element;
+			return Current->Data;
 		}
 
 		const T& operator*() const
 		{
-			return Current->Element;
+			return Current->Data;
 		}
 
 		bool operator!=(FIterator Other)
@@ -57,54 +60,52 @@ public:
 		{
 			return Current != Other.Current;
 		}
-
 	};
 
+//-------------------------------------------------------------------------------------------
+//											FUNCTIONS
+//-------------------------------------------------------------------------------------------
 public:
 
 	//-------------------------------------------------------------------------------------------
 	//								CONSTRUCTORS & DESTRUCTORS
 	//-------------------------------------------------------------------------------------------
-	TSLList()
+	TDLList()
 	{
 
 	}
 
 	//-------------------------------------------------------------------------------------------
-	TSLList(const T& FirstElement)
+	TDLList(const T& InData)
 	{
 		Head = new FNode();
-		Head -> Element = FirstElement;
+		Head->Data = InData;
 		Tail = Head;
 		Size = 1;
 	}
 
 	//-------------------------------------------------------------------------------------------
-	TSLList(const TSLList<T>& OtherList)
+	TDLList(const TDLList<T>& OtherList)
 	{
-		FNode* Current = OtherList.Head;
-		for (int i = 0; i < OtherList.Size; i++)
+		for (T& Current : OtherList)
 		{
-			AddTail(Current->Element);
-			Current = Current->Next;
+			AddTail(Current);
 		}
 	}
 
 	//-------------------------------------------------------------------------------------------
-	TSLList& operator=(const TSLList<T>& OtherList)
+	TDLList& operator=(const TDLList<T>& OtherList)
 	{
 		Clear();
-		FNode* Current = OtherList.Head;
-		for (int i = 0; i < OtherList.Size; i++)
+		for (T& Current : OtherList)
 		{
-			AddTail(Current->Element);
-			Current = Current->Next;
+			AddTail(Current);
 		}
 		return *this;
 	}
 
 	//-------------------------------------------------------------------------------------------
-	~TSLList()
+	~TDLList()
 	{
 		Clear();
 	}
@@ -115,38 +116,38 @@ public:
 	T& operator[](const int Index)
 	{
 		FNode* Node = GetNode(Index);
-		return Node->Element;
+		return Node->Data;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	const T& operator[](const int Index) const
 	{
 		FNode* Node = GetNode(Index);
-		return Node->Element;
+		return Node->Data;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	T& GetHead()
 	{
-		return Head->Element;
+		return Head->Data;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	const T& GetHead() const
 	{
-		return Head->Element;
+		return Head->Data;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	T& GetTail()
 	{
-		return Tail->Element;
+		return Tail->Data;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	const T& GetTail() const
 	{
-		return Tail->Element;
+		return Tail->Data;
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -163,45 +164,45 @@ public:
 		return Size;
 	}
 
-
 	//-------------------------------------------------------------------------------------------
 	//										MODIFIERS
 	//-------------------------------------------------------------------------------------------
-	void AddHead(const T& NewElement)
+	void AddHead(const T& NewData)
 	{
 		FNode* Node = new FNode;
-		Node->Element = NewElement;
+		Node->Data = NewData;
 		Node->Next = Head;
+		Head->Previous = Node;
 		Head = Node;
 
 		if (!Tail)
 		{
 			Tail = Head;
 		}
-		Size++;
+		++Size;
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void AddTail(const T& NewElement)
+	void AddTail(const T& NewData)
 	{
 		if (Tail)
 		{
 			FNode* Node = new FNode;
-			Node->Element = NewElement;
-
+			Node->Data = NewData;
+			Node->Previous = Tail;
 			Tail->Next = Node;
 			Tail = Node;
 
-			Size++;
+			++Size;
 		}
-		else //If Tail doesn't exist, there is no Head either
+		else
 		{
 			AddHead(NewElement);
 		}
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void Insert(const T& NewElement, const int Index)
+	void Insert(const T& NewData, const int Index)
 	{
 		if (Index < 0 || Index > Size) //Bounds Checking
 		{
@@ -209,24 +210,40 @@ public:
 		}
 		else if (Index == 0) //Head
 		{
-			AddHead(NewElement);
+			AddHead(NewData);
 		}
-		else if (Index == Size)
+		else if (Index == Size) //Tail
 		{
-			AddTail(NewElement);
+			AddTail(NewData);
 		}
-		else if(Index < Size)
+		else if (Index < Size)
 		{
-			FNode* Previous = GetNode(Index-1);
+			FNode* Current = GetNode(Index);
+			FNode* NewNode = new FNode;
 
-			FNode* NewNode = new FNode();
-			NewNode->Element = NewElement;
-			NewNode->Next = Previous->Next;
+			NewNode->Data = NewData;
+			NewNode->Next = Current;
+			NewNode->Previous = Current->Previous;
 
-			Previous->Next = NewNode;
+			Current->Previous->Next = NewNode;
+			Current->Previous = NewNode;
 
 			Size++;
-		}	
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------
+	void RemoveHead()
+	{
+		FNode* NewHead = Head->Next;
+		delete Head;
+		Head = NewHead;
+		--Size;
+
+		if (Size == 1)
+		{
+			Tail = nullptr;
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -238,105 +255,28 @@ public:
 		}
 		else if (Index == 0) //Head
 		{
-			FNode* NewHead = Head->Next;
-			delete Head;
-			Head = NewHead;
-
-			if (Size == 1)
-			{
-				Tail = nullptr;
-			}
+			RemoveHead();
 		}
 		else
 		{
-			FNode* Previous = GetNode(Index - 1);
-			FNode* Current = Previous->Next;
-			Previous->Next = Current->Next;
-			delete Current;
+			FNode* Current = GetNode(Index);
+			Current->Previous->Next = Current->Next;
 
 			if (Index == Size - 1)
 			{
-				Tail = Previous;
+				Tail = Current->Previous;
 			}
+			delete Current;
+			--Size;
 		}
-		Size--;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	void Clear()
 	{
-		for (int i = 0; i < Size; i++)
+		while (Head)
 		{
-			FNode* Current = Head;
-			Head = Head->Next;
-			delete Current;
-		}
-		Tail = nullptr;
-		Size = 0;
-	}
-
-	//-------------------------------------------------------------------------------------------
-	//								TEMPLATES & PREDICATES
-	//-------------------------------------------------------------------------------------------
-	template<typename Pred>
-	void ForEach(const Pred& Predicate)
-	{
-		FNode* Current = Head;
-		for (int i = 0; i < Size; i++)
-		{
-			Predicate(Current->Element);
-			Current = Current->Next;
-		}
-	}
-
-	//-------------------------------------------------------------------------------------------
-	template<typename Pred>
-	T& FindByPredicate(const Pred& Predicate)
-	{
-		FNode* Current = Head;
-		for (int i = 0; i < Size; i++)
-		{
-			if (Predicate(Current->Element))
-			{
-				return &Current->Element;
-			}
-			Current = Current->Next;
-		}
-		return nullptr;
-	}
-
-	//-------------------------------------------------------------------------------------------
-	template<typename Pred>
-	TSLList<T> FilterByPredicate(const Pred& Predicate)
-	{
-		TSLList<T> FilteredList;
-		FNode* Current = Head;
-		for (int i = 0; i < Size; i++)
-		{
-			if (Predicate(Current->Element))
-			{
-				FilteredList.AddTail(Current->Element);
-			}
-			Current = Current->Next;
-		}
-		return FilteredList;
-	}
-
-	//-------------------------------------------------------------------------------------------
-	template<typename Pred>
-	void RemoveAllByPredicate(const Pred& Predicate)
-	{
-		FNode* Current = Head;
-		for (int i = 0; i < Size; i++)
-		{
-			T Element = Current->Element;
-			Current = Current->Next;
-
-			if (Predicate(Current->Element))
-			{
-				Remove(i);
-				i--;
-			}
+			RemoveHead();
 		}
 	}
 
@@ -354,7 +294,65 @@ public:
 		return FIterator(nullptr);
 	}
 
+	//-------------------------------------------------------------------------------------------
+	//								TEMPLATES & PREDICATES
+	//-------------------------------------------------------------------------------------------
+	template<typename Pred>
+	void ForEach(const Pred& Predicate)
+	{
+		for (T& Current : *this)
+		{
+			Predicate(Current);
+		}
+	}
 
+	//-------------------------------------------------------------------------------------------
+	template<typename Pred>
+	T& FindByPredicate(const Pred& Predicate)
+	{
+		for (T& Current : *this)
+		{
+			if (Predicate(Current))
+			{
+				return Current;
+			}
+		}
+		return nullptr;
+	}
+
+	//-------------------------------------------------------------------------------------------
+	template<typename Pred>
+	TDLList<T> FilterByPredicate(const Pred& Predicate)
+	{
+		TDLList<T> FilteredList;
+
+		for (T& Current : *this)
+		{
+			if (Predicate(Current))
+			{
+				FilteredList.AddTail(Current);
+			}
+		}
+		return FilteredList;
+	}
+
+	//-------------------------------------------------------------------------------------------
+	template<typename Pred>
+	void RemoveAllByPredicate(const Pred& Predicate)
+	{
+		FNode* Current = Head;
+		for (int i = 0; i < Size; i++)
+		{
+			T Data = Current->Data;
+			Current = Current->Next;
+
+			if (Predicate(Current->Data))
+			{
+				Remove(i);
+				i--;
+			}
+		}
+	}
 
 private:
 
@@ -363,10 +361,22 @@ private:
 	//-------------------------------------------------------------------------------------------
 	FNode* GetNode(const int Index)
 	{
-		FNode* Current = Head;
-		for (int i = 0; i < Index; i++)
+		FNode* Current;
+		if (Index < Size / 2)
 		{
-			Current = Current->Next;
+			Current = Head;
+			for (int i = 0; i < Index; ++i)
+			{
+				Current = Current->Next;
+			}
+		}
+		else
+		{
+			Current = Tail;
+			for (int i = Size; i > Index, --i)
+			{
+				Current = Current->Previous;
+			}
 		}
 		return Current;
 	}
