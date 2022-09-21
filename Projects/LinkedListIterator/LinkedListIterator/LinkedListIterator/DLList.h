@@ -238,12 +238,16 @@ public:
 		FNode* NewHead = Head->Next;
 		delete Head;
 		Head = NewHead;
-		--Size;
 
 		if (Size == 1)
 		{
 			Tail = nullptr;
 		}
+		else
+		{
+			Head->Previous = nullptr;
+		}
+		--Size;
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -265,6 +269,10 @@ public:
 			if (Index == Size - 1)
 			{
 				Tail = Current->Previous;
+			}
+			else
+			{
+				Current->Next->Previous = Current->Previous;
 			}
 			delete Current;
 			--Size;
