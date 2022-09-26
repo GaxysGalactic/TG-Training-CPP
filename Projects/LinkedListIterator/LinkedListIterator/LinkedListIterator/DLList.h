@@ -10,9 +10,18 @@ private:
 
 	struct FNode
 	{
+
+		FNode* Previous = nullptr;
 		T Data;
 		FNode* Next = nullptr;
-		FNode* Previous = nullptr;
+		
+		FNode() = default;
+
+		FNode(FNode* InPrevious, const T& InData, FNode* InNext)
+			: Previous(InPrevious), Data(InData), Next(InNext)
+		{
+
+		}
 	};
 
 	FNode* Head = nullptr;
@@ -78,8 +87,7 @@ public:
 	//-------------------------------------------------------------------------------------------
 	TDLList(const T& InData)
 	{
-		Head = new FNode();
-		Head->Data = InData;
+		Head = new FNode(nullptr, InData, nullptr);
 		Tail = Head;
 		Size = 1;
 	}
@@ -119,15 +127,13 @@ public:
 	//-------------------------------------------------------------------------------------------
 	T& operator[](const int Index)
 	{
-		FNode* Node = GetNode(Index);
-		return Node->Data;
+		return GetNode(Index)->Data;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	const T& operator[](const int Index) const
 	{
-		FNode* Node = GetNode(Index);
-		return Node->Data;
+		return GetNode(Index)->Data;
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -173,9 +179,7 @@ public:
 	//-------------------------------------------------------------------------------------------
 	void AddHead(const T& NewData)
 	{
-		FNode* Node = new FNode;
-		Node->Data = NewData;
-		Node->Next = Head;
+		FNode* Node = new FNode(nullptr, NewData, Head);
 
 		if (!Head)
 		{
@@ -194,9 +198,7 @@ public:
 	{
 		if (Tail)
 		{
-			FNode* Node = new FNode;
-			Node->Data = NewData;
-			Node->Previous = Tail;
+			FNode* Node = new FNode(Tail, NewData, nullptr);
 			Tail->Next = Node;
 			Tail = Node;
 
@@ -223,14 +225,11 @@ public:
 		{
 			AddTail(NewData);
 		}
-		else if (Index < Size)
+		else
 		{
 			FNode* Current = GetNode(Index);
-			FNode* NewNode = new FNode;
 
-			NewNode->Data = NewData;
-			NewNode->Next = Current;
-			NewNode->Previous = Current->Previous;
+			FNode* NewNode = new FNode(Current->Previous, NewData, Current);
 
 			Current->Previous->Next = NewNode;
 			Current->Previous = NewNode;
@@ -273,7 +272,7 @@ public:
 			FNode* Current = GetNode(Index);
 			Current->Previous->Next = Current->Next;
 
-			if (Index == Size - 1)
+			if (Current == Tail)
 			{
 				Tail = Current->Previous;
 			}
