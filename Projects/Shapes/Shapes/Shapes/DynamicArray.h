@@ -19,6 +19,7 @@ public:
 		
 	}
 
+	//-------------------------------------------------------------------------------------------
 	TDynamicArray(const int InCapacity)
 	{
 		Capacity = InCapacity;
@@ -122,11 +123,11 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	bool Reserve(const int NewCapacity)
+	void Reserve(const int NewCapacity)
 	{
 		if (NewCapacity <= Capacity)
 		{
-			return false;
+			return;
 		}
 
 		T* NewArray = new T[NewCapacity];
@@ -139,15 +140,14 @@ public:
 		Array = NewArray;
 
 		Capacity = NewCapacity;
-		return true;
 	}
 
 	//-------------------------------------------------------------------------------------------
-	bool ShrinkToFit()
+	void ShrinkToFit()
 	{
 		if (Capacity == Size)
 		{
-			return false;
+			return;
 		}
 
 		T* NewArray = new T[Size];
@@ -160,7 +160,6 @@ public:
 		Array = NewArray;
 
 		Capacity = Size;
-		return true;
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -190,7 +189,10 @@ public:
 	//-------------------------------------------------------------------------------------------
 	void PopBack()
 	{
-		Size--;
+		if (Size > 0)
+		{
+			Size--;
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -210,6 +212,10 @@ public:
 
 		if (Size == Capacity)
 		{
+			if (Capacity == 0)
+			{
+				Reserve(1);
+			}
 			Reserve(Capacity * 2);
 		}
 		
@@ -226,15 +232,14 @@ public:
 	//-------------------------------------------------------------------------------------------
 	bool Erase(const int Index)
 	{
-		if (Index > Size)
+		if (Index >= Size)
 		{
 			return false;
 		}
 
-		if (Index == Size)
+		if (Index == Size - 1)
 		{
 			PopBack();
-			Size--;
 			return true;
 		}
 
@@ -259,8 +264,7 @@ public:
 	//-------------------------------------------------------------------------------------------
 	void Append(const TDynamicArray<T>& OtherArray)
 	{
-		int NewSize = Size + OtherArray.GetSize();
-		Reserve(NewSize);
+		Reserve(Size + OtherArray.GetSize());
 
 		for (int i = 0; i < OtherArray.GetSize(); i++)
 		{
@@ -299,18 +303,29 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void Fill(const T& Item, const bool FillToCapacity)
+	void Fill(const T& Item, const bool bFillToCapacity)
 	{
-		if (FillToCapacity)
+		const int FillLimit = bFillToCapacity ? Capacity : Size;
+		for (int i = 0; i < FillLimit; ++i)
 		{
-			for (int i = 0; i < Capacity; i++)
-			{
-				Array[i] = Item;
-			}
+			Array[i] = Item;
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------
+	void Resize(const int NewSize, const T& Item)
+	{
+		if (Size <= NewSize)
+		{
+			Size = NewSize;
 		}
 		else
 		{
-			for (int i = 0; i < Size; i++)
+			if (NewSize > Capacity)
+			{
+				Reserve(NewSize);
+			}
+			for (int i = Size; i < NewSize; i++)
 			{
 				Array[i] = Item;
 			}

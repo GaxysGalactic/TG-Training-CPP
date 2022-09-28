@@ -4,7 +4,7 @@ template<typename T, int N>
 class TStaticArray
 {
 private:
-	int Size = N;
+	const int Size = N;
 	T Array[N] = {};
 
 public:
@@ -70,7 +70,7 @@ public:
 	};
 
 	//-------------------------------------------------------------------------------------------
-	void Fill(T& Filler)
+	void Fill(const T& Filler)
 	{
 		for (int i = 0; i < Size; i++)
 		{
