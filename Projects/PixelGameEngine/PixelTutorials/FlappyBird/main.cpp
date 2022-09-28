@@ -154,10 +154,16 @@ public:
 					if (Section == 1)
 					{
 						bHasCollided =
-							BirdPosition < 2
-							|| BirdPosition > ScreenHeight() - 2
-							|| (BirdPosition > LowerRectangleStartY && BirdX > RectangleStartX && BirdX < RectangleEndX)
-							|| (BirdPosition < UpperRectangleHeight && BirdX > RectangleStartX && BirdX < RectangleEndX);
+							//Upper Left Pixel
+							BirdPosition < 16
+							|| (BirdPosition < UpperRectangleHeight&& BirdX > RectangleStartX && BirdX < RectangleEndX)
+							//Lower Left Pixel
+							|| BirdPosition + 16 > ScreenHeight()
+							|| (BirdPosition + 16 > LowerRectangleStartY && BirdX > RectangleStartX && BirdX < RectangleEndX)
+							//Upper Right Pixel
+							|| (BirdPosition < UpperRectangleHeight&& BirdX + 48 > RectangleStartX && BirdX + 48 < RectangleEndX)
+							//Lower Right Pixel
+							|| (BirdPosition + 16 > LowerRectangleStartY && BirdX + 48 > RectangleStartX && BirdX + 48 < RectangleEndX);
 					}
 
 				}
@@ -167,11 +173,9 @@ public:
 			/*Collision Detection
 			bHasCollided =
 				BirdPosition < 2
-				|| BirdPosition > ScreenHeight() - 2
-				|| m_bufScreen[(int)(BirdPosition + 0) * ScreenWidth() + BirdX].Char.UnicodeChar != L' '
-				|| m_bufScreen[(int)(BirdPosition + 8) * ScreenWidth() + BirdX].Char.UnicodeChar != L' '
-				|| m_bufScreen[(int)(BirdPosition + 0) * ScreenWidth() + BirdX + 48].Char.UnicodeChar != L' '
-				|| m_bufScreen[(int)(BirdPosition + 8) * ScreenWidth() + BirdX + 48].Char.UnicodeChar != L' ';*/
+				|| BirdPosition > ScreenHeight()
+				|| (BirdPosition > LowerRectangleStartY && BirdX > RectangleStartX && BirdX < RectangleEndX)
+				|| (BirdPosition < UpperRectangleHeight && BirdX > RectangleStartX && BirdX < RectangleEndX)*/
 
 
 			// Draw Bird
