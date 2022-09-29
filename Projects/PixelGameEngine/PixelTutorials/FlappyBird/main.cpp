@@ -11,9 +11,10 @@ public:
 		sAppName = "Flappy Bird";
 	}
 
+private:
+
 	class FBird
 	{
-	
 	public:
 
 		struct FCoord
@@ -22,17 +23,83 @@ public:
 			float Y = 0.0f;
 		};
 
+		float Position = 0.0f;
+		float Velocity = 0.0f;
+		float Acceleration = 0.0f;
 
+		float DrawPoint = 0.0f;
+
+		float BirdWidth = 0.0f;
+		float BirdLength = 0.0f;
+
+		FCoord UpperLeft;
+		FCoord UpperRight;
+		FCoord LowerLeft;
+		FCoord LowerRight;
+
+		FBird()
+		{
+
+		}
+
+		FBird(const float& InDrawPoint, const float& InBirdWidth, const float& InBirdLength)
+		{
+			DrawPoint = InDrawPoint;
+			BirdWidth = InBirdWidth;
+			BirdLength = InBirdLength;
+
+			UpperLeft.X = DrawPoint;
+			UpperLeft.Y = Position;
+
+			UpperRight.X = DrawPoint + BirdWidth;
+			UpperRight.Y = Position;
+
+			LowerLeft.X = DrawPoint;
+			LowerLeft.Y = Position + BirdLength;
+
+			LowerRight.X = DrawPoint + BirdWidth;
+			LowerRight.Y = Position + BirdLength;
+		}
+
+		void UpdateCoords()
+		{
+			UpperLeft.Y = Position;
+			UpperRight.Y = Position;
+			LowerLeft.Y = Position + BirdLength;
+			LowerRight.Y = Position + BirdLength;
+		}
+
+		bool Collides(const float& UpperRectangleHeight, const float& LowerRectangleStartY, const float& RectangleStartX, const float& RectangleEndX)
+		{
+			return
+				//Upper Left Pixel
+				(UpperLeft.Y < UpperRectangleHeight
+				&& UpperLeft.X > RectangleStartX
+				&& UpperLeft.X < RectangleEndX)
+				//Lower Left Pixel
+				|| (LowerLeft.Y > LowerRectangleStartY
+					&& LowerLeft.X > RectangleStartX
+					&& LowerLeft.X < RectangleEndX)
+				//Upper Right Pixel
+				|| (UpperRight.Y < UpperRectangleHeight
+					&& UpperRight.X > RectangleStartX
+					&& UpperRight.X < RectangleEndX)
+				//Lower Right Pixel
+				|| (LowerRight.Y > LowerRectangleStartY
+					&& LowerRight.X > RectangleStartX
+					&& LowerRight.X < RectangleEndX);
+		}
 	};
 
-private:
-	float BirdPosition = 0.0f;
-	float BirdVelocity = 0.0f;
-	float BirdAcceleration = 0.0f;
+	FBird* Bird;
 
-	float Gravity = 800.0f;
+	const float Gravity = 800.0f;
 
 	float SectionWidth;
+	int SectionOffset;
+	int GapSize;
+	int RectangleWidth;
+
 	std::list<int> ListSection;
 	float LevelPosition = 0.0f;
 
@@ -50,151 +117,188 @@ public:
 		// Called once at the start, so create things here
 		ListSection = { 0, 0, 0, 0 };
 		SectionWidth = (float)ScreenWidth() / (float)(ListSection.size() - 1);
+		SectionOffset = 0.25f * SectionWidth;
+		GapSize = 0.4f * SectionWidth;
+		RectangleWidth = SectionWidth / 4;
+
+		Bird = new FBird((ScreenWidth() / 3.0f), 48, 16);
 
 		return true;
 	}
 
 	bool OnUserUpdate(float ElapsedTime) override
 	{
+		// Reset Game
 		if (bResetGame)
 		{
-			bHasCollided = false;
-			bResetGame = false;
-			ListSection = { 0, 0, 0, 0 };
-			BirdAcceleration = 0.0f;
-			BirdVelocity = 0.0f;
-			BirdPosition = ScreenHeight() / 2.0f;
-			FlapCount = 0;
-			++AttemptCount;
+			ResetGame();
 		}
 
-
+		//End Game?
 		if (bHasCollided)
 		{
-			//Do nothing until user releases space
-			if (GetKey(olc::Key::SPACE).bReleased)
-			{
-				bResetGame = true;
-			}
+			EndGame();
 		}
 		else
 		{
+			//Update Game Physics
+			UpdatePhysics(ElapsedTime);
 
-			if (GetKey(olc::Key::SPACE).bPressed)
-			{
-				BirdAcceleration = 0.0f;
-				BirdVelocity = -Gravity / 6.0f;
-				++FlapCount;
-				if (FlapCount > MaxFlapCount)
-				{
-					MaxFlapCount = FlapCount;
-				}
-			}
-			else
-			{
-				BirdAcceleration += Gravity * ElapsedTime;
-			}
-
-			if (BirdAcceleration >= Gravity)
-			{
-				BirdAcceleration = Gravity;
-			}
-
-
-			BirdVelocity += BirdAcceleration * ElapsedTime;
-			BirdPosition += BirdVelocity * ElapsedTime;
-
-			int BirdX = (int)(ScreenWidth() / 3.0f);
-
-			LevelPosition += 14.0 * 8 * ElapsedTime;
-
+			//Create New Section if needed
 			if (LevelPosition > SectionWidth)
 			{
-				LevelPosition -= SectionWidth;
-				ListSection.pop_front();
-				int i = std::rand() % (int)(ScreenHeight() * 0.8);
-				if (0.85f * ScreenHeight() <= i && i <= 0.15f * ScreenHeight())
-				{
-					i = 0;
-				}
-				ListSection.push_back(i);
+				CreateNewSection();
 			}
 
-			FillRect(0, 0, ScreenWidth(), ScreenHeight(), olc::BLACK);
+			//Clear Screen
+			FillRect(0, 0, ScreenWidth(), ScreenHeight(), olc::Pixel(131, 174, 242));
 
-			int Section = 0;
-			for (int s : ListSection)
-			{
-				if (s != 0)
-				{
-					int SectionStart = Section * SectionWidth;
-					int Offset = 0.25f * SectionWidth;
-					int GapSize = 0.4f * SectionWidth;
 
-					int RectangleWidth = SectionWidth / 4;
-					int RectangleStartX = SectionStart + Offset - LevelPosition;
-					int RectangleEndX = RectangleStartX + RectangleWidth;
-
-					int LowerRectangleStartY = ScreenHeight() - s;
-					int UpperRectangleHeight = ScreenHeight() - s - GapSize;
-
-					FillRect(
-						RectangleStartX,
-						LowerRectangleStartY,
-						RectangleWidth,
-						ScreenHeight(),
-						olc::GREEN);
-					FillRect(
-						RectangleStartX,
-						0,
-						RectangleWidth,
-						UpperRectangleHeight,
-						olc::GREEN);
-
-					if (Section == 1)
-					{
-						bHasCollided =
-							//Upper Left Pixel
-							BirdPosition < 16
-							|| (BirdPosition < UpperRectangleHeight&& BirdX > RectangleStartX && BirdX < RectangleEndX)
-							//Lower Left Pixel
-							|| BirdPosition + 16 > ScreenHeight()
-							|| (BirdPosition + 16 > LowerRectangleStartY && BirdX > RectangleStartX && BirdX < RectangleEndX)
-							//Upper Right Pixel
-							|| (BirdPosition < UpperRectangleHeight&& BirdX + 48 > RectangleStartX && BirdX + 48 < RectangleEndX)
-							//Lower Right Pixel
-							|| (BirdPosition + 16 > LowerRectangleStartY && BirdX + 48 > RectangleStartX && BirdX + 48 < RectangleEndX);
-					}
-
-				}
-				Section++;
-			}
-
-			/*Collision Detection
-			bHasCollided =
-				BirdPosition < 2
-				|| BirdPosition > ScreenHeight()
-				|| (BirdPosition > LowerRectangleStartY && BirdX > RectangleStartX && BirdX < RectangleEndX)
-				|| (BirdPosition < UpperRectangleHeight && BirdX > RectangleStartX && BirdX < RectangleEndX)*/
+			//Draw Level
+			DrawLevel();
 
 
 			// Draw Bird
-			if (BirdVelocity > 0)
-			{
-				DrawString(BirdX, BirdPosition, "\\\\\\");
-				DrawString(BirdX, BirdPosition + 8, "<\\\\\\=Q");
-			}
-			else
-			{
-				DrawString(BirdX, BirdPosition, "<///=Q");
-				DrawString(BirdX, BirdPosition + 8, "///");
-			}
+			DrawBird();
 
+			//Draw Score
 			DrawString(1, 1, "Attempt: " + std::to_string(AttemptCount) + " Score: " + std::to_string(FlapCount) + " High Score: " + std::to_string(MaxFlapCount));
 			
 		}
 
 		return true;
+	}
+
+	bool OnUserDestroy() override
+	{
+		delete Bird;
+		return true;
+	}
+
+private:
+
+	void ResetGame()
+	{
+		bHasCollided = false;
+		bResetGame = false;
+		ListSection = { 0, 0, 0, 0 };
+		Bird->Acceleration = 0.0f;
+		Bird->Velocity = 0.0f;
+		Bird->Position = ScreenHeight() / 2.0f;
+		Bird->UpdateCoords();
+		FlapCount = 0;
+		++AttemptCount;
+	}
+
+	void EndGame()
+	{
+		//Do nothing until user releases space
+		if (GetKey(olc::Key::SPACE).bReleased)
+		{
+			bResetGame = true;
+		}
+	}
+
+	void UpdatePhysics(const float ElapsedTime)
+	{
+		if (GetKey(olc::Key::SPACE).bPressed)
+		{
+			Bird->Acceleration = 0.0f;
+			Bird->Velocity = -Gravity / 6.0f;
+			++FlapCount;
+			if (FlapCount > MaxFlapCount)
+			{
+				MaxFlapCount = FlapCount;
+			}
+		}
+		else
+		{
+			Bird->Acceleration += Gravity * ElapsedTime;
+		}
+
+		if (Bird->Acceleration >= Gravity)
+		{
+			Bird->Acceleration = Gravity;
+		}
+
+		Bird->Velocity += Bird->Acceleration * ElapsedTime;
+		Bird->Position += Bird->Velocity * ElapsedTime;
+		Bird->UpdateCoords();
+
+		LevelPosition += 14.0 * 8 * ElapsedTime;
+	}
+
+	void CreateNewSection()
+	{
+		LevelPosition -= SectionWidth;
+		ListSection.pop_front();
+		int i = std::rand() % (int)(ScreenHeight() * 0.8);
+		if (0.85f * ScreenHeight() <= i && i <= 0.15f * ScreenHeight())
+		{
+			i = 0;
+		}
+		ListSection.push_back(i);
+	}
+
+	void DrawLevel()
+	{
+		int Section = 0;
+		for (int s : ListSection)
+		{
+			if (s != 0)
+			{
+				int SectionStart = Section * SectionWidth;
+				
+				int RectangleStartX = SectionStart + SectionOffset - LevelPosition;
+				int RectangleEndX = RectangleStartX + RectangleWidth;
+
+				int LowerRectangleStartY = ScreenHeight() - s;
+				int UpperRectangleHeight = ScreenHeight() - s - GapSize;
+
+				//Lower Rectangle
+				FillRect(
+					RectangleStartX,
+					LowerRectangleStartY,
+					RectangleWidth,
+					ScreenHeight() - LowerRectangleStartY,
+					olc::GREEN);
+
+				//Upper Rectangle
+				FillRect(
+					RectangleStartX,
+					0,
+					RectangleWidth,
+					UpperRectangleHeight,
+					olc::GREEN);
+
+				//Handle Collision
+				if (Section == 1)
+				{
+					bHasCollided =
+						//Top & Bottom
+						Bird->UpperLeft.Y < 0
+						|| Bird->LowerLeft.Y > ScreenHeight()
+						//Rectangles
+						|| Bird->Collides(UpperRectangleHeight, LowerRectangleStartY, RectangleStartX, RectangleEndX);
+				}
+
+			}
+			Section++;
+		}
+	}
+
+	void DrawBird()
+	{
+		if (Bird->Velocity > 0)
+		{
+			DrawString(Bird->DrawPoint, Bird->Position, "\\\\\\");
+			DrawString(Bird->DrawPoint, Bird->Position + 8, "<\\\\\\=Q");
+		}
+		else
+		{
+			DrawString(Bird->DrawPoint, Bird->Position, "<///=Q");
+			DrawString(Bird->DrawPoint, Bird->Position + 8, "///");
+		}
 	}
 };
 
