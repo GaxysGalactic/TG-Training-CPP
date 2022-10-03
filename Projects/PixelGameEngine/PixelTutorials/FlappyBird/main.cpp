@@ -73,9 +73,9 @@ private:
 		{
 			return
 				//Upper Left Pixel
-				(UpperLeft.Y < UpperRectangleHeight
-				&& UpperLeft.X > RectangleStartX
-				&& UpperLeft.X < RectangleEndX)
+				(UpperLeft.Y < UpperRectangleHeight //Collision in Y
+				&& UpperLeft.X > RectangleStartX	//Collision in X
+				&& UpperLeft.X < RectangleEndX)		//Collision in X
 				//Lower Left Pixel
 				|| (LowerLeft.Y > LowerRectangleStartY
 					&& LowerLeft.X > RectangleStartX
@@ -233,7 +233,7 @@ private:
 		LevelPosition -= SectionWidth;
 		ListSection.pop_front();
 		int i = std::rand() % (int)(ScreenHeight() * 0.8);
-		if (0.85f * ScreenHeight() <= i && i <= 0.15f * ScreenHeight())
+		if (i <= 0.2f * ScreenHeight())
 		{
 			i = 0;
 		}
