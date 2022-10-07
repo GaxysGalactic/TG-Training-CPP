@@ -8,12 +8,12 @@ public:
 	Pathfinding()
 	{
 		// Name your application
-		sAppName = "Example";
+		sAppName = "Pathfinding";
 	}
 
 private:
 
-	struct Node
+	struct FNode
 	{
 		bool bObstacle = false;
 		bool bVisited = false;
@@ -21,27 +21,29 @@ private:
 		float LocalGoal;
 		int x;
 		int y;
-		std::vector<Node*> Neighbours;
-		Node* Parent;
+		std::vector<FNode*> Neighbours;
+		FNode* Parent;
 	};
 
-	Node* Nodes = nullptr;
+	FNode* Nodes = nullptr;
 
-	int NodeSize = 9;
-	int NodeBorder = 2;
+	const int NodeSize = 9;
+	const int NodeBorder = 2;
 	int NodeInner = NodeSize - (NodeBorder * 2);
 
-	int MapWidth = 16;
-	int MapHeight = 16;
+	const int MapWidth = 16;
+	const int MapHeight = 16;
 
-	Node* NodeStart = nullptr;
-	Node* NodeEnd = nullptr;
+	FNode* NodeStart = nullptr;
+	FNode* NodeEnd = nullptr;
 
 public:
+
+	//-------------------------------------------------------------------------------------------
 	bool OnUserCreate() override
 	{
 		//Dynamic Memory
-		Nodes = new Node[MapWidth * MapHeight];
+		Nodes = new FNode[MapWidth * MapHeight];
 
 		//Initial Setup
 		InitializeNodes();
@@ -56,7 +58,8 @@ public:
 		return true;
 	}
 
-	bool OnUserUpdate(float fElapsedTime) override
+	//-------------------------------------------------------------------------------------------
+	bool OnUserUpdate(float ElapsedTime) override
 	{
 		//Update the grid according to mouse input
 		UpdateGridStates();
@@ -78,6 +81,7 @@ public:
 
 private:
 	
+	//-------------------------------------------------------------------------------------------
 	void InitializeNodes()
 	{
 		for (int x = 0; x < MapWidth; x++)
@@ -94,12 +98,14 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void CreateConnections()
 	{
 		for (int x = 0; x < MapWidth; x++)
 		{
 			for (int y = 0; y < MapHeight; y++)
 			{
+				//Either of these can be commented out. Commenting out both technically also works.
 
 				ConnectOrthogonally(x, y);
 
@@ -109,6 +115,7 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void ConnectOrthogonally(const int& x, const int& y)
 	{
 		if (y > 0)
@@ -129,6 +136,7 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void ConnectDiagonally(const int& x, const int& y)
 	{
 		if (y > 0 && x > 0)
@@ -149,6 +157,7 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void UpdateGridStates()
 	{
 		//Use integer division to nicely get cursor position in node space
@@ -181,36 +190,37 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void SolveAStar()
 	{
 		//Reset Navigation Graph - default all node states
 		ResetNavGraph();
 
 		//Lambda Functions, for convenience
-		auto distance = [](Node* a, Node* b) 
+		auto Distance = [](FNode* a, FNode* b) 
 		{
 			return sqrtf((a->x - b->x) * (a->x - b->x) + (a->y - b->y) * (a->y - b->y));
 		};
 
-		auto heuristic = [distance](Node* a, Node* b)
+		auto Heuristic = [Distance](FNode* a, FNode* b)
 		{
-			return distance(a, b);
+			return Distance(a, b);
 		};
 
 		//Setup starting conditions
-		Node* Current = NodeStart;
+		FNode* Current = NodeStart;
 		NodeStart->LocalGoal = 0.0f;
-		NodeStart->GlobalGoal = heuristic(NodeStart, NodeEnd);
+		NodeStart->GlobalGoal = Heuristic(NodeStart, NodeEnd);
 
 		// Add Start Node to not tested list - this will ensure it gets tested.
 		// As the algorithm progresses, newly discovered nodes get added to the list, and will themselves be tested later.
-		std::list<Node*> NotTested;
+		std::list<FNode*> NotTested;
 		NotTested.push_back(NodeStart);
 
 		while (!NotTested.empty() && Current != NodeEnd)
 		{
 			//Sort untested nodes by global goal
-			NotTested.sort([](const Node* lhs, const Node* rhs) { return lhs->GlobalGoal < rhs->GlobalGoal; });
+			NotTested.sort([](const FNode* LeftHandSide, const FNode* RightHandSide) { return LeftHandSide->GlobalGoal < RightHandSide->GlobalGoal; });
 
 			//Front of list is potentially the lowest distance node
 			// List may also contain nodes that have been visited, so ditch these
@@ -232,13 +242,13 @@ private:
 			for (auto Neighbour : Current->Neighbours)
 			{
 				// ... and only if the neighbour is not visited and is not an obstacle, add it to the NotTested List
-				if (!Neighbour->bVisited && Neighbour->bObstacle == 0)
+				if (!Neighbour->bVisited && !Neighbour->bObstacle)
 				{
 					NotTested.push_back(Neighbour);
 				}
 
 				//Calculate the neighbours potential lowest parent distance
-				float PossiblyLowerGoal = Current->LocalGoal + distance(Current, Neighbour);
+				float PossiblyLowerGoal = Current->LocalGoal + Distance(Current, Neighbour);
 
 				//If choosing to path through this node is a lower distance than what the neighbour currently has set,
 				// update the neighbour to use this node as the path source, and set its distance scores as necessary
@@ -250,7 +260,7 @@ private:
 					//The best path length to the neighbour being tested has changed, so update the neighbour's score.
 					//The heuristic is used to globally bias the path algorithm, so it knows if its getting better or worse.
 					//At some point, the algorithm will realize this path is worse and abandon it, and then go and search along the next best path.
-					Neighbour->GlobalGoal = Neighbour->LocalGoal + heuristic(Neighbour, NodeEnd);
+					Neighbour->GlobalGoal = Neighbour->LocalGoal + Heuristic(Neighbour, NodeEnd);
 				}
 
 			}
@@ -258,6 +268,7 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void ResetNavGraph()
 	{
 		for (int x = 0; x < MapWidth; x++)
@@ -272,6 +283,7 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void DrawConnections()
 	{
 		for (int x = 0; x < MapWidth; x++)
@@ -286,6 +298,7 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void DrawNodes()
 	{
 		for (int x = 0; x < MapWidth; x++)
@@ -312,11 +325,12 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void DrawPath()
 	{
 		if (NodeEnd)
 		{
-			Node* Current = NodeEnd;
+			FNode* Current = NodeEnd;
 			while (Current->Parent)
 			{
 				DrawLine(Current->x * NodeSize + NodeSize / 2, Current->y * NodeSize + NodeSize / 2, Current->Parent->x * NodeSize + NodeSize / 2, Current->Parent->y * NodeSize + NodeSize / 2, olc::YELLOW);
