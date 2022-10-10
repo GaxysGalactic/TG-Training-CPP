@@ -242,28 +242,28 @@ private:
 			Current->bVisited = true; // We only explore a node once
 
 			//Check each of this node's neighbours...
-			for (auto Neighbour : Current->Neighbors)
+			for (auto Neighbor : Current->Neighbors)
 			{
 				// ... and only if the neighbour is not visited and is not an obstacle, add it to the NotTested List
-				if (!Neighbour->bVisited && !Neighbour->bObstacle)
+				if (!Neighbor->bVisited && !Neighbor->bObstacle)
 				{
-					NotTested.push_back(Neighbour);
+					NotTested.push_back(Neighbor);
 				}
 
 				//Calculate the neighbours potential lowest parent distance
-				float PossiblyLowerGoal = Current->LocalGoal + Distance(Current, Neighbour);
+				float PossiblyLowerGoal = Current->LocalGoal + Distance(Current, Neighbor);
 
 				//If choosing to path through this node is a lower distance than what the neighbour currently has set,
 				// update the neighbour to use this node as the path source, and set its distance scores as necessary
-				if (PossiblyLowerGoal < Neighbour->LocalGoal)
+				if (PossiblyLowerGoal < Neighbor->LocalGoal)
 				{
-					Neighbour->Parent = Current;
-					Neighbour->LocalGoal = PossiblyLowerGoal;
+					Neighbor->Parent = Current;
+					Neighbor->LocalGoal = PossiblyLowerGoal;
 
 					//The best path length to the neighbour being tested has changed, so update the neighbour's score.
 					//The heuristic is used to globally bias the path algorithm, so it knows if its getting better or worse.
 					//At some point, the algorithm will realize this path is worse and abandon it, and then go and search along the next best path.
-					Neighbour->GlobalGoal = Neighbour->LocalGoal + Heuristic(Neighbour, EndNode);
+					Neighbor->GlobalGoal = Neighbor->LocalGoal + Heuristic(Neighbor, EndNode);
 				}
 
 			}
