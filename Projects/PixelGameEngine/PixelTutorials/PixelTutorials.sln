@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Asteroids", "Asteroids\Aste
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Pathfinding", "Pathfinding\Pathfinding.vcxproj", "{3BE6A2D7-6BBF-4BEE-8180-C8D25929F1F4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Pathfinding2", "Pathfinding2\Pathfinding2.vcxproj", "{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{3BE6A2D7-6BBF-4BEE-8180-C8D25929F1F4}.Release|x64.Build.0 = Release|x64
 		{3BE6A2D7-6BBF-4BEE-8180-C8D25929F1F4}.Release|x86.ActiveCfg = Release|Win32
 		{3BE6A2D7-6BBF-4BEE-8180-C8D25929F1F4}.Release|x86.Build.0 = Release|Win32
+		{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}.Debug|x64.ActiveCfg = Debug|x64
+		{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}.Debug|x64.Build.0 = Debug|x64
+		{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}.Debug|x86.ActiveCfg = Debug|Win32
+		{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}.Debug|x86.Build.0 = Debug|Win32
+		{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}.Release|x64.ActiveCfg = Release|x64
+		{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}.Release|x64.Build.0 = Release|x64
+		{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}.Release|x86.ActiveCfg = Release|Win32
+		{8A09B9C4-B06E-41E4-82A1-A80B97CB347E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

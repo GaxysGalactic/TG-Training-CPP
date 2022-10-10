@@ -2,12 +2,11 @@
 #include "olcPixelGameEngine.h"
 
 // Override base class with your custom functionality
-class Pathfinding : public olc::PixelGameEngine
+class FPathfinding : public olc::PixelGameEngine
 {
 public:
-	Pathfinding()
+	FPathfinding()
 	{
-		// Name your application
 		sAppName = "Pathfinding";
 	}
 
@@ -17,11 +16,15 @@ private:
 	{
 		bool bObstacle = false;
 		bool bVisited = false;
+
 		float GlobalGoal;
 		float LocalGoal;
+
 		int x;
 		int y;
-		std::vector<FNode*> Neighbours;
+
+		std::vector<FNode*> Neighbors;
+
 		FNode* Parent;
 	};
 
@@ -34,8 +37,8 @@ private:
 	const int MapWidth = 16;
 	const int MapHeight = 16;
 
-	FNode* NodeStart = nullptr;
-	FNode* NodeEnd = nullptr;
+	FNode* StartNode = nullptr;
+	FNode* EndNode = nullptr;
 
 public:
 
@@ -52,8 +55,8 @@ public:
 		CreateConnections();
 
 		//Manually positon the start and end markers so they are not null
-		NodeStart = &Nodes[(MapHeight / 2) * MapWidth + 1];
-		NodeEnd = &Nodes[(MapHeight / 2) * MapWidth + MapWidth - 2];
+		StartNode = &Nodes[(MapHeight / 2) * MapWidth + 1];
+		EndNode = &Nodes[(MapHeight / 2) * MapWidth + MapWidth - 2];
 
 		return true;
 	}
@@ -116,44 +119,44 @@ private:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void ConnectOrthogonally(const int& x, const int& y)
+	void ConnectOrthogonally(const int x, const int y)
 	{
 		if (y > 0)
 		{
-			Nodes[y * MapWidth + x].Neighbours.push_back(&Nodes[(y - 1) * MapWidth + (x + 0)]);
+			Nodes[y * MapWidth + x].Neighbors.push_back(&Nodes[(y - 1) * MapWidth + (x + 0)]);
 		}
 		if (y < MapHeight - 1)
 		{
-			Nodes[y * MapWidth + x].Neighbours.push_back(&Nodes[(y + 1) * MapWidth + (x + 0)]);
+			Nodes[y * MapWidth + x].Neighbors.push_back(&Nodes[(y + 1) * MapWidth + (x + 0)]);
 		}
 		if (x > 0)
 		{
-			Nodes[y * MapWidth + x].Neighbours.push_back(&Nodes[(y + 0) * MapWidth + (x - 1)]);
+			Nodes[y * MapWidth + x].Neighbors.push_back(&Nodes[(y + 0) * MapWidth + (x - 1)]);
 		}
 		if (x < MapWidth - 1)
 		{
-			Nodes[y * MapWidth + x].Neighbours.push_back(&Nodes[(y + 0) * MapWidth + (x + 1)]);
+			Nodes[y * MapWidth + x].Neighbors.push_back(&Nodes[(y + 0) * MapWidth + (x + 1)]);
 		}
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void ConnectDiagonally(const int& x, const int& y)
+	void ConnectDiagonally(const int x, const int y)
 	{
 		if (y > 0 && x > 0)
 		{
-			Nodes[y * MapWidth + x].Neighbours.push_back(&Nodes[(y - 1) * MapWidth + (x - 1)]);
+			Nodes[y * MapWidth + x].Neighbors.push_back(&Nodes[(y - 1) * MapWidth + (x - 1)]);
 		}
 		if (y < MapHeight - 1 && x > 0)
 		{
-			Nodes[y * MapWidth + x].Neighbours.push_back(&Nodes[(y + 1) * MapWidth + (x - 1)]);
+			Nodes[y * MapWidth + x].Neighbors.push_back(&Nodes[(y + 1) * MapWidth + (x - 1)]);
 		}
 		if (y > 0 && x < MapWidth - 1)
 		{
-			Nodes[y * MapWidth + x].Neighbours.push_back(&Nodes[(y - 1) * MapWidth + (x + 1)]);
+			Nodes[y * MapWidth + x].Neighbors.push_back(&Nodes[(y - 1) * MapWidth + (x + 1)]);
 		}
 		if (y < MapHeight - 1 && x < MapWidth - 1)
 		{
-			Nodes[y * MapWidth + x].Neighbours.push_back(&Nodes[(y + 1) * MapWidth + (x + 1)]);
+			Nodes[y * MapWidth + x].Neighbors.push_back(&Nodes[(y + 1) * MapWidth + (x + 1)]);
 		}
 	}
 
@@ -172,11 +175,11 @@ private:
 				{
 					if (GetKey(olc::Key::SHIFT).bHeld)
 					{
-						NodeStart = &Nodes[SelectedNodeY * MapWidth + SelectedNodeX];
+						StartNode = &Nodes[SelectedNodeY * MapWidth + SelectedNodeX];
 					}
 					else if (GetKey(olc::Key::CTRL).bHeld)
 					{
-						NodeEnd = &Nodes[SelectedNodeY * MapWidth + SelectedNodeX];
+						EndNode = &Nodes[SelectedNodeY * MapWidth + SelectedNodeX];
 					}
 					else
 					{
@@ -208,16 +211,16 @@ private:
 		};
 
 		//Setup starting conditions
-		FNode* Current = NodeStart;
-		NodeStart->LocalGoal = 0.0f;
-		NodeStart->GlobalGoal = Heuristic(NodeStart, NodeEnd);
+		FNode* Current = StartNode;
+		StartNode->LocalGoal = 0.0f;
+		StartNode->GlobalGoal = Heuristic(StartNode, EndNode);
 
 		// Add Start Node to not tested list - this will ensure it gets tested.
 		// As the algorithm progresses, newly discovered nodes get added to the list, and will themselves be tested later.
 		std::list<FNode*> NotTested;
-		NotTested.push_back(NodeStart);
+		NotTested.push_back(StartNode);
 
-		while (!NotTested.empty() && Current != NodeEnd)
+		while (!NotTested.empty() && Current != EndNode)
 		{
 			//Sort untested nodes by global goal
 			NotTested.sort([](const FNode* LeftHandSide, const FNode* RightHandSide) { return LeftHandSide->GlobalGoal < RightHandSide->GlobalGoal; });
@@ -239,7 +242,7 @@ private:
 			Current->bVisited = true; // We only explore a node once
 
 			//Check each of this node's neighbours...
-			for (auto Neighbour : Current->Neighbours)
+			for (auto Neighbour : Current->Neighbors)
 			{
 				// ... and only if the neighbour is not visited and is not an obstacle, add it to the NotTested List
 				if (!Neighbour->bVisited && !Neighbour->bObstacle)
@@ -260,7 +263,7 @@ private:
 					//The best path length to the neighbour being tested has changed, so update the neighbour's score.
 					//The heuristic is used to globally bias the path algorithm, so it knows if its getting better or worse.
 					//At some point, the algorithm will realize this path is worse and abandon it, and then go and search along the next best path.
-					Neighbour->GlobalGoal = Neighbour->LocalGoal + Heuristic(Neighbour, NodeEnd);
+					Neighbour->GlobalGoal = Neighbour->LocalGoal + Heuristic(Neighbour, EndNode);
 				}
 
 			}
@@ -290,7 +293,7 @@ private:
 		{
 			for (int y = 0; y < MapHeight; y++)
 			{
-				for (auto n : Nodes[y * MapWidth + x].Neighbours)
+				for (auto n : Nodes[y * MapWidth + x].Neighbors)
 				{
 					DrawLine(x * NodeSize + NodeSize / 2, y * NodeSize + NodeSize / 2, n->x * NodeSize + NodeSize / 2, n->y * NodeSize + NodeSize / 2, olc::DARK_BLUE);
 				}
@@ -312,12 +315,12 @@ private:
 					FillRect(x * NodeSize + NodeBorder, y * NodeSize + NodeBorder, NodeInner, NodeInner, olc::BLUE);
 				}
 
-				if (&Nodes[y * MapWidth + x] == NodeStart)
+				if (&Nodes[y * MapWidth + x] == StartNode)
 				{
 					FillRect(x * NodeSize + NodeBorder, y * NodeSize + NodeBorder, NodeInner, NodeInner, olc::GREEN);
 				}
 
-				if (&Nodes[y * MapWidth + x] == NodeEnd)
+				if (&Nodes[y * MapWidth + x] == EndNode)
 				{
 					FillRect(x * NodeSize + NodeBorder, y * NodeSize + NodeBorder, NodeInner, NodeInner, olc::RED);
 				}
@@ -328,9 +331,9 @@ private:
 	//-------------------------------------------------------------------------------------------
 	void DrawPath()
 	{
-		if (NodeEnd)
+		if (EndNode)
 		{
-			FNode* Current = NodeEnd;
+			FNode* Current = EndNode;
 			while (Current->Parent)
 			{
 				DrawLine(Current->x * NodeSize + NodeSize / 2, Current->y * NodeSize + NodeSize / 2, Current->Parent->x * NodeSize + NodeSize / 2, Current->Parent->y * NodeSize + NodeSize / 2, olc::YELLOW);
@@ -346,7 +349,7 @@ private:
 
 int main()
 {
-	Pathfinding demo;
+	FPathfinding demo;
 	if (demo.Construct(144, 144, 6, 6))
 		demo.Start();
 	return 0;
