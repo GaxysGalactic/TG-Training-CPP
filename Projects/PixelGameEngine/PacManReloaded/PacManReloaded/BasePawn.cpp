@@ -1,10 +1,5 @@
 #include "BasePawn.h"
 
-FBasePawn::FBasePawn()
-{
-
-}
-
 FBasePawn::FBasePawn(olc::Sprite* InSprite)
 {
 	BaseSprite = InSprite;
@@ -16,10 +11,10 @@ FBasePawn::~FBasePawn()
 	delete BaseSprite;
 }
 
-void FBasePawn::Update(olc::PixelGameEngine* Engine, const float ElapsedTime)
+void FBasePawn::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)
 {
-	Move(ElapsedTime);
-	DrawSelf(Engine);
+	Move(Engine, ElapsedTime);
+	DrawSelf(Engine, RoundTime);
 }
 
 void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
@@ -27,18 +22,76 @@ void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
 	Direction = NewDirection;
 }
 
-void FBasePawn::Move(const float ElapsedTime)
+void FBasePawn::Move(olc::PixelGameEngine* Engine, const float ElapsedTime)
 {
-	Position += Speed * ElapsedTime * Direction;
+	
+	Position = WrapCoordinates(Engine, Position + BaseSpeed * SpeedMultiplier * ElapsedTime * Direction);
 }
 
-void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine)
+void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime)
 {
 	//TODO: Animation would depend on Timer made from ElapsedTime, flip every second
 
 	if (BaseDecal)
 	{
-		//TODO: Draw Based on direction and spritesheet. PacMan's should be adjusted to match the Ghosts for easier use.
-		
+		float OffsetX = 0.0f;
+
+		if(Direction.x == 1.0f)
+		{
+			OffsetX = 0.0f;
+		}
+		else if(Direction.x == -1.0f)
+		{
+			OffsetX = 32.0f;
+		}
+		else if(Direction.y == -1.0f)
+		{
+			OffsetX = 64.0f;
+		}
+		else if(Direction.y == 1.0f)
+		{
+			OffsetX = 96.0f;
+		}
+
+		if(int(floor(8*RoundTime)) % 2 == 0)
+		{
+			OffsetX += 16.0f;
+		}
+
+		olc::vf2d ImageOffset = {OffsetX, 0.0f};
+		//This below could be made into member variable. Also, idea about .center() function.
+		olc::vf2d CenterOffset = {8.0f, 9.0f};
+		Engine->DrawPartialDecal(Position - CenterOffset, BaseDecal, ImageOffset, Size);
 	}
+	else
+	{
+		//Without Sprites or Decals
+		Engine->FillCircle(Position, 7, olc::YELLOW);
+		Engine->DrawLine(Position, Position + Direction * 10, olc::RED);
+	}
+}
+
+olc::vf2d FBasePawn::WrapCoordinates(olc::PixelGameEngine* Engine, const olc::vf2d& InVector)
+{
+	olc::vf2d OutVector = InVector;
+	
+	if (InVector.x < 0.0f)
+	{
+		OutVector.x = InVector.x + static_cast<float>(Engine->ScreenWidth());
+	}
+	if (InVector.x >= static_cast<float>(Engine->ScreenWidth()))
+	{
+		OutVector.x = InVector.x - static_cast<float>(Engine->ScreenWidth());
+	}
+
+	if (InVector.y < 0.0f)
+	{
+		OutVector.y = InVector.y + static_cast<float>(Engine->ScreenHeight());
+	}
+	if (InVector.y >= static_cast<float>(Engine->ScreenHeight()))
+	{
+		OutVector.y = InVector.y - static_cast<float>(Engine->ScreenHeight());
+	}
+
+	return OutVector;
 }
