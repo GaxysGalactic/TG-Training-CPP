@@ -21,12 +21,20 @@ void FBasePawn::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, co
 
 void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
 {
+	//!Maze->GetTile(Position).bIsIntersection
+	if(Maze->IsNextTileAnObstacle(Position, NewDirection))
+	{
+		return;
+	}
 	Direction = NewDirection;
 }
 
 void FBasePawn::Move(olc::PixelGameEngine* Engine, const float ElapsedTime)
 {
-	
+	if(Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Position, Direction))
+	{
+		return;
+	}
 	Position = WrapCoordinates(Engine, Position + BaseSpeed * SpeedMultiplier * ElapsedTime * Direction);
 }
 
@@ -62,7 +70,7 @@ void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) co
 
 		olc::vf2d ImageOffset = {OffsetX, 0.0f};
 		//This below could be made into member variable. Also, idea about .center() function.
-		olc::vf2d CenterOffset = {6.0f, 7.0f};
+		olc::vf2d CenterOffset = {7.0f, 8.0f};
 		Engine->DrawPartialDecal(Position - CenterOffset, BaseDecal, ImageOffset, Size);
 	}
 	else

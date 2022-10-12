@@ -45,17 +45,14 @@ public:
 
 	void CreateGrid();
 
-	const FTile& GetTile(const olc::vf2d Position) const;
+	const FTile& GetTile(const olc::vf2d& Position) const;
 
-	FTile& GetTile(const olc::vf2d Position);
+	FTile& GetTile(const olc::vf2d& Position);
+	
+	bool IsPixelACenter(const olc::vf2d& Position) const;
 
-	//To check if its at center, its coordinates must be linearly dependant on TileCenter.
-	//Shouldn't change direction if Tile in that direction is obstacle.
-
-
-	//GetNeighbours fills FTiles passed in through input
-	//so we can do if(Up)
-	//Should probably return pointers to FTiles
-	void GetNeighbors(const olc::vf2d Position, FTile* Up, FTile* Down, FTile* Left, FTile* Right);
+	bool IsNextTileAnObstacle(const olc::vf2d& Position, const olc::vf2d& Direction);
+	
+	void GetNeighbors(const olc::vf2d& Position, FTile* Up, FTile* Down, FTile* Left, FTile* Right);
 	
 };

@@ -15,8 +15,8 @@ FMaze::~FMaze()
 void FMaze::DrawBase(olc::PixelGameEngine* Engine) const
 {
 	Engine->DrawPartialSprite(BackgroundOffset, BackgroundSprite, BackgroundSourcePosition, BackgroundSize);
-
-	Engine->DrawLine(51, 212, 171, 212);
+	//Engine->DrawSprite(0,0, TileMap);
+	//Engine->DrawLine(51, 212, 171, 212);
 }
 
 void FMaze::CreateGrid()
@@ -66,21 +66,33 @@ void FMaze::CreateGrid()
 
 }
 
-const FMaze::FTile& FMaze::GetTile(const olc::vf2d Position) const
+const FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position) const
 {
-	olc::vf2d NewPos = Position / TileSize;
+	olc::vf2d NewPos = Position / 8.0f;
 	int GridIndex = NewPos.x * Columns + NewPos.y;
 	return Grid.at(GridIndex);
 }
 
-FMaze::FTile& FMaze::GetTile(const olc::vf2d Position)
+FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position)
 {
-	olc::vf2d NewPos = Position / TileSize;
-	int GridIndex = NewPos.x * Columns + NewPos.y;
+	olc::vf2d NewPos = Position / 8.0f;
+	int GridIndex = floor(NewPos.x) + Columns * floor(NewPos.y);
 	return Grid.at(GridIndex);
 }
 
-void FMaze::GetNeighbors(const olc::vf2d Position, FTile* Up, FTile* Down, FTile* Left, FTile* Right)
+bool FMaze::IsPixelACenter(const olc::vf2d& Position) const
+{
+	olc::vi2d NewPos = {int(floor(Position.x)) % 8, int(floor(Position.y)) % 8};
+	return NewPos == TileCenter;
+}
+
+bool FMaze::IsNextTileAnObstacle(const olc::vf2d& Position, const olc::vf2d& Direction)
+{
+	//TODO: Fix borders
+	return GetTile(Position + Direction * TileSize).bIsObstacle;
+}
+
+void FMaze::GetNeighbors(const olc::vf2d& Position, FTile* Up, FTile* Down, FTile* Left, FTile* Right)
 {
 	Up = &GetTile({Position.x, Position.y - 8.0f});
 	Down = &GetTile({Position.x, Position.y + 8.0f});
