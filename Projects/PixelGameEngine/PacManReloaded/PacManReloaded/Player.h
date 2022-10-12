@@ -10,7 +10,7 @@ public:
 
 	FPlayer() = default;
 
-	FPlayer(olc::Sprite* InSprite);
+	FPlayer(olc::Sprite* InSprite, FMaze* InMaze);
 
 	void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime) override;
 

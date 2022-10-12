@@ -1,9 +1,11 @@
 #include "BasePawn.h"
 
-FBasePawn::FBasePawn(olc::Sprite* InSprite)
+FBasePawn::FBasePawn(olc::Sprite* InSprite, FMaze* InMaze)
 {
 	BaseSprite = InSprite;
 	BaseDecal = new olc::Decal(BaseSprite);
+
+	Maze = InMaze;
 }
 
 FBasePawn::~FBasePawn()
@@ -28,7 +30,7 @@ void FBasePawn::Move(olc::PixelGameEngine* Engine, const float ElapsedTime)
 	Position = WrapCoordinates(Engine, Position + BaseSpeed * SpeedMultiplier * ElapsedTime * Direction);
 }
 
-void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime)
+void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const
 {
 	//TODO: Animation would depend on Timer made from ElapsedTime, flip every second
 
@@ -60,14 +62,14 @@ void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime)
 
 		olc::vf2d ImageOffset = {OffsetX, 0.0f};
 		//This below could be made into member variable. Also, idea about .center() function.
-		olc::vf2d CenterOffset = {8.0f, 9.0f};
+		olc::vf2d CenterOffset = {6.0f, 7.0f};
 		Engine->DrawPartialDecal(Position - CenterOffset, BaseDecal, ImageOffset, Size);
 	}
 	else
 	{
 		//Without Sprites or Decals
-		Engine->FillCircle(Position, 7, olc::YELLOW);
-		Engine->DrawLine(Position, Position + Direction * 10, olc::RED);
+		Engine->Draw(Position, olc::YELLOW);
+		//Engine->DrawLine(Position, Position + Direction * 10, olc::RED);
 	}
 }
 

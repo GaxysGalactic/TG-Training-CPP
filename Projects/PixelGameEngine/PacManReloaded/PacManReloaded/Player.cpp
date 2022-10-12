@@ -1,8 +1,8 @@
 #include "Player.h"
 
-FPlayer::FPlayer(olc::Sprite* InSprite) : FBasePawn(InSprite)
+FPlayer::FPlayer(olc::Sprite* InSprite, FMaze* InMaze) : FBasePawn(InSprite, InMaze)
 {
-    
+    Position = { 111.0f, 212.0f };
 }
 
 void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)
