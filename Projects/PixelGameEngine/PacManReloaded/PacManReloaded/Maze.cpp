@@ -1,5 +1,7 @@
 #include "Maze.h"
 
+#include "BasePawn.h"
+
 FMaze::FMaze(olc::Sprite* InBackground, olc::Sprite* InTileMap)
 {
 	BackgroundSprite = InBackground;
@@ -25,7 +27,7 @@ void FMaze::CreateGrid()
 	{
 		for (int j = 0; j < Columns; j++)
 		{
-			olc::vf2d QueryPosition = { float(j), float(i) };
+			olc::vf2d QueryPosition = { static_cast<float>(j), static_cast<float>(i) };
 
 			FTile NewTile;
 			QueryPosition *= TileSize;
@@ -68,28 +70,41 @@ void FMaze::CreateGrid()
 
 const FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position) const
 {
-	olc::vf2d NewPos = Position / 8.0f;
-	int GridIndex = NewPos.x * Columns + NewPos.y;
+	const olc::vf2d NewPos = Position / 8.0f;
+	const int GridIndex = NewPos.x * Columns + NewPos.y;
 	return Grid.at(GridIndex);
 }
 
 FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position)
 {
-	olc::vf2d NewPos = Position / 8.0f;
-	int GridIndex = floor(NewPos.x) + Columns * floor(NewPos.y);
+	const olc::vf2d NewPos = Position / 8.0f;
+	const int GridIndex = floor(NewPos.x) + Columns * floor(NewPos.y);
 	return Grid.at(GridIndex);
+}
+
+void FMaze::GetPositionFromTileCenter(const olc::vf2d& Position, olc::vf2d& OutPosition) const
+{
+	olc::vi2d NewPos = {static_cast<int>(floor(Position.x)) % 8, static_cast<int>(floor(Position.y)) % 8};
+	OutPosition = TileCenter - NewPos;
+}
+
+void FMaze::GetDirectionToTileCenter(const olc::vf2d& Position, olc::vf2d& OutDirection) const
+{
+	GetPositionFromTileCenter(Position, OutDirection);
+	OutDirection *= -1;
+	OutDirection = OutDirection.norm();
 }
 
 bool FMaze::IsPixelACenter(const olc::vf2d& Position) const
 {
-	olc::vi2d NewPos = {int(floor(Position.x)) % 8, int(floor(Position.y)) % 8};
+	olc::vi2d NewPos = {static_cast<int>(floor(Position.x)) % 8, static_cast<int>(floor(Position.y)) % 8};
 	return NewPos == TileCenter;
 }
 
-bool FMaze::IsNextTileAnObstacle(const olc::vf2d& Position, const olc::vf2d& Direction)
+bool FMaze::IsNextTileAnObstacle(const olc::PixelGameEngine* Engine, const olc::vf2d& Position, const olc::vf2d& Direction)
 {
 	//TODO: Fix borders
-	return GetTile(Position + Direction * TileSize).bIsObstacle;
+	return GetTile(FBasePawn::WrapCoordinates(Engine, Position + Direction * TileSize)).bIsObstacle;
 }
 
 void FMaze::GetNeighbors(const olc::vf2d& Position, FTile* Up, FTile* Down, FTile* Left, FTile* Right)

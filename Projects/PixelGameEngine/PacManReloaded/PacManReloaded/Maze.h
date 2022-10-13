@@ -48,10 +48,14 @@ public:
 	const FTile& GetTile(const olc::vf2d& Position) const;
 
 	FTile& GetTile(const olc::vf2d& Position);
+
+	void GetPositionFromTileCenter(const olc::vf2d& Position, olc::vf2d& OutPosition) const;
+
+	void GetDirectionToTileCenter(const olc::vf2d& Position, olc::vf2d& OutDirection) const;
 	
 	bool IsPixelACenter(const olc::vf2d& Position) const;
 
-	bool IsNextTileAnObstacle(const olc::vf2d& Position, const olc::vf2d& Direction);
+	bool IsNextTileAnObstacle(const olc::PixelGameEngine* Engine, const olc::vf2d& Position, const olc::vf2d& Direction);
 	
 	void GetNeighbors(const olc::vf2d& Position, FTile* Up, FTile* Down, FTile* Left, FTile* Right);
 	

@@ -51,6 +51,12 @@ public:
 	bool OnUserUpdate(float ElapsedTime) override
 	{
 		RoundTime += ElapsedTime;
+
+		if(ElapsedTime > 2.0f)
+		{
+			ElapsedTime = 0.01f;
+		}
+		
 		Pacman->Update(this, ElapsedTime, RoundTime);
 
 		return true;

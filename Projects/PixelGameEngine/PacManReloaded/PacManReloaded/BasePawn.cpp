@@ -19,19 +19,22 @@ void FBasePawn::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, co
 	DrawSelf(Engine, RoundTime);
 }
 
-void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
+void FBasePawn::SetDirection(const olc::PixelGameEngine* Engine, const olc::vf2d& NewDirection)
 {
-	//!Maze->GetTile(Position).bIsIntersection
-	if(Maze->IsNextTileAnObstacle(Position, NewDirection))
+	//Can't run into an obstacle
+	if(Maze->IsNextTileAnObstacle(Engine, Position, NewDirection))
 	{
 		return;
 	}
+	//Change according to input
 	Direction = NewDirection;
+
+	
 }
 
-void FBasePawn::Move(olc::PixelGameEngine* Engine, const float ElapsedTime)
+void FBasePawn::Move(const olc::PixelGameEngine* Engine, const float ElapsedTime)
 {
-	if(Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Position, Direction))
+	if(Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Engine, Position, Direction))
 	{
 		return;
 	}
@@ -40,8 +43,6 @@ void FBasePawn::Move(olc::PixelGameEngine* Engine, const float ElapsedTime)
 
 void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const
 {
-	//TODO: Animation would depend on Timer made from ElapsedTime, flip every second
-
 	if (BaseDecal)
 	{
 		float OffsetX = 0.0f;
@@ -63,14 +64,14 @@ void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) co
 			OffsetX = 96.0f;
 		}
 
-		if(int(floor(8*RoundTime)) % 2 == 0)
+		//Animation
+		if(static_cast<int>(floor(12 * RoundTime)) % 2 == 0)
 		{
 			OffsetX += 16.0f;
 		}
 
-		olc::vf2d ImageOffset = {OffsetX, 0.0f};
-		//This below could be made into member variable. Also, idea about .center() function.
-		olc::vf2d CenterOffset = {7.0f, 8.0f};
+		const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+		const olc::vf2d CenterOffset = {7.0f, 8.0f};
 		Engine->DrawPartialDecal(Position - CenterOffset, BaseDecal, ImageOffset, Size);
 	}
 	else
@@ -81,7 +82,7 @@ void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) co
 	}
 }
 
-olc::vf2d FBasePawn::WrapCoordinates(olc::PixelGameEngine* Engine, const olc::vf2d& InVector)
+olc::vf2d FBasePawn::WrapCoordinates(const olc::PixelGameEngine* Engine, const olc::vf2d& InVector)
 {
 	olc::vf2d OutVector = InVector;
 	
