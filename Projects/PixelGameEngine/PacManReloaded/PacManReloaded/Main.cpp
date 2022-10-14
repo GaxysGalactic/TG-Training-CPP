@@ -1,4 +1,5 @@
 #define OLC_PGE_APPLICATION
+#include "Ghost.h"
 #include "olcPixelGameEngine.h"
 #include "Player.h"
 #include "Maze.h"
@@ -11,10 +12,12 @@ class FPacMan : public olc::PixelGameEngine
 	olc::Decal* BackgroundDecal = nullptr;
 	olc::Sprite* PacmanSprite = nullptr;
 	olc::Sprite* TileMapSprite = nullptr;
+	olc::Sprite* BlinkySprite = nullptr;
 
 	//Instances
 	FMaze* Maze;
 	FPlayer* Pacman;
+	FGhost* GhostTest;
 
 	//Ghosts should be FGhost? or FNAME?
 
@@ -44,6 +47,7 @@ public:
 		//CHARACTERS
 		Pacman = new FPlayer(PacmanSprite, Maze);
 		//Pacman = new FPlayer();
+		GhostTest = new FGhost(BlinkySprite, Maze);
 		
 		return true;
 	}
@@ -58,6 +62,7 @@ public:
 		}
 		
 		Pacman->Update(this, ElapsedTime, RoundTime);
+		GhostTest->Update(this, ElapsedTime, RoundTime);
 
 		return true;
 	}
@@ -75,6 +80,7 @@ private:
 		BackgroundSprite = new olc::Sprite("./Sprites/Spritesheet.png");
 		BackgroundDecal = new olc::Decal(BackgroundSprite);
 		PacmanSprite = new olc::Sprite("./Sprites/PacMan.png");
+		BlinkySprite = new olc::Sprite("./Sprites/Blinky.png");
 		TileMapSprite = new olc::Sprite("./Sprites/TileMap.png");
 	}
 	

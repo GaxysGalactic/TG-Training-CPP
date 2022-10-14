@@ -13,6 +13,8 @@ void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, cons
     
     olc::vf2d NewDirection = Direction;
     olc::vf2d OldDirection = Direction;
+
+    
     if(Engine->GetKey(olc::Key::UP).bPressed)
     {
         NewDirection = { 0.0f, -1.0f};
@@ -33,12 +35,13 @@ void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, cons
         NewDirection = { -1.0f, 0.0f};
         SetDirection(Engine, NewDirection);
     }
+    
 
     //Adjust to turn if needed
     if(OldDirection != NewDirection && OldDirection.dot(NewDirection) == 0.0f)
     {
         TurnDirection = NewDirection;
-        AdjustToTurn();
+        AdjustToTurn(Engine);
     }
     
     //EndTurn
@@ -63,7 +66,7 @@ void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, cons
     DrawSelf(Engine, RoundTime);
 }
 
-void FPlayer::AdjustToTurn()
+void FPlayer::AdjustToTurn(const olc::PixelGameEngine* Engine)
 {
     //PacMan advantage while turning
     if(!Maze->GetTile(Position).bIsIntersection)
@@ -73,7 +76,7 @@ void FPlayer::AdjustToTurn()
     }
     
     //Start Turning
-    if(!bIsTurning && !Maze->IsPixelACenter(Position)) 
+    if(!bIsTurning && !Maze->IsPixelACenter(Position) && !Maze->IsNextTileAnObstacle(Engine, Position, TurnDirection)) 
     {
         //Remember Old Position, calculate NewPosition
         TurnSource = Position;

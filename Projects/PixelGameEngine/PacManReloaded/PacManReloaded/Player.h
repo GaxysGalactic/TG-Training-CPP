@@ -20,6 +20,6 @@ public:
 
 	void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime) override;
 
-	void AdjustToTurn();
+	void AdjustToTurn(const olc::PixelGameEngine* Engine);
 
 };

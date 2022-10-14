@@ -5,7 +5,7 @@
 class FBasePawn
 {
 protected:
-	olc::vf2d Position = { 111.0f, 212.0f };
+	olc::vf2d Position = { 111.0f, 213.0f };
 	olc::vf2d Direction = { 1.0f, 0.0f };
 	const float BaseSpeed = 80.0f;
 	const float BaseSpeedFastHack = 2.0f * BaseSpeed;

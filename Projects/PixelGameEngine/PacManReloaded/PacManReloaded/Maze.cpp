@@ -107,13 +107,19 @@ bool FMaze::IsNextTileAnObstacle(const olc::PixelGameEngine* Engine, const olc::
 	return GetTile(FBasePawn::WrapCoordinates(Engine, Position + Direction * TileSize)).bIsObstacle;
 }
 
-void FMaze::GetNeighbors(const olc::vf2d& Position, FTile* Up, FTile* Down, FTile* Left, FTile* Right)
+void FMaze::GetNeighbors(olc::PixelGameEngine* Engine, const olc::vf2d& Position, FMaze::FTile& Up, FMaze::FTile& Down, FMaze::FTile& Left, FMaze::FTile& Right)
 {
-	Up = &GetTile({Position.x, Position.y - 8.0f});
-	Down = &GetTile({Position.x, Position.y + 8.0f});
+	FBasePawn::WrapCoordinates(Engine, Position);
+	
+	Up = GetTile({Position.x, Position.y - 8.0f});
+	Down = GetTile({Position.x, Position.y + 8.0f});
+	Left = GetTile({Position.x - 8.0f, Position.y});
+	Right = GetTile({Position.x + 8.0f, Position.y});
+}
 
-	//TODO: Change this to be compatible with tunnel
-	Left = &GetTile({Position.x - 8.0f, Position.y});
-	Right = &GetTile({Position.x + 8.0f, Position.y});
+void FMaze::GetCenterOfTile(const olc::vf2d& Position, olc::vf2d& Center) const
+{
+	GetPositionFromTileCenter(Position, Center);
+	Center = Position - Center;
 }
 

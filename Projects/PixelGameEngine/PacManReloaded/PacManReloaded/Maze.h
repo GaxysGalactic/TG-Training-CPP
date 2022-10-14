@@ -57,6 +57,8 @@ public:
 
 	bool IsNextTileAnObstacle(const olc::PixelGameEngine* Engine, const olc::vf2d& Position, const olc::vf2d& Direction);
 	
-	void GetNeighbors(const olc::vf2d& Position, FTile* Up, FTile* Down, FTile* Left, FTile* Right);
+	void GetNeighbors(olc::PixelGameEngine* Engine, const olc::vf2d& Position, FTile& Up, FTile& Down, FTile& Left, FTile& Right);
+
+	void GetCenterOfTile(const olc::vf2d& Position, olc::vf2d& Center) const;
 	
 };
