@@ -31,6 +31,8 @@ class FPacMan : public olc::PixelGameEngine
 
 	//Stats
 	float RoundTime = 0.0f;
+	bool bEnded = false;
+	float GameOverTimer = 0.0f;
 
 public:
 
@@ -66,7 +68,7 @@ public:
 
 	bool OnUserUpdate(float ElapsedTime) override
 	{
-		if(!HasWon())
+		if(!bEnded)
 		{
 			RoundTime += ElapsedTime;
 
@@ -88,16 +90,31 @@ public:
 			CheckCollision();
 
 			DrawScore();
+
+			if(!bEnded)
+			{
+				bEnded = HasWon();
+			}
 		}
-		//make another else (lose)
 		else
 		{
-			//You won!
-			Clear(olc::BLACK);
-			DrawString(80, 110, "YOU WON!");
-			DrawString(30, 118, "Press SPACE to exit.");
-
-			//Draw final score
+			if(HasWon())
+			{
+				Clear(olc::BLACK);
+				DrawString(80, 110, "YOU WON!");
+				DrawString(30, 118, "Press SPACE to exit.");	
+			}
+			else
+			{
+				GameOverTimer += ElapsedTime;
+				Pacman->Update(this, ElapsedTime, RoundTime);
+				if(GameOverTimer >= 5.0f)
+				{
+					Clear(olc::BLACK);
+					DrawString(80, 110, "GAME OVER");
+					DrawString(30, 118, "Press SPACE to exit.");	
+				}
+			}
 
 			if(GetKey(olc::Key::SPACE).bPressed)
 			{
@@ -145,6 +162,7 @@ private:
 				else if (!Ghost->IsDead())
 				{
 					Pacman->Die();
+					bEnded = true;
 				}
 			}
 		}
