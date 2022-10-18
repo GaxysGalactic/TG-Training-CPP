@@ -33,7 +33,9 @@ public:
 
 	void Move(const olc::PixelGameEngine* Engine, const float ElapsedTime);
 
-	void DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const;
+	virtual void DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const;
+
+	olc::vf2d& GetPosition();
 
 	static olc::vf2d WrapCoordinates(const olc::PixelGameEngine* Engine, const olc::vf2d& InVector);
 };

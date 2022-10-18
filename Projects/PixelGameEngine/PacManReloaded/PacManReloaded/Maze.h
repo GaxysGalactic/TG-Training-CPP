@@ -7,11 +7,15 @@ public:
 
 	struct FTile
 	{
+		int TileID = 0;
+		
 		bool bIsObstacle = false;
 		bool bHasPellet = false;
 		bool bHasEnergizer = false;
 		bool bIsIntersection = false;
 	};
+
+	int Pellets = 244;
 
 private:
 	olc::Sprite* BackgroundSprite;
@@ -20,6 +24,8 @@ private:
 	const olc::vf2d BackgroundSourcePosition = { 228.0f, 0.0f };
 	const olc::vf2d BackgroundSize = { 224.0f, 248.0f };
 
+	const olc::Pixel PelletColor = {255, 183, 174};
+	
 	const olc::vf2d TileSize = { 8.0f, 8.0f };
 	const olc::vf2d TileCenter = { 3.0f, 5.0f };
 
@@ -43,7 +49,11 @@ public:
 
 	void DrawBase(olc::PixelGameEngine* Engine) const;
 
+	void DrawPellets(olc::PixelGameEngine* Engine) const;
+
 	void CreateGrid();
+
+	void EatPellet(olc::PixelGameEngine* Engine, const olc::vf2d& Position);
 
 	const FTile& GetTile(const olc::vf2d& Position) const;
 

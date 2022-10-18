@@ -82,6 +82,11 @@ void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) co
 	}
 }
 
+olc::vf2d& FBasePawn::GetPosition()
+{
+	return Position;
+}
+
 olc::vf2d FBasePawn::WrapCoordinates(const olc::PixelGameEngine* Engine, const olc::vf2d& InVector)
 {
 	olc::vf2d OutVector = InVector;

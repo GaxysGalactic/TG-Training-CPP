@@ -16,9 +16,41 @@ FMaze::~FMaze()
 
 void FMaze::DrawBase(olc::PixelGameEngine* Engine) const
 {
-	Engine->DrawPartialSprite(BackgroundOffset, BackgroundSprite, BackgroundSourcePosition, BackgroundSize);
+	//Engine->DrawPartialSprite(BackgroundOffset, BackgroundSprite, BackgroundSourcePosition, BackgroundSize);
+	olc::vf2d SourcePos = {0.0f, 0.0f};
+	Engine->DrawPartialSprite(BackgroundOffset, BackgroundSprite, SourcePos, BackgroundSize);
 	//Engine->DrawSprite(0,0, TileMap);
 	//Engine->DrawLine(51, 212, 171, 212);
+}
+
+void FMaze::DrawPellets(olc::PixelGameEngine* Engine) const
+{
+	for(int i = 0; i < Rows; i++)
+	{
+		for(int j = 0; j < Columns; j++)
+		{
+			const int GridIndex = i * Columns + j;
+			FTile QueryTile =  Grid.at(GridIndex);
+			if(QueryTile.bHasPellet || QueryTile.bHasEnergizer)
+			{
+				olc::vf2d PelletPosition = { static_cast<float>(j), static_cast<float>(i) };
+				PelletPosition *= TileSize;
+				PelletPosition += TileCenter;
+				PelletPosition.y -= 1;
+
+				olc::vf2d Size = {1.0f, 1.0f};
+
+				if(QueryTile.bHasPellet)
+				{
+					Engine->FillRect(PelletPosition, Size, PelletColor);
+				}
+				else
+				{
+					Engine->FillCircle(PelletPosition, 4, PelletColor);
+				}
+			}
+		}
+	}
 }
 
 void FMaze::CreateGrid()
@@ -34,32 +66,34 @@ void FMaze::CreateGrid()
 			
 			olc::Pixel Query = TileMap->GetPixel(QueryPosition);
 
-			if (TileMap->GetPixel(QueryPosition) == olc::RED)
+			if (Query == olc::RED)
 			{
 				NewTile.bIsObstacle = true;
 			}
-			else if (TileMap->GetPixel(QueryPosition) == olc::WHITE)
+			else if (Query == olc::WHITE)
 			{
 				NewTile.bHasPellet = true;
 			}
-			else if (TileMap->GetPixel(QueryPosition) == olc::CYAN)
+			else if (Query == olc::CYAN)
 			{
 				NewTile.bHasPellet = true;
 				NewTile.bIsIntersection = true;
 			}
-			else if (TileMap->GetPixel(QueryPosition) == olc::YELLOW)
+			else if (Query == olc::YELLOW)
 			{
 				NewTile.bIsIntersection = true;
 			}
-			else if (TileMap->GetPixel(QueryPosition) == olc::BLUE)
+			else if (Query == olc::BLUE)
 			{
 				NewTile.bHasEnergizer = true;
 			}
-			else if (TileMap->GetPixel(QueryPosition) == olc::MAGENTA)
+			else if (Query == olc::MAGENTA)
 			{
 				NewTile.bHasEnergizer = true;
 				NewTile.bIsIntersection = true;
 			}
+			
+			NewTile.TileID = i * Columns + j;
 
 			Grid.push_back(NewTile);
 
@@ -68,10 +102,32 @@ void FMaze::CreateGrid()
 
 }
 
+void FMaze::EatPellet(olc::PixelGameEngine* Engine, const olc::vf2d& Position)
+{
+	--Pellets;
+	
+	//Add energizer here too maybe
+	if(GetTile(Position).bHasPellet)
+	{
+		GetTile(Position).bHasPellet = false;
+	}
+	else
+	{
+		GetTile(Position).bHasEnergizer = false;
+	}
+
+	//Adjust this so its start of tile - its a bit buggy
+	olc::vf2d PositionFromCenter;
+	GetPositionFromTileCenter(Position, PositionFromCenter);
+	olc::vf2d DrawPoint = Position + PositionFromCenter - TileCenter;
+	olc::vf2d Size = {8.0f, 8.0f};
+	Engine->FillRect(DrawPoint, Size, olc::BLACK);
+}
+
 const FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position) const
 {
 	const olc::vf2d NewPos = Position / 8.0f;
-	const int GridIndex = NewPos.x * Columns + NewPos.y;
+	const int GridIndex = floor(NewPos.x) + Columns * floor(NewPos.y);
 	return Grid.at(GridIndex);
 }
 
