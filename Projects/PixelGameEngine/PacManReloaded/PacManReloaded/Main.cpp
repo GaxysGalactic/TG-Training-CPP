@@ -91,6 +91,33 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
+	bool OnUserDestroy() override
+	{
+		delete BackgroundSprite;
+		delete BackgroundDecal;
+		delete PacmanSprite;
+		delete PacmanDeathSprite;
+		delete TileMapSprite;
+
+		delete FrightenedSprite;
+		delete EatenSprite;
+	
+		delete BlinkySprite;
+		delete InkySprite;
+		delete PinkySprite;
+		delete ClydeSprite;
+		
+		delete Maze;
+		delete Pacman;
+		delete Blinky;
+		delete Inky;
+		delete Pinky;
+		delete Clyde;
+		
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------
 	bool Draw(const olc::vi2d& pos, olc::Pixel p = olc::WHITE)
 	{
 		olc::vi2d NewPos = FBasePawn::WrapCoordinates(this, pos);

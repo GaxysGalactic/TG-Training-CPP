@@ -1,5 +1,6 @@
 #include "Player.h"
 
+//-------------------------------------------------------------------------------------------
 FPlayer::FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite) : FBasePawn(InEngine, InSprite, InMaze)
 {
     DeathSprite = InDeathSprite;
@@ -7,8 +8,10 @@ FPlayer::FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* I
     Position = { 111.0f, 212.0f };
 }
 
+//-------------------------------------------------------------------------------------------
 void FPlayer::Update(const float ElapsedTime, const float RoundTime)
 {
+    //Dead check
     if(bIsDead)
     {
         DeathAnimationTimer += ElapsedTime;
@@ -18,34 +21,15 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     
     olc::vf2d NewDirection = Direction;
     olc::vf2d OldDirection = Direction;
-    
-    if(Engine->GetKey(olc::Key::UP).bHeld)
-    {
-        NewDirection = { 0.0f, -1.0f};
-        SetDirection(NewDirection);
-    }
-    else if (Engine->GetKey(olc::Key::DOWN).bHeld)
-    {
-        NewDirection = { 0.0f, 1.0f};
-        SetDirection(NewDirection);
-    }
-    else if (Engine->GetKey(olc::Key::RIGHT).bHeld)
-    {
-        NewDirection = {1.0f, 0.0f};
-        SetDirection(NewDirection);
-    }
-    else if (Engine->GetKey(olc::Key::LEFT).bHeld)
-    {
-        NewDirection = { -1.0f, 0.0f};
-        SetDirection(NewDirection);
-    }
-    
 
+    //Controls
+    HandleInput(NewDirection);
+    
     //Adjust to turn if needed
     if(OldDirection != NewDirection && OldDirection.dot(NewDirection) == 0.0f)
     {
         TurnDirection = NewDirection;
-        AdjustToTurn(Engine);
+        AdjustToTurn();
     }
     
     //EndTurn
@@ -54,15 +38,12 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
         olc::vf2d NextPosition = Position + BaseSpeed * SpeedMultiplier * ElapsedTime * Direction;
         if((NextPosition - TurnSource).mag() >= TurnDistance.mag())
         {
-            Position = TurnDestination;
-            Direction = TurnDirection;
-            bIsTurning = false;
-            DrawSelf(RoundTime);
+            EndTurn(RoundTime);
             return;
         }
     }
 
-    //This might cause problems with not eating during turns....apparently not?
+    //Eat Pellets
     if(Maze->GetTile(Position).bHasPellet || Maze->GetTile(Position).bHasEnergizer)
     {
         if(Maze->GetTile(Position).bHasPellet)
@@ -84,7 +65,33 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     DrawSelf(RoundTime);
 }
 
-void FPlayer::AdjustToTurn(const olc::PixelGameEngine* Engine)
+//-------------------------------------------------------------------------------------------
+void FPlayer::HandleInput(olc::vf2d& OutDirection)
+{
+    if(Engine->GetKey(olc::Key::UP).bHeld)
+    {
+        OutDirection = { 0.0f, -1.0f};
+        SetDirection(OutDirection);
+    }
+    else if (Engine->GetKey(olc::Key::DOWN).bHeld)
+    {
+        OutDirection = { 0.0f, 1.0f};
+        SetDirection(OutDirection);
+    }
+    else if (Engine->GetKey(olc::Key::RIGHT).bHeld)
+    {
+        OutDirection = {1.0f, 0.0f};
+        SetDirection(OutDirection);
+    }
+    else if (Engine->GetKey(olc::Key::LEFT).bHeld)
+    {
+        OutDirection = { -1.0f, 0.0f};
+        SetDirection(OutDirection);
+    }
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::AdjustToTurn()
 {
     //PacMan advantage while turning
     if(!Maze->GetTile(Position).bIsIntersection)
@@ -115,32 +122,46 @@ void FPlayer::AdjustToTurn(const olc::PixelGameEngine* Engine)
     }
 }
 
+//-------------------------------------------------------------------------------------------
+void FPlayer::EndTurn(const float RoundTime)
+{
+    Position = TurnDestination;
+    Direction = TurnDirection;
+    bIsTurning = false;
+    DrawSelf(RoundTime);
+}
+
+//-------------------------------------------------------------------------------------------
 void FPlayer::Die()
 {
     Direction = {0.0f, 0.0f};
     bIsDead = true;
 }
 
-int FPlayer::GetScore()
+//-------------------------------------------------------------------------------------------
+int FPlayer::GetScore() const
 {
     return Score;
 }
 
-bool FPlayer::IsEnergized()
+//-------------------------------------------------------------------------------------------
+bool FPlayer::IsEnergized() const
 {
     return bEnergized;
 }
 
+//-------------------------------------------------------------------------------------------
 void FPlayer::SetEnergized(const bool InEnergized)
 {
     bEnergized = InEnergized;
 }
 
+//-------------------------------------------------------------------------------------------
 void FPlayer::DrawSelf(const float RoundTime) const
 {
     if(bIsDead)
     {
-        float OffsetX = floor(DeathAnimationTimer / 0.10f) * 16.0f;
+        const float OffsetX = floor(DeathAnimationTimer / 0.10f) * 16.0f;
 
         const olc::vf2d ImageOffset = {OffsetX, 0.0f};
         const olc::vf2d CenterOffset = {7.0f, 8.0f};

@@ -4,6 +4,7 @@
 
 class FPlayer : public FBasePawn
 {
+	//Score and Stats
 	int Score = 0;
 	
 	bool bIsDead = false;
@@ -11,11 +12,13 @@ class FPlayer : public FBasePawn
 
 	bool bEnergized = false;
 
+	//Turn persistent variables
 	olc::vf2d TurnDirection;
 	olc::vf2d TurnSource;
 	olc::vf2d TurnDestination;
 	olc::vf2d TurnDistance;
 
+	//Sprite and Animation
 	olc::Sprite* DeathSprite = nullptr;
 	olc::Decal* DeathDecal = nullptr;
 	float DeathAnimationTimer = 0.0f;
@@ -28,13 +31,17 @@ public:
 
 	void Update(const float ElapsedTime, const float RoundTime) override;
 
-	void AdjustToTurn(const olc::PixelGameEngine* Engine);
+	void HandleInput(olc::vf2d& OutDirection);
+
+	void AdjustToTurn();
+
+	void EndTurn(const float RoundTime);
 
 	void Die();
 
-	int GetScore();
+	int GetScore() const;
 
-	bool IsEnergized();
+	bool IsEnergized() const;
 
 	void SetEnergized(const bool InEnergized);
 

@@ -20,6 +20,7 @@ protected:
 
 	//Sprites
 	const olc::vf2d Size = {16, 16};
+	const olc::vf2d CenterOffset = {7.0f, 8.0f};
 	olc::Sprite* BaseSprite = nullptr;
 	olc::Decal* BaseDecal = nullptr;
 
@@ -29,7 +30,7 @@ public:
 
 	FBasePawn(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze);
 
-	~FBasePawn();
+	virtual ~FBasePawn() = default;
 
 	virtual void Update(const float ElapsedTime, const float RoundTime);
 

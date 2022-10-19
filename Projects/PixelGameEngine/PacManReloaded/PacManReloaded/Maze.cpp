@@ -12,13 +12,6 @@ FMaze::FMaze(olc::PixelGameEngine* InEngine, olc::Sprite* InBackground, olc::Spr
 }
 
 //-------------------------------------------------------------------------------------------
-FMaze::~FMaze()
-{
-	delete BackgroundSprite;
-	delete TileMap;
-}
-
-//-------------------------------------------------------------------------------------------
 void FMaze::DrawBase() const
 {
 	Engine->DrawPartialSprite(BackgroundOffset, BackgroundSprite, BackgroundSourcePosition, BackgroundSize);

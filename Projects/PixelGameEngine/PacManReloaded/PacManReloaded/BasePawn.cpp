@@ -11,12 +11,6 @@ FBasePawn::FBasePawn(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaz
 }
 
 //-------------------------------------------------------------------------------------------
-FBasePawn::~FBasePawn()
-{
-	delete BaseSprite;
-}
-
-//-------------------------------------------------------------------------------------------
 void FBasePawn::Update(const float ElapsedTime, const float RoundTime)
 {
 	Move(ElapsedTime);
@@ -77,7 +71,6 @@ void FBasePawn::DrawSelf(const float RoundTime) const
 		}
 
 		const olc::vf2d ImageOffset = {OffsetX, 0.0f};
-		const olc::vf2d CenterOffset = {7.0f, 8.0f};
 		Engine->DrawPartialDecal(Position - CenterOffset, BaseDecal, ImageOffset, Size);
 	}
 	else

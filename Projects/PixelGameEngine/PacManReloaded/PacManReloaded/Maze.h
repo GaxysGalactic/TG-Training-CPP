@@ -49,8 +49,6 @@ public:
 
 	FMaze(olc::PixelGameEngine* InEngine, olc::Sprite* InBackground, olc::Sprite* InTileMap);
 
-	~FMaze();
-
 	void DrawBase() const;
 
 	void DrawPellets() const;
