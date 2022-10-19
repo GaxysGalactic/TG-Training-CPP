@@ -22,7 +22,7 @@ void FBasePawn::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, co
 void FBasePawn::SetDirection(const olc::PixelGameEngine* Engine, const olc::vf2d& NewDirection)
 {
 	//Can't run into an obstacle
-	if(Maze->IsNextTileAnObstacle(Engine, Position, NewDirection))
+	if(Maze->IsNextTileAnObstacle(Position, NewDirection))
 	{
 		return;
 	}
@@ -33,7 +33,7 @@ void FBasePawn::SetDirection(const olc::PixelGameEngine* Engine, const olc::vf2d
 
 void FBasePawn::Move(const olc::PixelGameEngine* Engine, const float ElapsedTime)
 {
-	if(Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Engine, Position, Direction))
+	if(Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Position, Direction))
 	{
 		return;
 	}

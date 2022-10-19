@@ -2,38 +2,40 @@
 
 #include "BasePawn.h"
 
-FMaze::FMaze(olc::Sprite* InBackground, olc::Sprite* InTileMap)
+//-------------------------------------------------------------------------------------------
+FMaze::FMaze(olc::PixelGameEngine* InEngine, olc::Sprite* InBackground, olc::Sprite* InTileMap)
 {
+	Engine = InEngine;
 	BackgroundSprite = InBackground;
 	TileMap = InTileMap;
 	CreateGrid();
 }
 
+//-------------------------------------------------------------------------------------------
 FMaze::~FMaze()
 {
 	delete BackgroundSprite;
+	delete TileMap;
 }
 
-void FMaze::DrawBase(olc::PixelGameEngine* Engine) const
+//-------------------------------------------------------------------------------------------
+void FMaze::DrawBase() const
 {
-	//Engine->DrawPartialSprite(BackgroundOffset, BackgroundSprite, BackgroundSourcePosition, BackgroundSize);
-	olc::vf2d SourcePos = {0.0f, 0.0f};
-	Engine->DrawPartialSprite(BackgroundOffset, BackgroundSprite, SourcePos, BackgroundSize);
-	//Engine->DrawSprite(0,0, TileMap);
-	//Engine->DrawLine(51, 212, 171, 212);
+	Engine->DrawPartialSprite(BackgroundOffset, BackgroundSprite, BackgroundSourcePosition, BackgroundSize);
 }
 
-void FMaze::DrawPellets(olc::PixelGameEngine* Engine) const
+//-------------------------------------------------------------------------------------------
+void FMaze::DrawPellets() const
 {
-	for(int i = 0; i < Rows; i++)
+	for(int y = 0; y < Rows; y++)
 	{
-		for(int j = 0; j < Columns; j++)
+		for(int x = 0; x < Columns; x++)
 		{
-			const int GridIndex = i * Columns + j;
-			FTile QueryTile =  Grid.at(GridIndex);
+			const int GridIndex = y * Columns + x;
+			const FTile QueryTile =  Grid.at(GridIndex);
 			if(QueryTile.bHasPellet || QueryTile.bHasEnergizer)
 			{
-				olc::vf2d PelletPosition = { static_cast<float>(j), static_cast<float>(i) };
+				olc::vf2d PelletPosition = { static_cast<float>(x), static_cast<float>(y) };
 				PelletPosition *= TileSize;
 				PelletPosition += TileCenter;
 				PelletPosition.y -= 1;
@@ -53,13 +55,14 @@ void FMaze::DrawPellets(olc::PixelGameEngine* Engine) const
 	}
 }
 
+//-------------------------------------------------------------------------------------------
 void FMaze::CreateGrid()
 {
-	for (int i = 0; i < Rows; i++)
+	for (int y = 0; y < Rows; y++)
 	{
-		for (int j = 0; j < Columns; j++)
+		for (int x = 0; x < Columns; x++)
 		{
-			olc::vf2d QueryPosition = { static_cast<float>(j), static_cast<float>(i) };
+			olc::vf2d QueryPosition = { static_cast<float>(x), static_cast<float>(y) };
 
 			FTile NewTile;
 			QueryPosition *= TileSize;
@@ -93,20 +96,19 @@ void FMaze::CreateGrid()
 				NewTile.bIsIntersection = true;
 			}
 			
-			NewTile.TileID = i * Columns + j;
+			NewTile.TileID = y * Columns + x;
 
 			Grid.push_back(NewTile);
 
 		}
 	}
-
 }
 
-void FMaze::EatPellet(olc::PixelGameEngine* Engine, const olc::vf2d& Position)
+//-------------------------------------------------------------------------------------------
+void FMaze::EatPellet(const olc::vf2d& Position)
 {
 	--Pellets;
 	
-	//Add energizer here too maybe
 	if(GetTile(Position).bHasPellet)
 	{
 		GetTile(Position).bHasPellet = false;
@@ -116,21 +118,21 @@ void FMaze::EatPellet(olc::PixelGameEngine* Engine, const olc::vf2d& Position)
 		GetTile(Position).bHasEnergizer = false;
 	}
 
-	//Adjust this so its start of tile - its a bit buggy
 	olc::vf2d PositionFromCenter;
-	GetPositionFromTileCenter(Position, PositionFromCenter);
-	olc::vf2d DrawPoint = Position + PositionFromCenter - TileCenter;
-	olc::vf2d Size = {8.0f, 8.0f};
-	Engine->FillRect(DrawPoint, Size, olc::BLACK);
+	GetPositionToTileCenter(Position, PositionFromCenter);
+	const olc::vf2d DrawPoint = Position + PositionFromCenter - TileCenter;
+	Engine->FillRect(DrawPoint, TileSize, olc::BLACK);
 }
 
+//-------------------------------------------------------------------------------------------
 const FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position) const
 {
 	const olc::vf2d NewPos = Position / 8.0f;
-	const int GridIndex = floor(NewPos.x) + Columns * floor(NewPos.y);
+	const int GridIndex = floor(NewPos.y) * Columns + floor(NewPos.x);
 	return Grid.at(GridIndex);
 }
 
+//-------------------------------------------------------------------------------------------
 FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position)
 {
 	const olc::vf2d NewPos = Position / 8.0f;
@@ -138,32 +140,36 @@ FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position)
 	return Grid.at(GridIndex);
 }
 
-void FMaze::GetPositionFromTileCenter(const olc::vf2d& Position, olc::vf2d& OutPosition) const
+//-------------------------------------------------------------------------------------------
+void FMaze::GetPositionToTileCenter(const olc::vf2d& Position, olc::vf2d& OutPosition) const
 {
-	olc::vi2d NewPos = {static_cast<int>(floor(Position.x)) % 8, static_cast<int>(floor(Position.y)) % 8};
+	const olc::vi2d NewPos = {static_cast<int>(floor(Position.x)) % 8, static_cast<int>(floor(Position.y)) % 8};
 	OutPosition = TileCenter - NewPos;
 }
 
-void FMaze::GetDirectionToTileCenter(const olc::vf2d& Position, olc::vf2d& OutDirection) const
+//-------------------------------------------------------------------------------------------
+void FMaze::GetDirectionFromTileCenter(const olc::vf2d& Position, olc::vf2d& OutDirection) const
 {
-	GetPositionFromTileCenter(Position, OutDirection);
+	GetPositionToTileCenter(Position, OutDirection);
 	OutDirection *= -1;
 	OutDirection = OutDirection.norm();
 }
 
+//-------------------------------------------------------------------------------------------
 bool FMaze::IsPixelACenter(const olc::vf2d& Position) const
 {
-	olc::vi2d NewPos = {static_cast<int>(floor(Position.x)) % 8, static_cast<int>(floor(Position.y)) % 8};
+	const olc::vi2d NewPos = {static_cast<int>(floor(Position.x)) % 8, static_cast<int>(floor(Position.y)) % 8};
 	return NewPos == TileCenter;
 }
 
-bool FMaze::IsNextTileAnObstacle(const olc::PixelGameEngine* Engine, const olc::vf2d& Position, const olc::vf2d& Direction)
+//-------------------------------------------------------------------------------------------
+bool FMaze::IsNextTileAnObstacle(const olc::vf2d& Position, const olc::vf2d& Direction)
 {
-	//TODO: Fix borders
 	return GetTile(FBasePawn::WrapCoordinates(Engine, Position + Direction * TileSize)).bIsObstacle;
 }
 
-void FMaze::GetNeighbors(olc::PixelGameEngine* Engine, const olc::vf2d& Position, FMaze::FTile& Up, FMaze::FTile& Down, FMaze::FTile& Left, FMaze::FTile& Right)
+//-------------------------------------------------------------------------------------------
+void FMaze::GetNeighbors(const olc::vf2d& Position, FMaze::FTile& Up, FMaze::FTile& Down, FMaze::FTile& Left, FMaze::FTile& Right)
 {
 	FBasePawn::WrapCoordinates(Engine, Position);
 	
@@ -173,9 +179,10 @@ void FMaze::GetNeighbors(olc::PixelGameEngine* Engine, const olc::vf2d& Position
 	Right = GetTile({Position.x + 8.0f, Position.y});
 }
 
+//-------------------------------------------------------------------------------------------
 void FMaze::GetCenterOfTile(const olc::vf2d& Position, olc::vf2d& Center) const
 {
-	GetPositionFromTileCenter(Position, Center);
+	GetPositionToTileCenter(Position, Center);
 	Center = Position - Center;
 }
 

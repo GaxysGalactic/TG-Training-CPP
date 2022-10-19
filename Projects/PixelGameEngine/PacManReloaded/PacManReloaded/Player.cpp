@@ -68,13 +68,13 @@ void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, cons
         if(Maze->GetTile(Position).bHasPellet)
         {
             Score += 10;
-            Maze->EatPellet(Engine, Position);
+            Maze->EatPellet(Position);
         }
         else
         {
             Score+=50;
             bEnergized = true;
-            Maze->EatPellet(Engine, Position);
+            Maze->EatPellet(Position);
         }
     }
     else
@@ -94,13 +94,13 @@ void FPlayer::AdjustToTurn(const olc::PixelGameEngine* Engine)
     }
     
     //Start Turning
-    if(!bIsTurning && !Maze->IsPixelACenter(Position) && !Maze->IsNextTileAnObstacle(Engine, Position, TurnDirection)) 
+    if(!bIsTurning && !Maze->IsPixelACenter(Position) && !Maze->IsNextTileAnObstacle(Position, TurnDirection)) 
     {
         //Remember Old Position, calculate NewPosition
         TurnSource = Position;
 
         olc::vf2d PositionFromTileCenter;
-        Maze->GetPositionFromTileCenter(Position, PositionFromTileCenter);
+        Maze->GetPositionToTileCenter(Position, PositionFromTileCenter);
 
         const olc::vf2d RotatedPositionFromTileCenter = PositionFromTileCenter.mag() * TurnDirection;
 
@@ -109,7 +109,7 @@ void FPlayer::AdjustToTurn(const olc::PixelGameEngine* Engine)
         
         //Add opposite position vector relative to center
         olc::vf2d DirectionOffset;
-        Maze->GetDirectionToTileCenter(Position, DirectionOffset);
+        Maze->GetDirectionFromTileCenter(Position, DirectionOffset);
         Direction = TurnDirection + (-1.0f)*DirectionOffset;
         bIsTurning = true;
     }

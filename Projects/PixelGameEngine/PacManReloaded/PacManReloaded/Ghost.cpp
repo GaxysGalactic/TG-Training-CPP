@@ -89,19 +89,19 @@ void FGhost::ChangeDirectionToFaceTarget(const olc::PixelGameEngine* Engine)
     if(CurrentState == EState::Frightened)
     {
         std::vector<olc::vf2d> RandomPool;
-        if(!Maze->IsNextTileAnObstacle(Engine, Position, Up))
+        if(!Maze->IsNextTileAnObstacle(Position, Up))
         {
             RandomPool.push_back(Up);
         }
-        if(!Maze->IsNextTileAnObstacle(Engine, Position, Down))
+        if(!Maze->IsNextTileAnObstacle(Position, Down))
         {
             RandomPool.push_back(Down);
         }
-        if(!Maze->IsNextTileAnObstacle(Engine, Position, Left))
+        if(!Maze->IsNextTileAnObstacle(Position, Left))
         {
             RandomPool.push_back(Left);
         }
-        if(!Maze->IsNextTileAnObstacle(Engine, Position, Right))
+        if(!Maze->IsNextTileAnObstacle(Position, Right))
         {
             RandomPool.push_back(Right);
         }
@@ -110,19 +110,19 @@ void FGhost::ChangeDirectionToFaceTarget(const olc::PixelGameEngine* Engine)
     }
 
     std::pair<float, olc::vf2d> UpPair = {
-        Maze->IsNextTileAnObstacle(Engine, Position, Up) ? 999.0f : (TargetTilePosition - (Position + (8 * Up))).mag(),
+        Maze->IsNextTileAnObstacle(Position, Up) ? 999.0f : (TargetTilePosition - (Position + (8 * Up))).mag(),
         Up
     };
     std::pair<float, olc::vf2d> DownPair = {
-        Maze->IsNextTileAnObstacle(Engine, Position, Down) ? 999.0f : (TargetTilePosition - (Position + (8 * Down))).mag(),
+        Maze->IsNextTileAnObstacle(Position, Down) ? 999.0f : (TargetTilePosition - (Position + (8 * Down))).mag(),
         Down
     };
     std::pair<float, olc::vf2d> LeftPair = {
-        Maze->IsNextTileAnObstacle(Engine, Position, Left) ? 999.0f : (TargetTilePosition - (Position + (8 * Left))).mag(),
+        Maze->IsNextTileAnObstacle(Position, Left) ? 999.0f : (TargetTilePosition - (Position + (8 * Left))).mag(),
         Left
     };
     std::pair<float, olc::vf2d> RightPair = {
-        Maze->IsNextTileAnObstacle(Engine, Position, Right) ? 999.0f : (TargetTilePosition - (Position + (8 * Right))).mag(),
+        Maze->IsNextTileAnObstacle(Position, Right) ? 999.0f : (TargetTilePosition - (Position + (8 * Right))).mag(),
         Right
     };
 

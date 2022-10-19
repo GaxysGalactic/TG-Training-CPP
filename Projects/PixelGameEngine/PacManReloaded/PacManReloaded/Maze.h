@@ -18,10 +18,17 @@ public:
 	int Pellets = 244;
 
 private:
-	olc::Sprite* BackgroundSprite;
 
+	//Engine
+	olc::PixelGameEngine* Engine;
+
+	//Sprites
+	olc::Sprite* BackgroundSprite = nullptr;
+	olc::Sprite* TileMap = nullptr;
+
+	//Background
 	const olc::vf2d BackgroundOffset = { 0.0f, 24.0f };
-	const olc::vf2d BackgroundSourcePosition = { 228.0f, 0.0f };
+	const olc::vf2d BackgroundSourcePosition = { 0.0f, 0.0f };
 	const olc::vf2d BackgroundSize = { 224.0f, 248.0f };
 
 	const olc::Pixel PelletColor = {255, 183, 174};
@@ -29,11 +36,10 @@ private:
 	const olc::vf2d TileSize = { 8.0f, 8.0f };
 	const olc::vf2d TileCenter = { 3.0f, 4.0f };
 
+	//Grid
 	const int Columns = 28;
 	const int Rows = 36;
-
-	olc::Sprite* TileMap;
-
+	
 	std::vector<FTile> Grid;
 
 
@@ -41,33 +47,31 @@ public:
 
 	FMaze() = default;
 
-	FMaze(olc::Sprite* InBackground, olc::Sprite* InTileMap);
+	FMaze(olc::PixelGameEngine* InEngine, olc::Sprite* InBackground, olc::Sprite* InTileMap);
 
 	~FMaze();
 
-	//virtual void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime);
+	void DrawBase() const;
 
-	void DrawBase(olc::PixelGameEngine* Engine) const;
-
-	void DrawPellets(olc::PixelGameEngine* Engine) const;
+	void DrawPellets() const;
 
 	void CreateGrid();
 
-	void EatPellet(olc::PixelGameEngine* Engine, const olc::vf2d& Position);
+	void EatPellet(const olc::vf2d& Position);
 
 	const FTile& GetTile(const olc::vf2d& Position) const;
 
 	FTile& GetTile(const olc::vf2d& Position);
 
-	void GetPositionFromTileCenter(const olc::vf2d& Position, olc::vf2d& OutPosition) const;
+	void GetPositionToTileCenter(const olc::vf2d& Position, olc::vf2d& OutPosition) const;
 
-	void GetDirectionToTileCenter(const olc::vf2d& Position, olc::vf2d& OutDirection) const;
+	void GetDirectionFromTileCenter(const olc::vf2d& Position, olc::vf2d& OutDirection) const;
 	
 	bool IsPixelACenter(const olc::vf2d& Position) const;
 
-	bool IsNextTileAnObstacle(const olc::PixelGameEngine* Engine, const olc::vf2d& Position, const olc::vf2d& Direction);
+	bool IsNextTileAnObstacle(const olc::vf2d& Position, const olc::vf2d& Direction);
 	
-	void GetNeighbors(olc::PixelGameEngine* Engine, const olc::vf2d& Position, FTile& Up, FTile& Down, FTile& Left, FTile& Right);
+	void GetNeighbors(const olc::vf2d& Position, FTile& Up, FTile& Down, FTile& Left, FTile& Right);
 
 	void GetCenterOfTile(const olc::vf2d& Position, olc::vf2d& Center) const;
 	

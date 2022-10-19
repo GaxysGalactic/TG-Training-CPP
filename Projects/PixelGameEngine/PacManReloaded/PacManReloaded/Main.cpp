@@ -122,8 +122,8 @@ private:
 	void LoadBackground()
 	{
 		Clear(olc::BLACK);
-		Maze = new FMaze(BackgroundSprite, TileMapSprite);
-		Maze->DrawBase(this);
+		Maze = new FMaze(this, BackgroundSprite, TileMapSprite);
+		Maze->DrawBase();
 		DrawString(24, 1, "1UP");
 		DrawString(72, 1, "HIGH SCORE");
 	}
