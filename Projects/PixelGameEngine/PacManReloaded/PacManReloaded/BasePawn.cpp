@@ -28,7 +28,6 @@ void FBasePawn::SetDirection(const olc::PixelGameEngine* Engine, const olc::vf2d
 	}
 	//Change according to input
 	Direction = NewDirection;
-
 	
 }
 

@@ -44,70 +44,33 @@ class FPacMan : public olc::PixelGameEngine
 
 public:
 
+	//-------------------------------------------------------------------------------------------
 	FPacMan()
 	{
 		sAppName = "Pac-Man: Reloaded";
 	}
-	
+
+	//-------------------------------------------------------------------------------------------
 	bool OnUserCreate() override
 	{
 		//LOAD SPRITES & DECALS
 		LoadSprites();
 
 		//BACKGROUND & GRID
-		Clear(olc::BLACK);
-		Maze = new FMaze(BackgroundSprite, TileMapSprite);
-		Maze->DrawBase(this);
-		DrawString(24, 1, "1UP");
-		DrawString(72, 1, "HIGH SCORE");
-
-		//DRAW PELLETS & ENERGIZERS
-		//Maze->DrawPellets(this);
+		LoadBackground();
 
 		//CHARACTERS
-		Pacman = new FPlayer(PacmanSprite, Maze, PacmanDeathSprite);
-		//Pacman = new FPlayer();
-		//GhostTest = new FGhost(BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
-		Blinky = new FBlinky(BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
-		Inky = new FInky(InkySprite, Maze, FrightenedSprite, EatenSprite, Pacman, Blinky);
-		Pinky = new FPinky(PinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
-		Clyde = new FClyde(ClydeSprite, Maze, FrightenedSprite, EatenSprite, Pacman);
-
-		Ghosts.push_back(Blinky);
-		Ghosts.push_back(Inky);
-		Ghosts.push_back(Pinky);
-		Ghosts.push_back(Clyde);
+		InitializeCharacters();
 		
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	bool OnUserUpdate(float ElapsedTime) override
 	{
 		if(!bEnded)
 		{
-			RoundTime += ElapsedTime;
-
-			//Debugging
-			if(ElapsedTime > 2.0f)
-			{
-				ElapsedTime = 0.01f;
-			}
-		
-			Pacman->Update(this, ElapsedTime, RoundTime);
-			Blinky->Update(this, ElapsedTime, RoundTime);
-			Inky->Update(this, ElapsedTime, RoundTime);
-			Pinky->Update(this, ElapsedTime, RoundTime);
-			Clyde->Update(this, ElapsedTime, RoundTime);
-
-			if(Pacman->IsEnergized())
-			{
-				FrightenGhosts();
-				Pacman->SetEnergized(false);
-			}
-			
-			CheckCollision();
-
-			DrawScore();
+			LoopGameplay(ElapsedTime);
 
 			if(!bEnded)
 			{
@@ -116,23 +79,7 @@ public:
 		}
 		else
 		{
-			if(HasWon())
-			{
-				Clear(olc::BLACK);
-				DrawString(80, 110, "YOU WON!");
-				DrawString(30, 118, "Press SPACE to exit.");	
-			}
-			else
-			{
-				GameOverTimer += ElapsedTime;
-				Pacman->Update(this, ElapsedTime, RoundTime);
-				if(GameOverTimer >= 3.0f)
-				{
-					Clear(olc::BLACK);
-					DrawString(80, 110, "GAME OVER");
-					DrawString(30, 118, "Press SPACE to exit.");	
-				}
-			}
+			EndGame(HasWon(), ElapsedTime);
 
 			if(GetKey(olc::Key::SPACE).bPressed)
 			{
@@ -143,16 +90,16 @@ public:
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------------------
 	bool Draw(const olc::vi2d& pos, olc::Pixel p = olc::WHITE)
 	{
 		olc::vi2d NewPos = FBasePawn::WrapCoordinates(this, pos);
 		return olc::PixelGameEngine::Draw(pos, p);
 	}
 
-	
-
 private:
 
+	//-------------------------------------------------------------------------------------------
 	void LoadSprites()
 	{
 		BackgroundSprite = new olc::Sprite("./Sprites/Spritesheet.png");
@@ -171,6 +118,69 @@ private:
 		TileMapSprite = new olc::Sprite("./Sprites/TileMap.png");
 	}
 
+	//-------------------------------------------------------------------------------------------
+	void LoadBackground()
+	{
+		Clear(olc::BLACK);
+		Maze = new FMaze(BackgroundSprite, TileMapSprite);
+		Maze->DrawBase(this);
+		DrawString(24, 1, "1UP");
+		DrawString(72, 1, "HIGH SCORE");
+	}
+
+	//-------------------------------------------------------------------------------------------
+	void InitializeCharacters()
+	{
+		Pacman = new FPlayer(PacmanSprite, Maze, PacmanDeathSprite);
+		Blinky = new FBlinky(BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		Inky = new FInky(InkySprite, Maze, FrightenedSprite, EatenSprite, Pacman, Blinky);
+		Pinky = new FPinky(PinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		Clyde = new FClyde(ClydeSprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+
+		//ARRAY OF GHOSTS
+		Ghosts.push_back(Blinky);
+		Ghosts.push_back(Inky);
+		Ghosts.push_back(Pinky);
+		Ghosts.push_back(Clyde);
+	}
+
+	//-------------------------------------------------------------------------------------------
+	void LoopGameplay(float ElapsedTime)
+	{
+		RoundTime += ElapsedTime;
+
+		//Debugging
+		if(ElapsedTime > 2.0f)
+		{
+			ElapsedTime = 0.01f;
+		}
+
+		//Update Characters
+		UpdateCharacters(ElapsedTime);
+
+		//Frighten Ghosts if needed
+		if(Pacman->IsEnergized())
+		{
+			FrightenGhosts();
+			Pacman->SetEnergized(false);
+		}
+			
+		CheckCollision();
+
+		DrawScore();
+	}
+
+	//-------------------------------------------------------------------------------------------
+	void UpdateCharacters(const float ElapsedTime)
+	{
+		Pacman->Update(this, ElapsedTime, RoundTime);
+		Blinky->Update(this, ElapsedTime, RoundTime);
+		Inky->Update(this, ElapsedTime, RoundTime);
+		Pinky->Update(this, ElapsedTime, RoundTime);
+		Clyde->Update(this, ElapsedTime, RoundTime);
+	}
+
+	//-------------------------------------------------------------------------------------------
 	void CheckCollision()
 	{
 		for(FGhost* Ghost: Ghosts)
@@ -190,7 +200,8 @@ private:
 		}
 	}
 
-	void FrightenGhosts()
+	//-------------------------------------------------------------------------------------------
+	void FrightenGhosts() const
 	{
 		for(FGhost* Ghost: Ghosts)
 		{
@@ -198,15 +209,39 @@ private:
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------
 	void DrawScore()
 	{
 		olc::vi2d DrawPoint = {24, 9};
 		DrawStringDecal(DrawPoint, std::to_string(Pacman->GetScore()));
 	}
 
-	bool HasWon()
+	//-------------------------------------------------------------------------------------------
+	bool HasWon() const
 	{
 		return Maze->Pellets == 0;
+	}
+
+	//-------------------------------------------------------------------------------------------
+	void EndGame(const bool bWon, const float ElapsedTime)
+	{
+		if(bWon)
+		{
+			Clear(olc::BLACK);
+			DrawString(80, 110, "YOU WON!");
+			DrawString(30, 118, "Press SPACE to exit.");	
+		}
+		else
+		{
+			GameOverTimer += ElapsedTime;
+			Pacman->Update(this, ElapsedTime, RoundTime);
+			if(GameOverTimer >= 3.0f)
+			{
+				Clear(olc::BLACK);
+				DrawString(80, 110, "GAME OVER");
+				DrawString(30, 118, "Press SPACE to exit.");	
+			}
+		}
 	}
 	
 };
