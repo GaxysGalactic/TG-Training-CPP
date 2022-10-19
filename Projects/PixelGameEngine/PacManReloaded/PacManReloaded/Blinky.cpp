@@ -1,5 +1,6 @@
 #include "Blinky.h"
 
+//-------------------------------------------------------------------------------------------
 FBlinky::FBlinky(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite,
     FPlayer* InPlayer) : FGhost(InEngine, InSprite, InMaze, InFrightenedSprite, InEatenSprite, InPlayer)
 {
@@ -8,6 +9,7 @@ FBlinky::FBlinky(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* I
     TargetTilePosition  = ScatterTilePosition;
 }
 
+//-------------------------------------------------------------------------------------------
 void FBlinky::Update(const float ElapsedTime, const float RoundTime)
 {
     if(CurrentState == EState::Chase)
@@ -18,6 +20,7 @@ void FBlinky::Update(const float ElapsedTime, const float RoundTime)
     FGhost::Update(ElapsedTime, RoundTime);
 }
 
+//-------------------------------------------------------------------------------------------
 void FBlinky::Chase()
 {
     SetState(EState::Chase);
@@ -25,6 +28,7 @@ void FBlinky::Chase()
     SpeedMultiplier = 0.75f;
 }
 
+//-------------------------------------------------------------------------------------------
 void FBlinky::Scatter()
 {
     if(Maze->Pellets <= ChaseThreshold)

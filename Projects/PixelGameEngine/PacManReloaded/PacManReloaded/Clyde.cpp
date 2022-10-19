@@ -1,5 +1,6 @@
 #include "Clyde.h"
 
+//-------------------------------------------------------------------------------------------
 FClyde::FClyde(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite,
     FPlayer* InPlayer) : FGhost(InEngine, InSprite, InMaze, InFrightenedSprite, InEatenSprite, InPlayer)
 {
@@ -10,6 +11,7 @@ FClyde::FClyde(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InM
     TargetTilePosition  = ScatterTilePosition;
 }
 
+//-------------------------------------------------------------------------------------------
 void FClyde::Update(const float ElapsedTime, const float RoundTime)
 {
     if(CurrentState == EState::Chase)

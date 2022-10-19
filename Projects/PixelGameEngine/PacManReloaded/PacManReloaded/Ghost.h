@@ -13,18 +13,23 @@ enum class EState
 class FGhost : public FBasePawn
 {
 protected:
+
+    //Sprites and Decals
     olc::Sprite* FrightenedSprite;
     olc::Decal* FrightenedDecal;
 
     olc::Sprite* EatenSprite;
     olc::Decal* EatenDecal;
-    
+
+    //Positions of relevnt things
     olc::vf2d TargetTilePosition = {0.0f, 0.0f};
     olc::vf2d ScatterTilePosition = {0.0f, 0.0f};
     olc::vf2d GhostHousePosition = {110.0f, 116.0f};
 
+    //Turn
     bool bHasTurned = false;
 
+    //State logic
     EState CurrentState = EState::Scatter;
     EState TimerState = EState::Scatter;
 
@@ -34,10 +39,12 @@ protected:
 
     float SecondsSinceFrightened = 0.0f;
 
+    //State Schedule
     std::vector<float> FirstLevelSchedule = {7.f, 20.f, 7.f, 20.f, 5.f, 20.f, 25.f};
     std::vector<float> SecondLevelSchedule = {7.f, 20.f, 7.f, 20.f, 5.f, 1033.f, (1.0f/60.0f)};
     std::vector<float> FifthLevelSchedule = {7.f, 20.f, 7.f, 20.f, 5.f, 1037.f, (1.0f/60.0f)};
 
+    //Other classes
     FPlayer* PacMan;
 
 public:
@@ -50,7 +57,7 @@ public:
     
     void SetState(EState NewState);
 
-    void ChangeDirectionToFaceTarget(const olc::PixelGameEngine* Engine);
+    void ChangeDirectionToFaceTarget();
 
     void CheckSchedule();
 
@@ -62,9 +69,9 @@ public:
 
     void Die();
 
-    bool CanBeEaten();
+    bool CanBeEaten() const;
 
-    bool IsDead();
+    bool IsDead() const;
 
     void DrawSelf(const float RoundTime) const override;
     

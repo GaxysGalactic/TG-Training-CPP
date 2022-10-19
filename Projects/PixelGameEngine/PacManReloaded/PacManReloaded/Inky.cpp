@@ -1,5 +1,6 @@
 #include "Inky.h"
 
+//-------------------------------------------------------------------------------------------
 FInky::FInky(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite,
     FPlayer* InPlayer, FBlinky* InBlinky) : FGhost(InEngine, InSprite, InMaze, InFrightenedSprite, InEatenSprite, InPlayer)
 {
@@ -12,6 +13,7 @@ FInky::FInky(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaz
     Blinky = InBlinky;
 }
 
+//-------------------------------------------------------------------------------------------
 void FInky::Update(const float ElapsedTime, const float RoundTime)
 {
     if(CurrentState == EState::Chase)

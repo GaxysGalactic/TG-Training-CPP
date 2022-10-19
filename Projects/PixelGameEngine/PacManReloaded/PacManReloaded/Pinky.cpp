@@ -1,5 +1,6 @@
 #include "Pinky.h"
 
+//-------------------------------------------------------------------------------------------
 FPinky::FPinky(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite,
     FPlayer* InPlayer) : FGhost(InEngine, InSprite, InMaze, InFrightenedSprite, InEatenSprite, InPlayer)
 {
@@ -9,6 +10,7 @@ FPinky::FPinky(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InM
     TargetTilePosition  = ScatterTilePosition;
 }
 
+//-------------------------------------------------------------------------------------------
 void FPinky::Update(const float ElapsedTime, const float RoundTime)
 {
     if(CurrentState == EState::Chase)

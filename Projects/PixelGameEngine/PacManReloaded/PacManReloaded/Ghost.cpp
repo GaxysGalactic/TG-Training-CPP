@@ -1,5 +1,5 @@
 #include "Ghost.h"
-
+//-------------------------------------------------------------------------------------------
 FGhost::FGhost(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer) : FBasePawn(InEngine, InSprite, InMaze)
 {
     FrightenedSprite = InFrightenedSprite;
@@ -13,6 +13,7 @@ FGhost::FGhost(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InM
     PacMan = InPlayer;
 }
 
+//-------------------------------------------------------------------------------------------
 void FGhost::Update(const float ElapsedTime, const float RoundTime)
 {
     SecondsInState += ElapsedTime;
@@ -55,22 +56,25 @@ void FGhost::Update(const float ElapsedTime, const float RoundTime)
     CheckSchedule();
 
     //TODO: Might overshoot tile center...
+
+    //if next position > positiontotilecenter or smth
     
     if(Maze->IsPixelACenter(Position) && Maze->GetTile(Position).bIsIntersection && !bHasTurned)
     {
-        ChangeDirectionToFaceTarget(Engine);
+        ChangeDirectionToFaceTarget();
         bHasTurned = true;
     }
     else if (!Maze->GetTile(Position).bIsIntersection)
     {
         bHasTurned = false;
     }
-    //FBasePawn::Update(Engine, ElapsedTime, RoundTime);
+    
     Move(ElapsedTime);
     DrawSelf(RoundTime);
 }
 
-void FGhost::SetState(EState NewState)
+//-------------------------------------------------------------------------------------------
+void FGhost::SetState(const EState NewState)
 {
     CurrentState = NewState;
     if(!Maze->GetTile(Position).bIsIntersection)
@@ -79,7 +83,8 @@ void FGhost::SetState(EState NewState)
     }
 }
 
-void FGhost::ChangeDirectionToFaceTarget(const olc::PixelGameEngine* Engine)
+//-------------------------------------------------------------------------------------------
+void FGhost::ChangeDirectionToFaceTarget()
 {
     olc::vf2d Up = {0.0f, -1.0f};
     olc::vf2d Down = {0.0f, 1.0f};
@@ -144,6 +149,7 @@ void FGhost::ChangeDirectionToFaceTarget(const olc::PixelGameEngine* Engine)
     }
 }
 
+//-------------------------------------------------------------------------------------------
 void FGhost::CheckSchedule()
 {
     std::vector<float>& CurrentSchedule = FirstLevelSchedule;
@@ -181,6 +187,7 @@ void FGhost::CheckSchedule()
     }
 }
 
+//-------------------------------------------------------------------------------------------
 void FGhost::Scatter()
 {
     SetState(EState::Scatter);
@@ -188,20 +195,23 @@ void FGhost::Scatter()
     SpeedMultiplier = 0.75f;
 }
 
+//-------------------------------------------------------------------------------------------
 void FGhost::Chase()
 {
-    //TODO: this is only temporary while we implement the other ghosts.
+    //Default runs away
     SetState(EState::Chase);
     TargetTilePosition = ScatterTilePosition;
     SpeedMultiplier = 0.75f;
 }
 
+//-------------------------------------------------------------------------------------------
 void FGhost::Frighten()
 {
     SetState(EState::Frightened);
     SpeedMultiplier = 0.50f;
 }
 
+//-------------------------------------------------------------------------------------------
 void FGhost::Die()
 {
     SetState(EState::Eaten);
@@ -209,16 +219,19 @@ void FGhost::Die()
     SpeedMultiplier = 2.0f;
 }
 
-bool FGhost::CanBeEaten()
+//-------------------------------------------------------------------------------------------
+bool FGhost::CanBeEaten() const
 {
     return CurrentState == EState::Frightened;
 }
 
-bool FGhost::IsDead()
+//-------------------------------------------------------------------------------------------
+bool FGhost::IsDead() const
 {
     return CurrentState == EState::Eaten;
 }
 
+//-------------------------------------------------------------------------------------------
 void FGhost::DrawSelf(const float RoundTime) const
 {
     if(CurrentState == EState::Frightened)
