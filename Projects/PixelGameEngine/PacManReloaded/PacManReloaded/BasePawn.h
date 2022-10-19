@@ -37,5 +37,7 @@ public:
 
 	olc::vf2d& GetPosition();
 
+	olc::vf2d& GetDirection();
+
 	static olc::vf2d WrapCoordinates(const olc::PixelGameEngine* Engine, const olc::vf2d& InVector);
 };

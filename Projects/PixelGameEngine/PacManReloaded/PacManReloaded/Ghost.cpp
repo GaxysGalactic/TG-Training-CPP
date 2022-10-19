@@ -2,16 +2,13 @@
 
 FGhost::FGhost(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer) : FBasePawn(InSprite, InMaze)
 {
-    //TODO: Remove these debug ones
-    Position = GhostHousePosition;
-    TargetTilePosition= { 111.0f, 213.0f };
-    ScatterTilePosition = {203.0f, 36.0f};
-
     FrightenedSprite = InFrightenedSprite;
     EatenSprite = InEatenSprite;
 
     FrightenedDecal = new olc::Decal(FrightenedSprite);
     EatenDecal = new olc::Decal(EatenSprite);
+
+    SpeedMultiplier = 0.75f;
 
     PacMan = InPlayer;
 }
@@ -19,12 +16,6 @@ FGhost::FGhost(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSp
 void FGhost::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)
 {
     SecondsInState += ElapsedTime;
-
-    //TODO: TEMPORARY
-    if(CurrentState == EState::Chase)
-    {
-        TargetTilePosition = PacMan->GetPosition();
-    }
 
     if(CurrentState == EState::Frightened)
     {
@@ -48,6 +39,8 @@ void FGhost::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const
     {
         if(Maze->GetTile(Position).TileID == Maze->GetTile(GhostHousePosition).TileID)
         {
+            //TODO: Implement Ghost House here. We could make it so they just teleport first to this and set timer.
+            
             if(TimerState == EState::Scatter)
             {
                 Scatter();

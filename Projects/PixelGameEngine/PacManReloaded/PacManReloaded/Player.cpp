@@ -4,7 +4,7 @@ FPlayer::FPlayer(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprit
 {
     DeathSprite = InDeathSprite;
     DeathDecal = new olc::Decal(DeathSprite);
-    Position = { 111.0f, 213.0f };
+    Position = { 111.0f, 212.0f };
 }
 
 void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)

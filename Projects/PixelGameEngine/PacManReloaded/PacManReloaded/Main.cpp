@@ -1,8 +1,12 @@
 #define OLC_PGE_APPLICATION
+#include "Blinky.h"
+#include "Clyde.h"
 #include "Ghost.h"
+#include "Inky.h"
 #include "olcPixelGameEngine.h"
 #include "Player.h"
 #include "Maze.h"
+#include "Pinky.h"
 
 // Override base class with your custom functionality
 class FPacMan : public olc::PixelGameEngine
@@ -18,16 +22,20 @@ class FPacMan : public olc::PixelGameEngine
 	olc::Sprite* EatenSprite = nullptr;
 	
 	olc::Sprite* BlinkySprite = nullptr;
+	olc::Sprite* InkySprite = nullptr;
+	olc::Sprite* PinkySprite = nullptr;
+	olc::Sprite* ClydeSprite = nullptr;
 
 	//Instances
 	FMaze* Maze;
 	FPlayer* Pacman;
-	FGhost* GhostTest;
+	FBlinky* Blinky;
+	FInky* Inky;
+	FPinky* Pinky;
+	FClyde* Clyde;
 
 	//Ghost array
 	std::vector<FGhost*> Ghosts;
-
-	//Ghosts should be FGhost? or FNAME?
 
 	//Stats
 	float RoundTime = 0.0f;
@@ -59,9 +67,16 @@ public:
 		//CHARACTERS
 		Pacman = new FPlayer(PacmanSprite, Maze, PacmanDeathSprite);
 		//Pacman = new FPlayer();
-		GhostTest = new FGhost(BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		//GhostTest = new FGhost(BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		Blinky = new FBlinky(BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		Inky = new FInky(InkySprite, Maze, FrightenedSprite, EatenSprite, Pacman, Blinky);
+		Pinky = new FPinky(PinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		Clyde = new FClyde(ClydeSprite, Maze, FrightenedSprite, EatenSprite, Pacman);
 
-		Ghosts.push_back(GhostTest);
+		Ghosts.push_back(Blinky);
+		Ghosts.push_back(Inky);
+		Ghosts.push_back(Pinky);
+		Ghosts.push_back(Clyde);
 		
 		return true;
 	}
@@ -79,7 +94,10 @@ public:
 			}
 		
 			Pacman->Update(this, ElapsedTime, RoundTime);
-			GhostTest->Update(this, ElapsedTime, RoundTime);
+			Blinky->Update(this, ElapsedTime, RoundTime);
+			Inky->Update(this, ElapsedTime, RoundTime);
+			Pinky->Update(this, ElapsedTime, RoundTime);
+			Clyde->Update(this, ElapsedTime, RoundTime);
 
 			if(Pacman->IsEnergized())
 			{
@@ -108,7 +126,7 @@ public:
 			{
 				GameOverTimer += ElapsedTime;
 				Pacman->Update(this, ElapsedTime, RoundTime);
-				if(GameOverTimer >= 5.0f)
+				if(GameOverTimer >= 3.0f)
 				{
 					Clear(olc::BLACK);
 					DrawString(80, 110, "GAME OVER");
@@ -146,6 +164,10 @@ private:
 		EatenSprite = new olc::Sprite("./Sprites/Dead.png");
 		
 		BlinkySprite = new olc::Sprite("./Sprites/Blinky.png");
+		PinkySprite = new olc::Sprite("./Sprites/Pinky.png");
+		InkySprite = new olc::Sprite("./Sprites/Inky.png");
+		ClydeSprite = new olc::Sprite("./Sprites/Clyde.png");
+		
 		TileMapSprite = new olc::Sprite("./Sprites/TileMap.png");
 	}
 

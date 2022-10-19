@@ -27,7 +27,7 @@ private:
 	const olc::Pixel PelletColor = {255, 183, 174};
 	
 	const olc::vf2d TileSize = { 8.0f, 8.0f };
-	const olc::vf2d TileCenter = { 3.0f, 5.0f };
+	const olc::vf2d TileCenter = { 3.0f, 4.0f };
 
 	const int Columns = 28;
 	const int Rows = 36;

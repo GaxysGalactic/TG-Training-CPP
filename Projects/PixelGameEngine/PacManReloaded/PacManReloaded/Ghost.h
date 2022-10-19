@@ -12,6 +12,7 @@ enum class EState
 
 class FGhost : public FBasePawn
 {
+protected:
     olc::Sprite* FrightenedSprite;
     olc::Decal* FrightenedDecal;
 
@@ -20,7 +21,7 @@ class FGhost : public FBasePawn
     
     olc::vf2d TargetTilePosition = {0.0f, 0.0f};
     olc::vf2d ScatterTilePosition = {0.0f, 0.0f};
-    olc::vf2d GhostHousePosition = {110.0f, 117.0f};
+    olc::vf2d GhostHousePosition = {110.0f, 116.0f};
 
     bool bHasTurned = false;
 
@@ -45,7 +46,7 @@ public:
 
     FGhost(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer);
 
-    void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime) override;
+    virtual void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime) override;
     
     void SetState(EState NewState);
 
@@ -53,9 +54,9 @@ public:
 
     void CheckSchedule();
 
-    void Scatter();
+    virtual void Scatter();
 
-    void Chase();
+    virtual void Chase();
 
     void Frighten();
 

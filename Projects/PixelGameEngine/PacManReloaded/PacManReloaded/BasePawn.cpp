@@ -87,6 +87,11 @@ olc::vf2d& FBasePawn::GetPosition()
 	return Position;
 }
 
+olc::vf2d& FBasePawn::GetDirection()
+{
+	return Direction;
+}
+
 olc::vf2d FBasePawn::WrapCoordinates(const olc::PixelGameEngine* Engine, const olc::vf2d& InVector)
 {
 	olc::vf2d OutVector = InVector;
