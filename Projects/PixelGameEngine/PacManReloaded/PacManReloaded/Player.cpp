@@ -1,18 +1,18 @@
 #include "Player.h"
 
-FPlayer::FPlayer(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite) : FBasePawn(InSprite, InMaze)
+FPlayer::FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite) : FBasePawn(InEngine, InSprite, InMaze)
 {
     DeathSprite = InDeathSprite;
     DeathDecal = new olc::Decal(DeathSprite);
     Position = { 111.0f, 212.0f };
 }
 
-void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)
+void FPlayer::Update(const float ElapsedTime, const float RoundTime)
 {
     if(bIsDead)
     {
         DeathAnimationTimer += ElapsedTime;
-        DrawSelf(Engine, RoundTime);
+        DrawSelf(RoundTime);
         return;
     }
     
@@ -22,22 +22,22 @@ void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, cons
     if(Engine->GetKey(olc::Key::UP).bHeld)
     {
         NewDirection = { 0.0f, -1.0f};
-        SetDirection(Engine, NewDirection);
+        SetDirection(NewDirection);
     }
     else if (Engine->GetKey(olc::Key::DOWN).bHeld)
     {
         NewDirection = { 0.0f, 1.0f};
-        SetDirection(Engine, NewDirection);
+        SetDirection(NewDirection);
     }
     else if (Engine->GetKey(olc::Key::RIGHT).bHeld)
     {
         NewDirection = {1.0f, 0.0f};
-        SetDirection(Engine, NewDirection);
+        SetDirection(NewDirection);
     }
     else if (Engine->GetKey(olc::Key::LEFT).bHeld)
     {
         NewDirection = { -1.0f, 0.0f};
-        SetDirection(Engine, NewDirection);
+        SetDirection(NewDirection);
     }
     
 
@@ -57,7 +57,7 @@ void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, cons
             Position = TurnDestination;
             Direction = TurnDirection;
             bIsTurning = false;
-            DrawSelf(Engine, RoundTime);
+            DrawSelf(RoundTime);
             return;
         }
     }
@@ -79,9 +79,9 @@ void FPlayer::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, cons
     }
     else
     {
-        Move(Engine, ElapsedTime);
+        Move(ElapsedTime);
     }
-    DrawSelf(Engine, RoundTime);
+    DrawSelf(RoundTime);
 }
 
 void FPlayer::AdjustToTurn(const olc::PixelGameEngine* Engine)
@@ -136,7 +136,7 @@ void FPlayer::SetEnergized(const bool InEnergized)
     bEnergized = InEnergized;
 }
 
-void FPlayer::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const
+void FPlayer::DrawSelf(const float RoundTime) const
 {
     if(bIsDead)
     {
@@ -148,6 +148,6 @@ void FPlayer::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) cons
     }
     else
     {
-        FBasePawn::DrawSelf(Engine, RoundTime);
+        FBasePawn::DrawSelf(RoundTime);
     }
 }

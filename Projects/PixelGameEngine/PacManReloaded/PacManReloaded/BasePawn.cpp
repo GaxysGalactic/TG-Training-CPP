@@ -1,25 +1,30 @@
 #include "BasePawn.h"
 
-FBasePawn::FBasePawn(olc::Sprite* InSprite, FMaze* InMaze)
+//-------------------------------------------------------------------------------------------
+FBasePawn::FBasePawn(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze)
 {
 	BaseSprite = InSprite;
 	BaseDecal = new olc::Decal(BaseSprite);
 
 	Maze = InMaze;
+	Engine = InEngine;
 }
 
+//-------------------------------------------------------------------------------------------
 FBasePawn::~FBasePawn()
 {
 	delete BaseSprite;
 }
 
-void FBasePawn::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)
+//-------------------------------------------------------------------------------------------
+void FBasePawn::Update(const float ElapsedTime, const float RoundTime)
 {
-	Move(Engine, ElapsedTime);
-	DrawSelf(Engine, RoundTime);
+	Move(ElapsedTime);
+	DrawSelf(RoundTime);
 }
 
-void FBasePawn::SetDirection(const olc::PixelGameEngine* Engine, const olc::vf2d& NewDirection)
+//-------------------------------------------------------------------------------------------
+void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
 {
 	//Can't run into an obstacle
 	if(Maze->IsNextTileAnObstacle(Position, NewDirection))
@@ -31,7 +36,8 @@ void FBasePawn::SetDirection(const olc::PixelGameEngine* Engine, const olc::vf2d
 	
 }
 
-void FBasePawn::Move(const olc::PixelGameEngine* Engine, const float ElapsedTime)
+//-------------------------------------------------------------------------------------------
+void FBasePawn::Move(const float ElapsedTime)
 {
 	if(Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Position, Direction))
 	{
@@ -40,7 +46,8 @@ void FBasePawn::Move(const olc::PixelGameEngine* Engine, const float ElapsedTime
 	Position = WrapCoordinates(Engine, Position + BaseSpeed * SpeedMultiplier * ElapsedTime * Direction);
 }
 
-void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const
+//-------------------------------------------------------------------------------------------
+void FBasePawn::DrawSelf(const float RoundTime) const
 {
 	if (BaseDecal)
 	{
@@ -81,16 +88,19 @@ void FBasePawn::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) co
 	}
 }
 
+//-------------------------------------------------------------------------------------------
 olc::vf2d& FBasePawn::GetPosition()
 {
 	return Position;
 }
 
+//-------------------------------------------------------------------------------------------
 olc::vf2d& FBasePawn::GetDirection()
 {
 	return Direction;
 }
 
+//-------------------------------------------------------------------------------------------
 olc::vf2d FBasePawn::WrapCoordinates(const olc::PixelGameEngine* Engine, const olc::vf2d& InVector)
 {
 	olc::vf2d OutVector = InVector;

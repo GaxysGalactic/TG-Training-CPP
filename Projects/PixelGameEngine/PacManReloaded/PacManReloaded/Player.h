@@ -24,9 +24,9 @@ public:
 
 	FPlayer() = default;
 
-	FPlayer(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite);
+	FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite);
 
-	void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime) override;
+	void Update(const float ElapsedTime, const float RoundTime) override;
 
 	void AdjustToTurn(const olc::PixelGameEngine* Engine);
 
@@ -38,6 +38,6 @@ public:
 
 	void SetEnergized(const bool InEnergized);
 
-	void DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const override;
+	void DrawSelf(const float RoundTime) const override;
 
 };

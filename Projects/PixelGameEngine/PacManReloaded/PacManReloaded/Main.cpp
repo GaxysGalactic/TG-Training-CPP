@@ -131,11 +131,11 @@ private:
 	//-------------------------------------------------------------------------------------------
 	void InitializeCharacters()
 	{
-		Pacman = new FPlayer(PacmanSprite, Maze, PacmanDeathSprite);
-		Blinky = new FBlinky(BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
-		Inky = new FInky(InkySprite, Maze, FrightenedSprite, EatenSprite, Pacman, Blinky);
-		Pinky = new FPinky(PinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
-		Clyde = new FClyde(ClydeSprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		Pacman = new FPlayer(this, PacmanSprite, Maze, PacmanDeathSprite);
+		Blinky = new FBlinky(this, BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		Inky = new FInky(this, InkySprite, Maze, FrightenedSprite, EatenSprite, Pacman, Blinky);
+		Pinky = new FPinky(this, PinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
+		Clyde = new FClyde(this, ClydeSprite, Maze, FrightenedSprite, EatenSprite, Pacman);
 
 		//ARRAY OF GHOSTS
 		Ghosts.push_back(Blinky);
@@ -173,11 +173,11 @@ private:
 	//-------------------------------------------------------------------------------------------
 	void UpdateCharacters(const float ElapsedTime)
 	{
-		Pacman->Update(this, ElapsedTime, RoundTime);
-		Blinky->Update(this, ElapsedTime, RoundTime);
-		Inky->Update(this, ElapsedTime, RoundTime);
-		Pinky->Update(this, ElapsedTime, RoundTime);
-		Clyde->Update(this, ElapsedTime, RoundTime);
+		Pacman->Update(ElapsedTime, RoundTime);
+		Blinky->Update(ElapsedTime, RoundTime);
+		Inky->Update(ElapsedTime, RoundTime);
+		Pinky->Update(ElapsedTime, RoundTime);
+		Clyde->Update(ElapsedTime, RoundTime);
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -234,7 +234,7 @@ private:
 		else
 		{
 			GameOverTimer += ElapsedTime;
-			Pacman->Update(this, ElapsedTime, RoundTime);
+			Pacman->Update(ElapsedTime, RoundTime);
 			if(GameOverTimer >= 3.0f)
 			{
 				Clear(olc::BLACK);

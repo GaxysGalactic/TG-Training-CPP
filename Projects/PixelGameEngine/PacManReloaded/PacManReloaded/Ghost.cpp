@@ -1,6 +1,6 @@
 #include "Ghost.h"
 
-FGhost::FGhost(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer) : FBasePawn(InSprite, InMaze)
+FGhost::FGhost(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer) : FBasePawn(InEngine, InSprite, InMaze)
 {
     FrightenedSprite = InFrightenedSprite;
     EatenSprite = InEatenSprite;
@@ -13,7 +13,7 @@ FGhost::FGhost(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSp
     PacMan = InPlayer;
 }
 
-void FGhost::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)
+void FGhost::Update(const float ElapsedTime, const float RoundTime)
 {
     SecondsInState += ElapsedTime;
 
@@ -66,8 +66,8 @@ void FGhost::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const
         bHasTurned = false;
     }
     //FBasePawn::Update(Engine, ElapsedTime, RoundTime);
-    Move(Engine, ElapsedTime);
-    DrawSelf(Engine, RoundTime);
+    Move(ElapsedTime);
+    DrawSelf(RoundTime);
 }
 
 void FGhost::SetState(EState NewState)
@@ -106,7 +106,7 @@ void FGhost::ChangeDirectionToFaceTarget(const olc::PixelGameEngine* Engine)
             RandomPool.push_back(Right);
         }
             
-        SetDirection(Engine, RandomPool.at(std::rand() % RandomPool.size()));
+        SetDirection(RandomPool.at(std::rand() % RandomPool.size()));
     }
 
     std::pair<float, olc::vf2d> UpPair = {
@@ -136,11 +136,11 @@ void FGhost::ChangeDirectionToFaceTarget(const olc::PixelGameEngine* Engine)
 
     if(Candidates.front().second != Direction * -1)
     {
-        SetDirection(Engine, Candidates.front().second);
+        SetDirection(Candidates.front().second);
     }
     else
     {
-        SetDirection(Engine, Candidates.at(1).second);
+        SetDirection(Candidates.at(1).second);
     }
 }
 
@@ -219,7 +219,7 @@ bool FGhost::IsDead()
     return CurrentState == EState::Eaten;
 }
 
-void FGhost::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const
+void FGhost::DrawSelf(const float RoundTime) const
 {
     if(CurrentState == EState::Frightened)
     {
@@ -263,7 +263,7 @@ void FGhost::DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const
     }
     else
     {
-        FBasePawn::DrawSelf(Engine, RoundTime);
+        FBasePawn::DrawSelf(RoundTime);
     }
     
 }

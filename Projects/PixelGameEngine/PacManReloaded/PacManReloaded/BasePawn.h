@@ -5,6 +5,12 @@
 class FBasePawn
 {
 protected:
+
+	//Other classes
+	olc::PixelGameEngine* Engine;
+	FMaze* Maze = nullptr;
+
+	//Physics
 	olc::vf2d Position = { 111.0f, 213.0f };
 	olc::vf2d Direction = { 1.0f, 0.0f };
 	const float BaseSpeed = 80.0f;
@@ -12,28 +18,26 @@ protected:
 
 	float SpeedMultiplier = 0.80f;
 
+	//Sprites
 	const olc::vf2d Size = {16, 16};
 	olc::Sprite* BaseSprite = nullptr;
 	olc::Decal* BaseDecal = nullptr;
-
-	FMaze* Maze = nullptr;
-
 
 public:
 
 	FBasePawn() = default;
 
-	FBasePawn(olc::Sprite* InSprite, FMaze* InMaze);
+	FBasePawn(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze);
 
 	~FBasePawn();
 
-	virtual void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime);
+	virtual void Update(const float ElapsedTime, const float RoundTime);
 
-	void SetDirection(const olc::PixelGameEngine* Engine, const olc::vf2d& NewDirection);
+	void SetDirection(const olc::vf2d& NewDirection);
 
-	void Move(const olc::PixelGameEngine* Engine, const float ElapsedTime);
+	void Move(const float ElapsedTime);
 
-	virtual void DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const;
+	virtual void DrawSelf(const float RoundTime) const;
 
 	olc::vf2d& GetPosition();
 

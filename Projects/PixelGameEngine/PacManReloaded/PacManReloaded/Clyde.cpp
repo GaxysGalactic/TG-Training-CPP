@@ -1,7 +1,7 @@
 #include "Clyde.h"
 
-FClyde::FClyde(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite,
-    FPlayer* InPlayer) : FGhost(InSprite, InMaze, InFrightenedSprite, InEatenSprite, InPlayer)
+FClyde::FClyde(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite,
+    FPlayer* InPlayer) : FGhost(InEngine, InSprite, InMaze, InFrightenedSprite, InEatenSprite, InPlayer)
 {
     ScatterTilePosition = {3.0f, 284.0f};
     Position = ScatterTilePosition;
@@ -10,7 +10,7 @@ FClyde::FClyde(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSp
     TargetTilePosition  = ScatterTilePosition;
 }
 
-void FClyde::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)
+void FClyde::Update(const float ElapsedTime, const float RoundTime)
 {
     if(CurrentState == EState::Chase)
     {
@@ -25,5 +25,5 @@ void FClyde::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const
         
     }
     
-    FGhost::Update(Engine, ElapsedTime, RoundTime);
+    FGhost::Update(ElapsedTime, RoundTime);
 }

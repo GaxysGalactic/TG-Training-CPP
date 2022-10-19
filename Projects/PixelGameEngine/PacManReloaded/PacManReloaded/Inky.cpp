@@ -1,7 +1,7 @@
 #include "Inky.h"
 
-FInky::FInky(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite,
-    FPlayer* InPlayer, FBlinky* InBlinky) : FGhost(InSprite, InMaze, InFrightenedSprite, InEatenSprite, InPlayer)
+FInky::FInky(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite,
+    FPlayer* InPlayer, FBlinky* InBlinky) : FGhost(InEngine, InSprite, InMaze, InFrightenedSprite, InEatenSprite, InPlayer)
 {
     ScatterTilePosition = {219.0f, 284.0f};
     Position = ScatterTilePosition;
@@ -12,7 +12,7 @@ FInky::FInky(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSpri
     Blinky = InBlinky;
 }
 
-void FInky::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime)
+void FInky::Update(const float ElapsedTime, const float RoundTime)
 {
     if(CurrentState == EState::Chase)
     {
@@ -24,5 +24,5 @@ void FInky::Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const 
         
     }
     
-    FGhost::Update(Engine, ElapsedTime, RoundTime);
+    FGhost::Update(ElapsedTime, RoundTime);
 }

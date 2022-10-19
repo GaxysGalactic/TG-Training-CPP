@@ -9,9 +9,9 @@ public:
 
     FBlinky() = default;
 
-    FBlinky(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer);
+    FBlinky(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer);
     
-    void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime) override;
+    void Update(const float ElapsedTime, const float RoundTime) override;
 
     void Chase() override;
 

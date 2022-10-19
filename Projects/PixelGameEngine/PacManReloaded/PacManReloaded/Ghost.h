@@ -44,9 +44,9 @@ public:
 
     FGhost() = default;
 
-    FGhost(olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer);
+    FGhost(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer);
 
-    virtual void Update(olc::PixelGameEngine* Engine, const float ElapsedTime, const float RoundTime) override;
+    virtual void Update(const float ElapsedTime, const float RoundTime) override;
     
     void SetState(EState NewState);
 
@@ -66,6 +66,6 @@ public:
 
     bool IsDead();
 
-    void DrawSelf(olc::PixelGameEngine* Engine, const float RoundTime) const override;
+    void DrawSelf(const float RoundTime) const override;
     
 };
