@@ -33,7 +33,7 @@ void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
 //-------------------------------------------------------------------------------------------
 void FBasePawn::Move(const float ElapsedTime)
 {
-	if(Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Position, Direction))
+	if(bIsPaused || (Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Position, Direction)))
 	{
 		return;
 	}
@@ -91,6 +91,18 @@ olc::vf2d& FBasePawn::GetPosition()
 olc::vf2d& FBasePawn::GetDirection()
 {
 	return Direction;
+}
+
+//-------------------------------------------------------------------------------------------
+void FBasePawn::Pause()
+{
+	bIsPaused = true;
+}
+
+//-------------------------------------------------------------------------------------------
+void FBasePawn::UnPause()
+{
+	bIsPaused = false;
 }
 
 //-------------------------------------------------------------------------------------------

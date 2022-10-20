@@ -18,6 +18,18 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
         DrawSelf(RoundTime);
         return;
     }
+
+    //Energize check
+    if(bIsEnergized)
+    {
+        SecondsSinceEnergized += ElapsedTime;
+
+        if(SecondsSinceEnergized >= 7.0f)
+        {
+            bIsEnergized = false;
+            ComboMeter = 200;
+        }
+    }
     
     olc::vf2d NewDirection = Direction;
     olc::vf2d OldDirection = Direction;
@@ -54,7 +66,8 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
         else
         {
             Score+=50;
-            bEnergized = true;
+            bIsEnergized = true;
+            bHasEnergized = true;
             Maze->EatPellet(Position);
         }
     }
@@ -145,15 +158,45 @@ int FPlayer::GetScore() const
 }
 
 //-------------------------------------------------------------------------------------------
-bool FPlayer::IsEnergized() const
+void FPlayer::SetScore(const int InScore)
 {
-    return bEnergized;
+    Score = InScore;
 }
 
 //-------------------------------------------------------------------------------------------
-void FPlayer::SetEnergized(const bool InEnergized)
+int FPlayer::GetComboMeter() const
 {
-    bEnergized = InEnergized;
+    return ComboMeter;
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::SetComboMeter(const int InComboMeter)
+{
+    ComboMeter = InComboMeter;
+}
+
+//-------------------------------------------------------------------------------------------
+bool FPlayer::IsEnergized() const
+{
+    return bIsEnergized;
+}
+
+//-------------------------------------------------------------------------------------------
+bool FPlayer::HasEnergized() const
+{
+    return bHasEnergized;
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::SetIsEnergized(const bool InEnergized)
+{
+    bIsEnergized = InEnergized;
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::SetHasEnergized(const bool InHasEnergized)
+{
+    bHasEnergized = InHasEnergized;
 }
 
 //-------------------------------------------------------------------------------------------

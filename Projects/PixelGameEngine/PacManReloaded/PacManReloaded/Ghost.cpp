@@ -216,7 +216,7 @@ void FGhost::Die()
 {
     SetState(EState::Eaten);
     TargetTilePosition = GhostHousePosition;
-    SpeedMultiplier = 2.0f;
+    SpeedMultiplier = 1.5f;
 }
 
 //-------------------------------------------------------------------------------------------

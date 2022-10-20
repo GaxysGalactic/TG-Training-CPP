@@ -41,6 +41,8 @@ class FPacMan : public olc::PixelGameEngine
 	float RoundTime = 0.0f;
 	bool bEnded = false;
 	float GameOverTimer = 0.0f;
+	bool bIsPaused = false;
+	float PauseTimer = 0.0f;
 
 public:
 
@@ -174,12 +176,23 @@ private:
 	//-------------------------------------------------------------------------------------------
 	void LoopGameplay(float ElapsedTime)
 	{
-		RoundTime += ElapsedTime;
-
 		//Debugging
 		if(ElapsedTime > 2.0f)
 		{
 			ElapsedTime = 0.01f;
+		}
+		
+		//Update Timers
+		RoundTime += ElapsedTime;
+
+		if(bIsPaused)
+		{
+			PauseTimer += ElapsedTime;
+
+			if(PauseTimer >= 1.0f)
+			{
+				UnPauseCharacters();
+			}
 		}
 
 		//Update Characters
@@ -189,7 +202,7 @@ private:
 		if(Pacman->IsEnergized())
 		{
 			FrightenGhosts();
-			Pacman->SetEnergized(false);
+			Pacman->SetIsEnergized(false);
 		}
 			
 		CheckCollision();
@@ -208,6 +221,29 @@ private:
 	}
 
 	//-------------------------------------------------------------------------------------------
+	void PauseCharacters()
+	{
+		bIsPaused = true;
+		Pacman->Pause();
+		Blinky->Pause();
+		Inky->Pause();
+		Pinky->Pause();
+		Clyde->Pause();
+	}
+
+	//-------------------------------------------------------------------------------------------
+	void UnPauseCharacters()
+	{
+		PauseTimer = 0.0f;
+		bIsPaused = false;
+		Pacman->UnPause();
+		Blinky->UnPause();
+		Inky->UnPause();
+		Pinky->UnPause();
+		Clyde->UnPause();
+	}
+
+	//-------------------------------------------------------------------------------------------
 	void CheckCollision()
 	{
 		for(FGhost* Ghost: Ghosts)
@@ -217,6 +253,13 @@ private:
 				if(Ghost->CanBeEaten())
 				{
 					Ghost->Die();
+					const int Score = Pacman->GetScore();
+					int ComboMeter = Pacman->GetComboMeter();
+					Pacman->SetScore(Score + ComboMeter);
+					ComboMeter *= 2;
+					Pacman->SetComboMeter(ComboMeter);
+
+					PauseCharacters();
 				}
 				else if (!Ghost->IsDead())
 				{

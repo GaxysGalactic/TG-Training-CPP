@@ -6,11 +6,15 @@ class FPlayer : public FBasePawn
 {
 	//Score and Stats
 	int Score = 0;
+	int ComboMeter = 200;
 	
 	bool bIsDead = false;
 	bool bIsTurning = false;
 
-	bool bEnergized = false;
+	bool bHasEnergized = false;
+	bool bIsEnergized = false;
+
+	float SecondsSinceEnergized = 0.0f;
 
 	//Turn persistent variables
 	olc::vf2d TurnDirection;
@@ -41,9 +45,19 @@ public:
 
 	int GetScore() const;
 
+	void SetScore(const int InScore);
+
+	int GetComboMeter() const;
+
+	void SetComboMeter(const int InComboMeter);
+
 	bool IsEnergized() const;
 
-	void SetEnergized(const bool InEnergized);
+	bool HasEnergized() const;
+
+	void SetIsEnergized(const bool InEnergized);
+
+	void SetHasEnergized(const bool InHasEnergized);
 
 	void DrawSelf(const float RoundTime) const override;
 

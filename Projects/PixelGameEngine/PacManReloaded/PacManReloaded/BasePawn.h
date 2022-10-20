@@ -16,6 +16,8 @@ protected:
 	const float BaseSpeed = 80.0f;
 	const float BaseSpeedFastHack = 2.0f * BaseSpeed;
 
+	bool bIsPaused = false;
+
 	float SpeedMultiplier = 0.80f;
 
 	//Sprites
@@ -43,6 +45,10 @@ public:
 	olc::vf2d& GetPosition();
 
 	olc::vf2d& GetDirection();
+
+	void Pause();
+
+	void UnPause();
 
 	static olc::vf2d WrapCoordinates(const olc::PixelGameEngine* Engine, const olc::vf2d& InVector);
 };
