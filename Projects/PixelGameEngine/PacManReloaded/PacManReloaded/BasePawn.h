@@ -26,6 +26,12 @@ protected:
 	olc::Sprite* BaseSprite = nullptr;
 	olc::Decal* BaseDecal = nullptr;
 
+	//Useful vectors
+	const olc::vf2d Up = {0.0f, -1.0f};
+	const olc::vf2d Down = {0.0f, 1.0f};
+	const olc::vf2d Left = {-1.0f, 0.0f};
+	const olc::vf2d Right = {1.0f, 0.0f};
+
 public:
 
 	FBasePawn() = default;

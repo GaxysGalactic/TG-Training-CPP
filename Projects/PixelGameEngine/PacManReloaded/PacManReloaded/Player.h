@@ -14,7 +14,10 @@ class FPlayer : public FBasePawn
 	bool bHasEnergized = false;
 	bool bIsEnergized = false;
 
-	float SecondsSinceEnergized = 0.0f;
+	//State timers
+	float EnergizedTimer = 0.0f;
+	float PausedTimer = 0.0f;
+	float PausedTimerLimit = 0.0f;
 
 	//Turn persistent variables
 	olc::vf2d TurnDirection;
@@ -41,7 +44,11 @@ public:
 
 	void EndTurn(const float RoundTime);
 
+	void EatPellets();
+
 	void Die();
+
+	//TODO: void Pause(const float Seconds);
 
 	int GetScore() const;
 

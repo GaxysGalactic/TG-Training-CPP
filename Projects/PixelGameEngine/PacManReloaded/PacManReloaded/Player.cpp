@@ -22,11 +22,12 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     //Energize check
     if(bIsEnergized)
     {
-        SecondsSinceEnergized += ElapsedTime;
+        EnergizedTimer += ElapsedTime;
 
-        if(SecondsSinceEnergized >= 7.0f)
+        if(EnergizedTimer >= 7.0f)
         {
             bIsEnergized = false;
+            SpeedMultiplier = 0.80f;
             ComboMeter = 200;
         }
     }
@@ -58,18 +59,7 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     //Eat Pellets
     if(Maze->GetTile(Position).bHasPellet || Maze->GetTile(Position).bHasEnergizer)
     {
-        if(Maze->GetTile(Position).bHasPellet)
-        {
-            Score += 10;
-            Maze->EatPellet(Position);
-        }
-        else
-        {
-            Score+=50;
-            bIsEnergized = true;
-            bHasEnergized = true;
-            Maze->EatPellet(Position);
-        }
+        EatPellets();
     }
     else
     {
@@ -83,22 +73,22 @@ void FPlayer::HandleInput(olc::vf2d& OutDirection)
 {
     if(Engine->GetKey(olc::Key::UP).bHeld)
     {
-        OutDirection = { 0.0f, -1.0f};
+        OutDirection = Up;
         SetDirection(OutDirection);
     }
     else if (Engine->GetKey(olc::Key::DOWN).bHeld)
     {
-        OutDirection = { 0.0f, 1.0f};
+        OutDirection = Down;
         SetDirection(OutDirection);
     }
     else if (Engine->GetKey(olc::Key::RIGHT).bHeld)
     {
-        OutDirection = {1.0f, 0.0f};
+        OutDirection = Right;
         SetDirection(OutDirection);
     }
     else if (Engine->GetKey(olc::Key::LEFT).bHeld)
     {
-        OutDirection = { -1.0f, 0.0f};
+        OutDirection = Left;
         SetDirection(OutDirection);
     }
 }
@@ -142,6 +132,24 @@ void FPlayer::EndTurn(const float RoundTime)
     Direction = TurnDirection;
     bIsTurning = false;
     DrawSelf(RoundTime);
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::EatPellets()
+{
+    if(Maze->GetTile(Position).bHasPellet)
+    {
+        Score += 10;
+        Maze->EatPellet(Position);
+    }
+    else
+    {
+        Score+=50;
+        bIsEnergized = true;
+        bHasEnergized = true;
+        SpeedMultiplier = 0.90f;
+        Maze->EatPellet(Position);
+    }
 }
 
 //-------------------------------------------------------------------------------------------

@@ -18,56 +18,13 @@ void FGhost::Update(const float ElapsedTime, const float RoundTime)
 {
     SecondsInState += ElapsedTime;
 
-    if(CurrentState == EState::Frightened)
-    {
-        SecondsSinceFrightened += ElapsedTime;
+    CheckFrightened(ElapsedTime);
 
-        if(SecondsSinceFrightened >= 7.0f)
-        {
-            if(TimerState == EState::Scatter)
-            {
-                Scatter();
-            }
-            else
-            {
-                Chase();
-            }
-            SecondsSinceFrightened = 0.0f;
-        }
-    }
-
-    if(CurrentState == EState::Eaten)
-    {
-        if(Maze->GetTile(Position).TileID == Maze->GetTile(GhostHousePosition).TileID)
-        {
-            //TODO: Implement Ghost House here. We could make it so they just teleport first to this and set timer.
-            
-            if(TimerState == EState::Scatter)
-            {
-                Scatter();
-            }
-            else
-            {
-                Chase();
-            }
-        }
-    }
+    CheckEaten();
     
     CheckSchedule();
-
-    //TODO: Might overshoot tile center...
-
-    //if next position > positiontotilecenter or smth
     
-    if(Maze->IsPixelACenter(Position) && Maze->GetTile(Position).bIsIntersection && !bHasTurned)
-    {
-        ChangeDirectionToFaceTarget();
-        bHasTurned = true;
-    }
-    else if (!Maze->GetTile(Position).bIsIntersection)
-    {
-        bHasTurned = false;
-    }
+    CheckTurn();
     
     Move(ElapsedTime);
     DrawSelf(RoundTime);
@@ -86,34 +43,43 @@ void FGhost::SetState(const EState NewState)
 //-------------------------------------------------------------------------------------------
 void FGhost::ChangeDirectionToFaceTarget()
 {
-    olc::vf2d Up = {0.0f, -1.0f};
-    olc::vf2d Down = {0.0f, 1.0f};
-    olc::vf2d Left = {-1.0f, 0.0f};
-    olc::vf2d Right = {1.0f, 0.0f};
-
     if(CurrentState == EState::Frightened)
     {
-        std::vector<olc::vf2d> RandomPool;
-        if(!Maze->IsNextTileAnObstacle(Position, Up))
-        {
-            RandomPool.push_back(Up);
-        }
-        if(!Maze->IsNextTileAnObstacle(Position, Down))
-        {
-            RandomPool.push_back(Down);
-        }
-        if(!Maze->IsNextTileAnObstacle(Position, Left))
-        {
-            RandomPool.push_back(Left);
-        }
-        if(!Maze->IsNextTileAnObstacle(Position, Right))
-        {
-            RandomPool.push_back(Right);
-        }
-            
-        SetDirection(RandomPool.at(std::rand() % RandomPool.size()));
+        ChooseRandomDirection();
     }
+    else
+    {
+        ChooseBestDirection();
+    }
+}
 
+//-------------------------------------------------------------------------------------------
+void FGhost::ChooseRandomDirection()
+{
+    std::vector<olc::vf2d> RandomPool;
+    if(!Maze->IsNextTileAnObstacle(Position, Up))
+    {
+        RandomPool.push_back(Up);
+    }
+    if(!Maze->IsNextTileAnObstacle(Position, Down))
+    {
+        RandomPool.push_back(Down);
+    }
+    if(!Maze->IsNextTileAnObstacle(Position, Left))
+    {
+        RandomPool.push_back(Left);
+    }
+    if(!Maze->IsNextTileAnObstacle(Position, Right))
+    {
+        RandomPool.push_back(Right);
+    }
+            
+    SetDirection(RandomPool.at(std::rand() % RandomPool.size()));
+}
+
+//-------------------------------------------------------------------------------------------
+void FGhost::ChooseBestDirection()
+{
     std::pair<float, olc::vf2d> UpPair = {
         Maze->IsNextTileAnObstacle(Position, Up) ? 999.0f : (TargetTilePosition - (Position + (8 * Up))).mag(),
         Up
@@ -188,6 +154,63 @@ void FGhost::CheckSchedule()
 }
 
 //-------------------------------------------------------------------------------------------
+void FGhost::CheckFrightened(const float ElapsedTime)
+{
+    if(CurrentState == EState::Frightened && !bIsPaused)
+    {
+        SecondsSinceFrightened += ElapsedTime;
+
+        if(SecondsSinceFrightened >= 7.0f)
+        {
+            if(TimerState == EState::Scatter)
+            {
+                Scatter();
+            }
+            else
+            {
+                Chase();
+            }
+            SecondsSinceFrightened = 0.0f;
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------
+void FGhost::CheckEaten()
+{
+    if(CurrentState == EState::Eaten)
+    {
+        if(Maze->GetTile(Position).TileID == Maze->GetTile(GhostHousePosition).TileID)
+        {
+            //TODO: Implement Ghost House here. We could make it so they just teleport first to this and set timer.
+            
+            if(TimerState == EState::Scatter)
+            {
+                Scatter();
+            }
+            else
+            {
+                Chase();
+            }
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------
+void FGhost::CheckTurn()
+{
+    if(Maze->IsPixelACenter(Position) && Maze->GetTile(Position).bIsIntersection && !bHasTurned)
+    {
+        ChangeDirectionToFaceTarget();
+        bHasTurned = true;
+    }
+    else if (!Maze->GetTile(Position).bIsIntersection)
+    {
+        bHasTurned = false;
+    }
+}
+
+//-------------------------------------------------------------------------------------------
 void FGhost::Scatter()
 {
     SetState(EState::Scatter);
@@ -236,49 +259,68 @@ void FGhost::DrawSelf(const float RoundTime) const
 {
     if(CurrentState == EState::Frightened)
     {
-        float OffsetX = 0.0f;
-
-        //Animation
-        //TODO: Blink white based on time
-        if(static_cast<int>(floor(12 * RoundTime)) % 2 == 0)
-        {
-            OffsetX += 16.0f;
-        }
-
-        const olc::vf2d ImageOffset = {OffsetX, 0.0f};
-        const olc::vf2d CenterOffset = {7.0f, 8.0f};
-        Engine->DrawPartialDecal(Position - CenterOffset, FrightenedDecal, ImageOffset, Size);
+        DrawFrightened(RoundTime);
     }
     else if(CurrentState == EState::Eaten)
     {
-        float OffsetX = 0.0f;
-
-        if(Direction.x == 1.0f)
-        {
-            OffsetX = 0.0f;
-        }
-        else if(Direction.x == -1.0f)
-        {
-            OffsetX = 16.0f;
-        }
-        else if(Direction.y == -1.0f)
-        {
-            OffsetX = 32.0f;
-        }
-        else if(Direction.y == 1.0f)
-        {
-            OffsetX = 48.0f;
-        }
-
-        const olc::vf2d ImageOffset = {OffsetX, 0.0f};
-        const olc::vf2d CenterOffset = {7.0f, 8.0f};
-        Engine->DrawPartialDecal(Position - CenterOffset, EatenDecal, ImageOffset, Size);
+        DrawEaten();
     }
     else
     {
         FBasePawn::DrawSelf(RoundTime);
     }
     
+}
+
+//-------------------------------------------------------------------------------------------
+void FGhost::DrawFrightened(const float RoundTime) const
+{
+    float OffsetX = 0.0f;
+        
+    //Animation
+    if(SecondsSinceFrightened >= 5.0f)
+    {
+        if(static_cast<int>(floor(6 * RoundTime)) % 2 == 0)
+        {
+            OffsetX += 32.0f;
+        }
+    }
+        
+    if(static_cast<int>(floor(12 * RoundTime)) % 2 == 0)
+    {
+        OffsetX += 16.0f;
+    }
+
+    const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+    const olc::vf2d CenterOffset = {7.0f, 8.0f};
+    Engine->DrawPartialDecal(Position - CenterOffset, FrightenedDecal, ImageOffset, Size);
+}
+
+//-------------------------------------------------------------------------------------------
+void FGhost::DrawEaten() const
+{
+    float OffsetX = 0.0f;
+
+    if(Direction.x == 1.0f)
+    {
+        OffsetX = 0.0f;
+    }
+    else if(Direction.x == -1.0f)
+    {
+        OffsetX = 16.0f;
+    }
+    else if(Direction.y == -1.0f)
+    {
+        OffsetX = 32.0f;
+    }
+    else if(Direction.y == 1.0f)
+    {
+        OffsetX = 48.0f;
+    }
+
+    const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+    const olc::vf2d CenterOffset = {7.0f, 8.0f};
+    Engine->DrawPartialDecal(Position - CenterOffset, EatenDecal, ImageOffset, Size);
 }
 
 

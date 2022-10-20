@@ -59,7 +59,17 @@ public:
 
     void ChangeDirectionToFaceTarget();
 
+    void ChooseRandomDirection();
+
+    void ChooseBestDirection();
+
     void CheckSchedule();
+
+    void CheckFrightened(const float ElapsedTime);
+
+    void CheckEaten();
+
+    void CheckTurn();
 
     virtual void Scatter();
 
@@ -74,5 +84,9 @@ public:
     bool IsDead() const;
 
     void DrawSelf(const float RoundTime) const override;
+
+    void DrawFrightened(const float RoundTime) const;
+
+    void DrawEaten() const;
     
 };
