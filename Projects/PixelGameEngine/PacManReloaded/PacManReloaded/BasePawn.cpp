@@ -21,7 +21,7 @@ void FBasePawn::Update(const float ElapsedTime, const float RoundTime)
 void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
 {
 	//Can't run into an obstacle
-	if(Maze->IsNextTileAnObstacle(Position, NewDirection))
+	if(Maze->IsNextTileObstacle(Position, NewDirection))
 	{
 		return;
 	}
@@ -33,11 +33,11 @@ void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
 //-------------------------------------------------------------------------------------------
 void FBasePawn::Move(const float ElapsedTime)
 {
-	if(bIsPaused || (Maze->IsPixelACenter(Position) && Maze->IsNextTileAnObstacle(Position, Direction)))
+	if(bIsPaused || (Maze->IsCenter(Position) && Maze->IsNextTileObstacle(Position, Direction)))
 	{
 		return;
 	}
-	Position = WrapCoordinates(Engine, Position + BaseSpeed * SpeedMultiplier * ElapsedTime * Direction);
+	Position = WrapCoordinates(Engine, Position + BaseSpeed * std::min(SpeedMultiplier, TunnelMultiplier) * ElapsedTime * Direction);
 }
 
 //-------------------------------------------------------------------------------------------

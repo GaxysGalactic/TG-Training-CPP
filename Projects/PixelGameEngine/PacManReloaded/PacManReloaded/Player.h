@@ -14,6 +14,9 @@ class FPlayer : public FBasePawn
 	bool bHasEnergized = false;
 	bool bIsEnergized = false;
 
+	bool bIsTimerPaused = false;
+	bool bIsEnginePaused = false;
+
 	//State timers
 	float EnergizedTimer = 0.0f;
 	float PausedTimer = 0.0f;
@@ -30,11 +33,14 @@ class FPlayer : public FBasePawn
 	olc::Decal* DeathDecal = nullptr;
 	float DeathAnimationTimer = 0.0f;
 
+	olc::Sprite* GhostPointsSprite = nullptr;
+	olc::Decal* GhostPointsDecal = nullptr;
+
 public:
 
 	FPlayer() = default;
 
-	FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite);
+	FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite, olc::Sprite* InGhostPointsSprite);
 
 	void Update(const float ElapsedTime, const float RoundTime) override;
 
@@ -48,7 +54,11 @@ public:
 
 	void Die();
 
-	//TODO: void Pause(const float Seconds);
+	void Pause() override;
+
+	void Pause(const float Seconds);
+
+	void UnPause() override;
 
 	int GetScore() const;
 

@@ -18,6 +18,16 @@ void FGhost::Update(const float ElapsedTime, const float RoundTime)
 {
     SecondsInState += ElapsedTime;
 
+    //Check Tunnel
+    if(Maze->IsTunnel(Position))
+    {
+        TunnelMultiplier = 0.40f;
+    }
+    else
+    {
+        TunnelMultiplier = 1.0f;
+    }
+
     CheckFrightened(ElapsedTime);
 
     CheckEaten();
@@ -57,19 +67,19 @@ void FGhost::ChangeDirectionToFaceTarget()
 void FGhost::ChooseRandomDirection()
 {
     std::vector<olc::vf2d> RandomPool;
-    if(!Maze->IsNextTileAnObstacle(Position, Up))
+    if(!Maze->IsNextTileObstacle(Position, Up))
     {
         RandomPool.push_back(Up);
     }
-    if(!Maze->IsNextTileAnObstacle(Position, Down))
+    if(!Maze->IsNextTileObstacle(Position, Down))
     {
         RandomPool.push_back(Down);
     }
-    if(!Maze->IsNextTileAnObstacle(Position, Left))
+    if(!Maze->IsNextTileObstacle(Position, Left))
     {
         RandomPool.push_back(Left);
     }
-    if(!Maze->IsNextTileAnObstacle(Position, Right))
+    if(!Maze->IsNextTileObstacle(Position, Right))
     {
         RandomPool.push_back(Right);
     }
@@ -81,24 +91,28 @@ void FGhost::ChooseRandomDirection()
 void FGhost::ChooseBestDirection()
 {
     std::pair<float, olc::vf2d> UpPair = {
-        Maze->IsNextTileAnObstacle(Position, Up) ? 999.0f : (TargetTilePosition - (Position + (8 * Up))).mag(),
+        Maze->IsNextTileObstacle(Position, Up) ? 999.0f : (TargetTilePosition - (Position + (8 * Up))).mag(),
         Up
     };
     std::pair<float, olc::vf2d> DownPair = {
-        Maze->IsNextTileAnObstacle(Position, Down) ? 999.0f : (TargetTilePosition - (Position + (8 * Down))).mag(),
+        Maze->IsNextTileObstacle(Position, Down) ? 999.0f : (TargetTilePosition - (Position + (8 * Down))).mag(),
         Down
     };
     std::pair<float, olc::vf2d> LeftPair = {
-        Maze->IsNextTileAnObstacle(Position, Left) ? 999.0f : (TargetTilePosition - (Position + (8 * Left))).mag(),
+        Maze->IsNextTileObstacle(Position, Left) ? 999.0f : (TargetTilePosition - (Position + (8 * Left))).mag(),
         Left
     };
     std::pair<float, olc::vf2d> RightPair = {
-        Maze->IsNextTileAnObstacle(Position, Right) ? 999.0f : (TargetTilePosition - (Position + (8 * Right))).mag(),
+        Maze->IsNextTileObstacle(Position, Right) ? 999.0f : (TargetTilePosition - (Position + (8 * Right))).mag(),
         Right
     };
 
     std::vector<std::pair<float, olc::vf2d>> Candidates;
-    Candidates.push_back(UpPair);
+
+    if(!Maze->IsForbiddenZone(Position))
+    {
+        Candidates.push_back(UpPair);
+    }
     Candidates.push_back(DownPair);
     Candidates.push_back(LeftPair);
     Candidates.push_back(RightPair);
@@ -199,7 +213,7 @@ void FGhost::CheckEaten()
 //-------------------------------------------------------------------------------------------
 void FGhost::CheckTurn()
 {
-    if(Maze->IsPixelACenter(Position) && Maze->GetTile(Position).bIsIntersection && !bHasTurned)
+    if(Maze->IsCenter(Position) && Maze->GetTile(Position).bIsIntersection && !bHasTurned)
     {
         ChangeDirectionToFaceTarget();
         bHasTurned = true;
@@ -238,6 +252,7 @@ void FGhost::Frighten()
 void FGhost::Die()
 {
     SetState(EState::Eaten);
+    SecondsSinceFrightened = 0.0f;
     TargetTilePosition = GhostHousePosition;
     SpeedMultiplier = 1.5f;
 }

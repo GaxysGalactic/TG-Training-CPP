@@ -3,12 +3,52 @@
 #include "BasePawn.h"
 
 //-------------------------------------------------------------------------------------------
-FMaze::FMaze(olc::PixelGameEngine* InEngine, olc::Sprite* InBackground, olc::Sprite* InTileMap)
+FMaze::FMaze(olc::PixelGameEngine* InEngine, olc::Sprite* InBackground, olc::Sprite* InTileMap, olc::Sprite* InFruitSprite, olc::Sprite* InFruitPointsSprite)
 {
 	Engine = InEngine;
 	BackgroundSprite = InBackground;
+	FruitSprite = InFruitSprite;
+	FruitDecal = new olc::Decal(FruitSprite);
+	FruitPointsSprite = InFruitPointsSprite;
+	FruitPointsDecal = new olc::Decal(FruitPointsSprite);
 	TileMap = InTileMap;
 	CreateGrid();
+
+	Tunnel = {476, 477, 478, 479, 480, 481, 498, 499, 501, 502, 503, 504};
+	ForbiddenZone = {404, 407, 712, 715};
+}
+
+//-------------------------------------------------------------------------------------------
+void FMaze::Update(const float ElapsedTime)
+{
+	if(Pellets == 174 || Pellets == 74)
+	{
+		//Spawn Bonus Fruit
+		bHasFruit = true;
+	}
+	
+	if(bHasFruit)
+	{
+		FruitTimer += ElapsedTime;
+
+		if(FruitTimer >= 9.0f)
+		{
+			bHasFruit = false;
+			FruitTimer = 0.0f;
+			++BonusFruitCount;
+		}
+		DrawFruit();
+	}
+	else if (bDisplayFruitScore)
+	{
+		ScoreTimer += ElapsedTime;
+		if(ScoreTimer >= 1.5f)
+		{
+			bDisplayFruitScore = false;
+			ScoreTimer = 0.0f;
+		}
+		DrawScore();
+	}
 }
 
 //-------------------------------------------------------------------------------------------
@@ -46,6 +86,22 @@ void FMaze::DrawPellets() const
 			}
 		}
 	}
+}
+
+//-------------------------------------------------------------------------------------------
+void FMaze::DrawFruit() const
+{
+	float OffsetX = BonusFruitCount * 16.0f;
+	const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+	Engine->DrawPartialDecal(FruitLocation, FruitDecal, ImageOffset, FruitSize);
+}
+
+//-------------------------------------------------------------------------------------------
+void FMaze::DrawScore() const
+{
+	float OffsetX = (BonusFruitCount - 1) * 16.0f;
+	const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+	Engine->DrawPartialDecal(FruitLocation, FruitPointsDecal, ImageOffset, FruitSize);
 }
 
 //-------------------------------------------------------------------------------------------
@@ -118,6 +174,26 @@ void FMaze::EatPellet(const olc::vf2d& Position)
 }
 
 //-------------------------------------------------------------------------------------------
+int FMaze::EatFruit()
+{
+	bHasFruit = false;
+	bDisplayFruitScore = true;
+	if(BonusFruitCount == 0)
+	{
+		++BonusFruitCount;
+		return 100;
+	}
+	++BonusFruitCount;
+	return 300;
+}
+
+//-------------------------------------------------------------------------------------------
+bool FMaze::HasFruit() const
+{
+	return bHasFruit;
+}
+
+//-------------------------------------------------------------------------------------------
 const FMaze::FTile& FMaze::GetTile(const olc::vf2d& Position) const
 {
 	const olc::vf2d NewPos = Position / 8.0f;
@@ -149,16 +225,50 @@ void FMaze::GetDirectionFromTileCenter(const olc::vf2d& Position, olc::vf2d& Out
 }
 
 //-------------------------------------------------------------------------------------------
-bool FMaze::IsPixelACenter(const olc::vf2d& Position) const
+bool FMaze::IsCenter(const olc::vf2d& Position) const
 {
 	const olc::vi2d NewPos = {static_cast<int>(floor(Position.x)) % 8, static_cast<int>(floor(Position.y)) % 8};
 	return NewPos == TileCenter;
 }
 
 //-------------------------------------------------------------------------------------------
-bool FMaze::IsNextTileAnObstacle(const olc::vf2d& Position, const olc::vf2d& Direction)
+bool FMaze::IsNextTileObstacle(const olc::vf2d& Position, const olc::vf2d& Direction)
 {
 	return GetTile(FBasePawn::WrapCoordinates(Engine, Position + Direction * TileSize)).bIsObstacle;
+}
+
+//-------------------------------------------------------------------------------------------
+bool FMaze::IsTunnel(const olc::vf2d& Position) const
+{
+	FTile CurrentTile = GetTile(Position);
+	for(int i : Tunnel)
+	{
+		if(CurrentTile.TileID == i)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------
+bool FMaze::IsForbiddenZone(const olc::vf2d& Position) const
+{
+	FTile CurrentTile = GetTile(Position);
+	for(int i : ForbiddenZone)
+	{
+		if(CurrentTile.TileID == i)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------
+bool FMaze::IsFruitSpawn(const olc::vf2d& Position) const
+{
+	return GetTile(Position).TileID == FruitLocationTileID;
 }
 
 //-------------------------------------------------------------------------------------------

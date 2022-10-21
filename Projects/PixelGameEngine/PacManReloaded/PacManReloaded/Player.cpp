@@ -1,16 +1,33 @@
 #include "Player.h"
 
 //-------------------------------------------------------------------------------------------
-FPlayer::FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite) : FBasePawn(InEngine, InSprite, InMaze)
+FPlayer::FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite, olc::Sprite* InGhostPointsSprite) : FBasePawn(InEngine, InSprite, InMaze)
 {
     DeathSprite = InDeathSprite;
     DeathDecal = new olc::Decal(DeathSprite);
+
+    GhostPointsSprite = InGhostPointsSprite;
+    GhostPointsDecal = new olc::Decal(GhostPointsSprite);
     Position = { 111.0f, 212.0f };
+    TunnelMultiplier = 1.0f;
 }
 
 //-------------------------------------------------------------------------------------------
 void FPlayer::Update(const float ElapsedTime, const float RoundTime)
 {
+    //Pause check (timer)
+    if(bIsPaused && bIsTimerPaused && !bIsEnginePaused)
+    {
+        PausedTimer += ElapsedTime;
+        if(PausedTimer >= PausedTimerLimit)
+        {
+            bIsTimerPaused = false;
+            PausedTimer = 0.0f;
+            PausedTimerLimit = 0.0f;
+            UnPause();
+        }
+    }
+    
     //Dead check
     if(bIsDead)
     {
@@ -36,7 +53,10 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     olc::vf2d OldDirection = Direction;
 
     //Controls
-    HandleInput(NewDirection);
+    if(!bIsTurning)
+    {
+        HandleInput(NewDirection);
+    }
     
     //Adjust to turn if needed
     if(OldDirection != NewDirection && OldDirection.dot(NewDirection) == 0.0f)
@@ -49,7 +69,8 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     if(bIsTurning)
     {
         olc::vf2d NextPosition = Position + BaseSpeed * SpeedMultiplier * ElapsedTime * Direction;
-        if((NextPosition - TurnSource).mag() >= TurnDistance.mag())
+        if((NextPosition - TurnSource).mag() >= TurnDistance.mag()
+            || TurnDistance.mag() < 1.5f)
         {
             EndTurn(RoundTime);
             return;
@@ -61,10 +82,14 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     {
         EatPellets();
     }
-    else
+
+    //Eat Fruit
+    if(Maze->HasFruit() && Maze->IsFruitSpawn(Position))
     {
-        Move(ElapsedTime);
+        Score += Maze->EatFruit();
     }
+    
+    Move(ElapsedTime);
     DrawSelf(RoundTime);
 }
 
@@ -104,7 +129,7 @@ void FPlayer::AdjustToTurn()
     }
     
     //Start Turning
-    if(!bIsTurning && !Maze->IsPixelACenter(Position) && !Maze->IsNextTileAnObstacle(Position, TurnDirection)) 
+    if(!bIsTurning && !Maze->IsCenter(Position) && !Maze->IsNextTileObstacle(Position, TurnDirection)) 
     {
         //Remember Old Position, calculate NewPosition
         TurnSource = Position;
@@ -141,14 +166,19 @@ void FPlayer::EatPellets()
     {
         Score += 10;
         Maze->EatPellet(Position);
+        //Pause for "one frame"
+        Pause(1.0f/60.0f); 
     }
     else
     {
         Score+=50;
         bIsEnergized = true;
+        ComboMeter = 200;
         bHasEnergized = true;
         SpeedMultiplier = 0.90f;
         Maze->EatPellet(Position);
+        //Pause for "three frames"
+        Pause(3.0f/60.0f); 
     }
 }
 
@@ -157,6 +187,29 @@ void FPlayer::Die()
 {
     Direction = {0.0f, 0.0f};
     bIsDead = true;
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::Pause()
+{
+    bIsEnginePaused = true;
+    FBasePawn::Pause();
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::Pause(const float Seconds)
+{
+    bIsPaused = true;
+    bIsTimerPaused = true;
+    PausedTimerLimit = Seconds;
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::UnPause()
+{
+    bIsTimerPaused = false;
+    bIsEnginePaused = false;
+    FBasePawn::UnPause();
 }
 
 //-------------------------------------------------------------------------------------------
@@ -215,8 +268,42 @@ void FPlayer::DrawSelf(const float RoundTime) const
         const float OffsetX = floor(DeathAnimationTimer / 0.10f) * 16.0f;
 
         const olc::vf2d ImageOffset = {OffsetX, 0.0f};
-        const olc::vf2d CenterOffset = {7.0f, 8.0f};
         Engine->DrawPartialDecal(Position - CenterOffset, DeathDecal, ImageOffset, Size);
+    }
+    else if(Maze->IsNextTileObstacle(Position, Direction))
+    {
+        float OffsetX = 0.0f;
+
+        if(Direction.x == 1.0f)
+        {
+            OffsetX = 0.0f;
+        }
+        else if(Direction.x == -1.0f)
+        {
+            OffsetX = 32.0f;
+        }
+        else if(Direction.y == -1.0f)
+        {
+            OffsetX = 64.0f;
+        }
+        else if(Direction.y == 1.0f)
+        {
+            OffsetX = 96.0f;
+        }
+
+        OffsetX += 16.0f;
+
+        const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+        Engine->DrawPartialDecal(Position - CenterOffset, BaseDecal, ImageOffset, Size);
+    }
+    else if(bIsPaused && bIsEnginePaused)
+    {
+        int Power = log2(ComboMeter / 200);
+        --Power;
+
+        float OffsetX = 16.0f * Power;
+        const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+        Engine->DrawPartialDecal(Position - CenterOffset, GhostPointsDecal, ImageOffset, Size);
     }
     else
     {

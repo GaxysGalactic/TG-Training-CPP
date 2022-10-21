@@ -14,9 +14,14 @@ class FPacMan : public olc::PixelGameEngine
 	//Sprites and Decals
 	olc::Sprite* BackgroundSprite = nullptr;
 	olc::Decal* BackgroundDecal = nullptr;
+	olc::Sprite* TileMapSprite = nullptr;
+
+	olc::Sprite* FruitSprite = nullptr;
+	olc::Sprite* FruitPointsSprite = nullptr;
+	
 	olc::Sprite* PacmanSprite = nullptr;
 	olc::Sprite* PacmanDeathSprite = nullptr;
-	olc::Sprite* TileMapSprite = nullptr;
+	olc::Sprite* GhostPointsSprite = nullptr;
 
 	olc::Sprite* FrightenedSprite = nullptr;
 	olc::Sprite* EatenSprite = nullptr;
@@ -133,8 +138,13 @@ private:
 	{
 		BackgroundSprite = new olc::Sprite("./Sprites/Spritesheet.png");
 		BackgroundDecal = new olc::Decal(BackgroundSprite);
+
+		FruitSprite = new olc::Sprite("./Sprites/BonusFruit.png");
+		FruitPointsSprite = new olc::Sprite("./Sprites/BonusFruitPoints.png"),
+		
 		PacmanSprite = new olc::Sprite("./Sprites/PacMan.png");
 		PacmanDeathSprite = new olc::Sprite("./Sprites/PacManDeath.png");
+		GhostPointsSprite = new olc::Sprite("./Sprites/GhostPoints.png");
 
 		FrightenedSprite = new olc::Sprite("./Sprites/Frightened.png");
 		EatenSprite = new olc::Sprite("./Sprites/Dead.png");
@@ -151,7 +161,7 @@ private:
 	void LoadBackground()
 	{
 		Clear(olc::BLACK);
-		Maze = new FMaze(this, BackgroundSprite, TileMapSprite);
+		Maze = new FMaze(this, BackgroundSprite, TileMapSprite, FruitSprite, FruitPointsSprite);
 		Maze->DrawBase();
 		DrawString(24, 1, "1UP");
 		DrawString(72, 1, "HIGH SCORE");
@@ -160,7 +170,7 @@ private:
 	//-------------------------------------------------------------------------------------------
 	void InitializeCharacters()
 	{
-		Pacman = new FPlayer(this, PacmanSprite, Maze, PacmanDeathSprite);
+		Pacman = new FPlayer(this, PacmanSprite, Maze, PacmanDeathSprite, GhostPointsSprite);
 		Blinky = new FBlinky(this, BlinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
 		Inky = new FInky(this, InkySprite, Maze, FrightenedSprite, EatenSprite, Pacman, Blinky);
 		Pinky = new FPinky(this, PinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
@@ -177,7 +187,7 @@ private:
 	void LoopGameplay(float ElapsedTime)
 	{
 		//Debugging
-		if(ElapsedTime > 2.0f)
+		if(ElapsedTime > 1.0f)
 		{
 			ElapsedTime = 0.01f;
 		}
@@ -218,6 +228,8 @@ private:
 		Inky->Update(ElapsedTime, RoundTime);
 		Pinky->Update(ElapsedTime, RoundTime);
 		Clyde->Update(ElapsedTime, RoundTime);
+
+		Maze->Update(ElapsedTime);
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -299,7 +311,9 @@ private:
 		{
 			Clear(olc::BLACK);
 			DrawString(80, 110, "YOU WON!");
-			DrawString(30, 118, "Press SPACE to exit.");	
+			DrawString(30, 118, "Press SPACE to exit.");
+			DrawString(70, 142, "Score:");
+			DrawString(80, 150, std::to_string(Pacman->GetScore()));
 		}
 		else
 		{
@@ -309,7 +323,9 @@ private:
 			{
 				Clear(olc::BLACK);
 				DrawString(80, 110, "GAME OVER");
-				DrawString(30, 118, "Press SPACE to exit.");	
+				DrawString(30, 118, "Press SPACE to exit.");
+				DrawString(70, 142, "Score:");
+				DrawString(80, 150, std::to_string(Pacman->GetScore()));
 			}
 		}
 	}

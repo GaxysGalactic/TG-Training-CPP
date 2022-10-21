@@ -19,6 +19,7 @@ protected:
 	bool bIsPaused = false;
 
 	float SpeedMultiplier = 0.80f;
+	float TunnelMultiplier = 0.40f;
 
 	//Sprites
 	const olc::vf2d Size = {16, 16};
@@ -52,9 +53,9 @@ public:
 
 	olc::vf2d& GetDirection();
 
-	void Pause();
+	virtual void Pause();
 
-	void UnPause();
+	virtual void UnPause();
 
 	static olc::vf2d WrapCoordinates(const olc::PixelGameEngine* Engine, const olc::vf2d& InVector);
 };
