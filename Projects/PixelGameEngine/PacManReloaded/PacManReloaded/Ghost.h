@@ -21,7 +21,7 @@ protected:
     olc::Sprite* EatenSprite;
     olc::Decal* EatenDecal;
 
-    //Positions of relevnt things
+    //Positions of relevant things
     olc::vf2d TargetTilePosition = {0.0f, 0.0f};
     olc::vf2d ScatterTilePosition = {0.0f, 0.0f};
     olc::vf2d GhostHousePosition = {110.0f, 116.0f};
@@ -53,6 +53,8 @@ public:
 
     FGhost(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer);
 
+    ~FGhost() override;
+
     virtual void Update(const float ElapsedTime, const float RoundTime) override;
     
     void SetState(EState NewState);
@@ -65,9 +67,9 @@ public:
 
     void CheckSchedule();
 
-    void CheckFrightened(const float ElapsedTime);
+    void UpdateFrightened(const float ElapsedTime);
 
-    void CheckEaten();
+    void UpdateEaten();
 
     void CheckTurn();
 
@@ -79,7 +81,7 @@ public:
 
     void Die();
 
-    bool CanBeEaten() const;
+    bool IsFrightened() const;
 
     bool IsDead() const;
 

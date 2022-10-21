@@ -11,6 +11,12 @@ FBasePawn::FBasePawn(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaz
 }
 
 //-------------------------------------------------------------------------------------------
+FBasePawn::~FBasePawn()
+{
+	delete BaseDecal;
+}
+
+//-------------------------------------------------------------------------------------------
 void FBasePawn::Update(const float ElapsedTime, const float RoundTime)
 {
 	Move(ElapsedTime);
@@ -33,10 +39,12 @@ void FBasePawn::SetDirection(const olc::vf2d& NewDirection)
 //-------------------------------------------------------------------------------------------
 void FBasePawn::Move(const float ElapsedTime)
 {
+	//Can't move if paused or if an obstacle is in the way
 	if(bIsPaused || (Maze->IsCenter(Position) && Maze->IsNextTileObstacle(Position, Direction)))
 	{
 		return;
 	}
+	//Takes into account the additional Tunnel Multiplier for speed. This is adjusted in each instance's update.
 	Position = WrapCoordinates(Engine, Position + BaseSpeed * std::min(SpeedMultiplier, TunnelMultiplier) * ElapsedTime * Direction);
 }
 
@@ -45,8 +53,11 @@ void FBasePawn::DrawSelf(const float RoundTime) const
 {
 	if (BaseDecal)
 	{
+		//Sprite Direction Offset 
 		float OffsetX = 0.0f;
 
+		//We don't compare these stricly to UP, DOWN, LEFT or RIGHT since a turn temporarily changes their direction
+		//to be a combination of the two.s
 		if(Direction.x == 1.0f)
 		{
 			OffsetX = 0.0f;
@@ -65,6 +76,7 @@ void FBasePawn::DrawSelf(const float RoundTime) const
 		}
 
 		//Animation
+		//Based on RoundTime, switch between the two frame animation every couple of frames
 		if(static_cast<int>(floor(12 * RoundTime)) % 2 == 0)
 		{
 			OffsetX += 16.0f;
@@ -77,7 +89,6 @@ void FBasePawn::DrawSelf(const float RoundTime) const
 	{
 		//Without Sprites or Decals
 		Engine->Draw(Position, olc::YELLOW);
-		//Engine->DrawLine(Position, Position + Direction * 10, olc::RED);
 	}
 }
 

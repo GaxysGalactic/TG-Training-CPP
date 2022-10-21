@@ -15,7 +15,14 @@ FMaze::FMaze(olc::PixelGameEngine* InEngine, olc::Sprite* InBackground, olc::Spr
 	CreateGrid();
 
 	Tunnel = {476, 477, 478, 479, 480, 481, 498, 499, 501, 502, 503, 504};
-	ForbiddenZone = {404, 407, 712, 715};
+	ForbiddenZone = {404, 407, 740, 743};
+}
+
+//-------------------------------------------------------------------------------------------
+FMaze::~FMaze()
+{
+	delete FruitDecal;
+	delete FruitPointsDecal;
 }
 
 //-------------------------------------------------------------------------------------------

@@ -1,31 +1,36 @@
 #include "Player.h"
 
 //-------------------------------------------------------------------------------------------
-FPlayer::FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite, olc::Sprite* InGhostPointsSprite) : FBasePawn(InEngine, InSprite, InMaze)
+FPlayer::FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite,
+                 olc::Sprite* InGhostPointsSprite) : FBasePawn(InEngine, InSprite, InMaze)
 {
     DeathSprite = InDeathSprite;
     DeathDecal = new olc::Decal(DeathSprite);
 
     GhostPointsSprite = InGhostPointsSprite;
     GhostPointsDecal = new olc::Decal(GhostPointsSprite);
+
+    //Pacman spawn point
     Position = { 111.0f, 212.0f };
+
+    //Pacman isn't affected by the tunnel
     TunnelMultiplier = 1.0f;
+}
+
+//-------------------------------------------------------------------------------------------
+FPlayer::~FPlayer()
+{
+    delete DeathDecal;
+    delete GhostPointsDecal;
 }
 
 //-------------------------------------------------------------------------------------------
 void FPlayer::Update(const float ElapsedTime, const float RoundTime)
 {
-    //Pause check (timer)
+    //Pause check (if was paused on a timer)
     if(bIsPaused && bIsTimerPaused && !bIsEnginePaused)
     {
-        PausedTimer += ElapsedTime;
-        if(PausedTimer >= PausedTimerLimit)
-        {
-            bIsTimerPaused = false;
-            PausedTimer = 0.0f;
-            PausedTimerLimit = 0.0f;
-            UnPause();
-        }
+        UpdatePause(ElapsedTime);
     }
     
     //Dead check
@@ -39,16 +44,10 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     //Energize check
     if(bIsEnergized)
     {
-        EnergizedTimer += ElapsedTime;
-
-        if(EnergizedTimer >= 7.0f)
-        {
-            bIsEnergized = false;
-            SpeedMultiplier = 0.80f;
-            ComboMeter = 200;
-        }
+        UpdateEnergized(ElapsedTime);
     }
     
+    //Store New Direction and Old Direction for turns
     olc::vf2d NewDirection = Direction;
     olc::vf2d OldDirection = Direction;
 
@@ -65,10 +64,11 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
         AdjustToTurn();
     }
     
-    //EndTurn
+    //EndTurn if needed
     if(bIsTurning)
     {
         olc::vf2d NextPosition = Position + BaseSpeed * SpeedMultiplier * ElapsedTime * Direction;
+        //Teleport to destination if close enough
         if((NextPosition - TurnSource).mag() >= TurnDistance.mag()
             || TurnDistance.mag() < 1.5f)
         {
@@ -91,6 +91,34 @@ void FPlayer::Update(const float ElapsedTime, const float RoundTime)
     
     Move(ElapsedTime);
     DrawSelf(RoundTime);
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::UpdatePause(const float ElapsedTime)
+{
+    //Updates pause timer and unpauses if it exceeds limit
+    PausedTimer += ElapsedTime;
+    if(PausedTimer >= PausedTimerLimit)
+    {
+        bIsTimerPaused = false;
+        PausedTimer = 0.0f;
+        PausedTimerLimit = 0.0f;
+        UnPause();
+    }
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::UpdateEnergized(const float ElapsedTime)
+{
+    //Updates energized timer and resets if needed
+    EnergizedTimer += ElapsedTime;
+
+    if(EnergizedTimer >= 7.0f)
+    {
+        bIsEnergized = false;
+        SpeedMultiplier = 0.80f;
+        ComboMeter = 200;
+    }
 }
 
 //-------------------------------------------------------------------------------------------
@@ -192,6 +220,7 @@ void FPlayer::Die()
 //-------------------------------------------------------------------------------------------
 void FPlayer::Pause()
 {
+    //Was paused by the engine or through its default instead of on a timer
     bIsEnginePaused = true;
     FBasePawn::Pause();
 }
@@ -199,6 +228,7 @@ void FPlayer::Pause()
 //-------------------------------------------------------------------------------------------
 void FPlayer::Pause(const float Seconds)
 {
+    //Pause for Seconds # of seconds
     bIsPaused = true;
     bIsTimerPaused = true;
     PausedTimerLimit = Seconds;
@@ -207,6 +237,7 @@ void FPlayer::Pause(const float Seconds)
 //-------------------------------------------------------------------------------------------
 void FPlayer::UnPause()
 {
+    //A default unpause will override all pause statuses
     bIsTimerPaused = false;
     bIsEnginePaused = false;
     FBasePawn::UnPause();
@@ -265,48 +296,66 @@ void FPlayer::DrawSelf(const float RoundTime) const
 {
     if(bIsDead)
     {
-        const float OffsetX = floor(DeathAnimationTimer / 0.10f) * 16.0f;
-
-        const olc::vf2d ImageOffset = {OffsetX, 0.0f};
-        Engine->DrawPartialDecal(Position - CenterOffset, DeathDecal, ImageOffset, Size);
+        DrawDeathAnimation();
     }
     else if(Maze->IsNextTileObstacle(Position, Direction))
     {
-        float OffsetX = 0.0f;
-
-        if(Direction.x == 1.0f)
-        {
-            OffsetX = 0.0f;
-        }
-        else if(Direction.x == -1.0f)
-        {
-            OffsetX = 32.0f;
-        }
-        else if(Direction.y == -1.0f)
-        {
-            OffsetX = 64.0f;
-        }
-        else if(Direction.y == 1.0f)
-        {
-            OffsetX = 96.0f;
-        }
-
-        OffsetX += 16.0f;
-
-        const olc::vf2d ImageOffset = {OffsetX, 0.0f};
-        Engine->DrawPartialDecal(Position - CenterOffset, BaseDecal, ImageOffset, Size);
+        DrawIdleAnimation();
     }
     else if(bIsPaused && bIsEnginePaused)
     {
-        int Power = log2(ComboMeter / 200);
-        --Power;
-
-        float OffsetX = 16.0f * Power;
-        const olc::vf2d ImageOffset = {OffsetX, 0.0f};
-        Engine->DrawPartialDecal(Position - CenterOffset, GhostPointsDecal, ImageOffset, Size);
+        DrawPoints();
     }
     else
     {
         FBasePawn::DrawSelf(RoundTime);
     }
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::DrawDeathAnimation() const
+{
+    const float OffsetX = floor(DeathAnimationTimer / 0.10f) * 16.0f;
+
+    const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+    Engine->DrawPartialDecal(Position - CenterOffset, DeathDecal, ImageOffset, Size);
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::DrawIdleAnimation() const
+{
+    float OffsetX = 0.0f;
+
+    if(Direction.x == 1.0f)
+    {
+        OffsetX = 0.0f;
+    }
+    else if(Direction.x == -1.0f)
+    {
+        OffsetX = 32.0f;
+    }
+    else if(Direction.y == -1.0f)
+    {
+        OffsetX = 64.0f;
+    }
+    else if(Direction.y == 1.0f)
+    {
+        OffsetX = 96.0f;
+    }
+
+    OffsetX += 16.0f;
+
+    const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+    Engine->DrawPartialDecal(Position - CenterOffset, BaseDecal, ImageOffset, Size);
+}
+
+//-------------------------------------------------------------------------------------------
+void FPlayer::DrawPoints() const
+{
+    int Power = log2(ComboMeter / 200);
+    --Power;
+
+    float OffsetX = 16.0f * Power;
+    const olc::vf2d ImageOffset = {OffsetX, 0.0f};
+    Engine->DrawPartialDecal(Position - CenterOffset, GhostPointsDecal, ImageOffset, Size);
 }

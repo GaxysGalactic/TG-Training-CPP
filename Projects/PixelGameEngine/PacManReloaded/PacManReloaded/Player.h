@@ -42,7 +42,13 @@ public:
 
 	FPlayer(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InDeathSprite, olc::Sprite* InGhostPointsSprite);
 
+	~FPlayer() override;
+
 	void Update(const float ElapsedTime, const float RoundTime) override;
+
+	void UpdatePause(const float ElapsedTime);
+
+	void UpdateEnergized(const float ElapsedTime);
 
 	void HandleInput(olc::vf2d& OutDirection);
 
@@ -77,5 +83,11 @@ public:
 	void SetHasEnergized(const bool InHasEnergized);
 
 	void DrawSelf(const float RoundTime) const override;
+
+	void DrawDeathAnimation() const;
+
+	void DrawIdleAnimation() const;
+
+	void DrawPoints() const;
 
 };

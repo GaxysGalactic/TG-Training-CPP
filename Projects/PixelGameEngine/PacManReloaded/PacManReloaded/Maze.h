@@ -68,6 +68,8 @@ public:
 
 	FMaze(olc::PixelGameEngine* InEngine, olc::Sprite* InBackground, olc::Sprite* InTileMap, olc::Sprite* InFruitSprite, olc::Sprite* InFruitPointsSprite);
 
+	~FMaze();
+
 	void Update(const float ElapsedTime);
 
 	void DrawBase() const;

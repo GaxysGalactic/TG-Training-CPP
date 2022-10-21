@@ -1,4 +1,5 @@
 #include "Ghost.h"
+
 //-------------------------------------------------------------------------------------------
 FGhost::FGhost(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze, olc::Sprite* InFrightenedSprite, olc::Sprite* InEatenSprite, FPlayer* InPlayer) : FBasePawn(InEngine, InSprite, InMaze)
 {
@@ -14,11 +15,18 @@ FGhost::FGhost(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InM
 }
 
 //-------------------------------------------------------------------------------------------
+FGhost::~FGhost()
+{
+    delete FrightenedDecal;
+    delete EatenDecal;
+}
+
+//-------------------------------------------------------------------------------------------
 void FGhost::Update(const float ElapsedTime, const float RoundTime)
 {
     SecondsInState += ElapsedTime;
 
-    //Check Tunnel
+    //Tunnel
     if(Maze->IsTunnel(Position))
     {
         TunnelMultiplier = 0.40f;
@@ -28,9 +36,17 @@ void FGhost::Update(const float ElapsedTime, const float RoundTime)
         TunnelMultiplier = 1.0f;
     }
 
-    CheckFrightened(ElapsedTime);
+    //Frightened
+    if(CurrentState == EState::Frightened && !bIsPaused)
+    {
+        UpdateFrightened(ElapsedTime);
+    }
 
-    CheckEaten();
+    //Eaten
+    if(CurrentState == EState::Eaten)
+    {
+        UpdateEaten();
+    }
     
     CheckSchedule();
     
@@ -44,6 +60,7 @@ void FGhost::Update(const float ElapsedTime, const float RoundTime)
 void FGhost::SetState(const EState NewState)
 {
     CurrentState = NewState;
+    //No matter what, if a state change occurs, they will do a 180 turn.
     if(!Maze->GetTile(Position).bIsIntersection)
     {
         Direction *= -1;
@@ -83,7 +100,7 @@ void FGhost::ChooseRandomDirection()
     {
         RandomPool.push_back(Right);
     }
-            
+    //Pick one at random if its not an obstacle
     SetDirection(RandomPool.at(std::rand() % RandomPool.size()));
 }
 
@@ -109,6 +126,7 @@ void FGhost::ChooseBestDirection()
 
     std::vector<std::pair<float, olc::vf2d>> Candidates;
 
+    //Ghosts can't move UP on certain tiles unless frightened
     if(!Maze->IsForbiddenZone(Position))
     {
         Candidates.push_back(UpPair);
@@ -168,44 +186,38 @@ void FGhost::CheckSchedule()
 }
 
 //-------------------------------------------------------------------------------------------
-void FGhost::CheckFrightened(const float ElapsedTime)
+void FGhost::UpdateFrightened(const float ElapsedTime)
 {
-    if(CurrentState == EState::Frightened && !bIsPaused)
-    {
-        SecondsSinceFrightened += ElapsedTime;
+    SecondsSinceFrightened += ElapsedTime;
 
-        if(SecondsSinceFrightened >= 7.0f)
+    if(SecondsSinceFrightened >= 7.0f)
+    {
+        if(TimerState == EState::Scatter)
         {
-            if(TimerState == EState::Scatter)
-            {
-                Scatter();
-            }
-            else
-            {
-                Chase();
-            }
-            SecondsSinceFrightened = 0.0f;
+            Scatter();
         }
+        else
+        {
+            Chase();
+        }
+        SecondsSinceFrightened = 0.0f;
     }
 }
 
 //-------------------------------------------------------------------------------------------
-void FGhost::CheckEaten()
+void FGhost::UpdateEaten()
 {
-    if(CurrentState == EState::Eaten)
+    if(Maze->GetTile(Position).TileID == Maze->GetTile(GhostHousePosition).TileID)
     {
-        if(Maze->GetTile(Position).TileID == Maze->GetTile(GhostHousePosition).TileID)
+        //TODO: Implement Ghost House here. We could make it so they just teleport first to this and set timer.
+        
+        if(TimerState == EState::Scatter)
         {
-            //TODO: Implement Ghost House here. We could make it so they just teleport first to this and set timer.
-            
-            if(TimerState == EState::Scatter)
-            {
-                Scatter();
-            }
-            else
-            {
-                Chase();
-            }
+            Scatter();
+        }
+        else
+        {
+            Chase();
         }
     }
 }
@@ -258,7 +270,7 @@ void FGhost::Die()
 }
 
 //-------------------------------------------------------------------------------------------
-bool FGhost::CanBeEaten() const
+bool FGhost::IsFrightened() const
 {
     return CurrentState == EState::Frightened;
 }

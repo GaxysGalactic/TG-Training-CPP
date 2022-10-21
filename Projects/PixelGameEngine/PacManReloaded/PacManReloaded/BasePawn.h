@@ -39,7 +39,7 @@ public:
 
 	FBasePawn(olc::PixelGameEngine* InEngine, olc::Sprite* InSprite, FMaze* InMaze);
 
-	virtual ~FBasePawn() = default;
+	virtual ~FBasePawn();
 
 	virtual void Update(const float ElapsedTime, const float RoundTime);
 

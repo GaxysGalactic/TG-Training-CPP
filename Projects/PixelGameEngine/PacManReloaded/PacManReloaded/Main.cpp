@@ -48,6 +48,7 @@ class FPacMan : public olc::PixelGameEngine
 	float GameOverTimer = 0.0f;
 	bool bIsPaused = false;
 	float PauseTimer = 0.0f;
+	const olc::vi2d ScoreDrawPoint = {24, 9};
 
 public:
 
@@ -75,6 +76,7 @@ public:
 	//-------------------------------------------------------------------------------------------
 	bool OnUserUpdate(float ElapsedTime) override
 	{
+		//Switches to end screen if lost or won
 		if(!bEnded)
 		{
 			LoopGameplay(ElapsedTime);
@@ -100,6 +102,7 @@ public:
 	//-------------------------------------------------------------------------------------------
 	bool OnUserDestroy() override
 	{
+		//Deletes all the dynamically allocated memory...
 		delete BackgroundSprite;
 		delete BackgroundDecal;
 		delete PacmanSprite;
@@ -176,7 +179,7 @@ private:
 		Pinky = new FPinky(this, PinkySprite, Maze, FrightenedSprite, EatenSprite, Pacman);
 		Clyde = new FClyde(this, ClydeSprite, Maze, FrightenedSprite, EatenSprite, Pacman);
 
-		//ARRAY OF GHOSTS
+		//Places all the ghosts in an array for easier iteration later...
 		Ghosts.push_back(Blinky);
 		Ghosts.push_back(Inky);
 		Ghosts.push_back(Pinky);
@@ -214,14 +217,15 @@ private:
 			FrightenGhosts();
 			Pacman->SetIsEnergized(false);
 		}
-			
+
+		//Check collision between player and ghosts
 		CheckCollision();
 
 		DrawScore();
 	}
 
 	//-------------------------------------------------------------------------------------------
-	void UpdateCharacters(const float ElapsedTime)
+	void UpdateCharacters(const float ElapsedTime) const
 	{
 		Pacman->Update(ElapsedTime, RoundTime);
 		Blinky->Update(ElapsedTime, RoundTime);
@@ -260,9 +264,11 @@ private:
 	{
 		for(FGhost* Ghost: Ghosts)
 		{
+			//if they are both on the same tile...
 			if(Maze->GetTile(Pacman->GetPosition()).TileID == Maze->GetTile(Ghost->GetPosition()).TileID)
 			{
-				if(Ghost->CanBeEaten())
+				//Eat ghost if possible...
+				if(Ghost->IsFrightened())
 				{
 					Ghost->Die();
 					const int Score = Pacman->GetScore();
@@ -273,6 +279,7 @@ private:
 
 					PauseCharacters();
 				}
+				//...kill pacman if not
 				else if (!Ghost->IsDead())
 				{
 					Pacman->Die();
@@ -294,8 +301,7 @@ private:
 	//-------------------------------------------------------------------------------------------
 	void DrawScore()
 	{
-		olc::vi2d DrawPoint = {24, 9};
-		DrawStringDecal(DrawPoint, std::to_string(Pacman->GetScore()));
+		DrawStringDecal(ScoreDrawPoint, std::to_string(Pacman->GetScore()));
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -309,6 +315,7 @@ private:
 	{
 		if(bWon)
 		{
+			//Display Win Screen
 			Clear(olc::BLACK);
 			DrawString(80, 110, "YOU WON!");
 			DrawString(30, 118, "Press SPACE to exit.");
@@ -317,6 +324,7 @@ private:
 		}
 		else
 		{
+			//Display Game Over Screen and animation
 			GameOverTimer += ElapsedTime;
 			Pacman->Update(ElapsedTime, RoundTime);
 			if(GameOverTimer >= 3.0f)
