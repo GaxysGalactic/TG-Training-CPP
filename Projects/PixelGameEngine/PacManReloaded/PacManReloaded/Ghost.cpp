@@ -257,6 +257,7 @@ void FGhost::Chase()
 void FGhost::Frighten()
 {
     SetState(EState::Frightened);
+    SecondsSinceFrightened = 0.0f;
     SpeedMultiplier = 0.50f;
 }
 
